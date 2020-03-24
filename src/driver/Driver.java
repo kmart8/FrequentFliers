@@ -3,16 +3,6 @@
  */
 package driver;
 
-import java.util.Collections;
-
-import airport.Airport;
-import airport.Airports;
-import plane.Plane;
-import plane.Planes;
-import leg.Leg;
-import leg.Legs;
-import dao.ServerInterface;
-
 /**
  * @author blake
  * @since 2016-02-24
@@ -30,6 +20,7 @@ public class Driver {
 	 * @param args is the arguments passed to java vm in format of "CS509.sample teamName" where teamName is a valid team
 	 */
 	public static void main(String[] args) {
+		/**
 		if (args.length != 1) {
 			System.err.println("usage: CS509.sample teamName");
 			System.exit(-1);
@@ -53,6 +44,9 @@ public class Driver {
 		for (Leg leg : legs) {
 			System.out.println(leg.toString());
 		}
+		 */
+
+		FlightBuilder.generateGUI();
 	}
 }
 
