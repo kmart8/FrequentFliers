@@ -10,6 +10,11 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.*;
+import java.time.LocalDateTime;
+import java.time.ZonedDateTime;
+
+import UI.UIData;
 
 import airport.Airports;
 import plane.Planes;
@@ -158,7 +163,16 @@ public enum ServerInterface {
 			 * Create an HTTP connection to the server for a GET
 			 * QueryFactory provides the parameter annotations for the HTTP GET query string
 			 */
-			url = new URL(mUrlBase + QueryFactory.getLegs(teamName));
+
+			//  Pass airport code and zdtDisembarkingTime to the below variables instead of explicitly defining them as I did here:
+
+			String code = "BOS";
+			// had to define gmt locally to make get it in the zdtDisembarkingTime variable, but you could pass this as well
+
+			ZoneId gmt = ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0));
+			ZonedDateTime zdtDisembarkingTime = ZonedDateTime.of(LocalDateTime.of(2020,05,20,0,0), gmt);
+
+			url = new URL(mUrlBase + QueryFactory.getLegs(teamName,code,zdtDisembarkingTime));
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 			connection.setRequestProperty("User-Agent", teamName);
