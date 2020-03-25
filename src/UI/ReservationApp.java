@@ -6,6 +6,7 @@ import leg.Legs;
 import utils.LocalFlightDatabase;
 
 import javax.swing.*;
+import javax.swing.table.TableColumn;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -17,7 +18,6 @@ import java.util.List;
 public class ReservationApp {
     // Automatically generated variables for handling Swing components in the GUI Builder
     private JComboBox seatingTypeComboBox;
-    private JList list1;
     private JButton addFlightToCartButton;
     private JButton viewFullFlightDetailsButton;
     private JButton quitButton;
@@ -30,11 +30,21 @@ public class ReservationApp {
     private JFormattedTextField arrivalAirportFormattedTextField;
     private JFormattedTextField maximumLayoversFormattedTextField;
     private JFormattedTextField numberOfPassengersFormattedTextField;
+    private JTable flightDisplayTable;
     private JFrame frameHandle;
 
     // List of UI components which should be inactive during long operations to prevent user input
     // and signal to the user that the program is busy
     private List<JComponent> busyList = new ArrayList<>();
+
+    // Table columns initialized for flight display
+    private TableColumn prices = new TableColumn();
+    private TableColumn departureAirports = new TableColumn();
+    private TableColumn arrivalAirports = new TableColumn();
+    private TableColumn departureDates = new TableColumn();
+    private TableColumn arrivalDates = new TableColumn();
+    private TableColumn flightNumbers = new TableColumn();
+    private TableColumn planes  = new TableColumn();
 
     // Container that stores the current state of user input and validates new input
     private static UIModel model;
@@ -70,6 +80,10 @@ public class ReservationApp {
 
         // Set the default seating types
         //seatingTypeComboBox.setModel(new DefaultComboBoxModel<String>(model.getSeatingPossibilities()));
+
+        // Set the columns of the table
+
+
         System.out.println("Finished Initialization");
     }
 
