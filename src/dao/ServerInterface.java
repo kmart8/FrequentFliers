@@ -16,7 +16,9 @@ import java.time.ZonedDateTime;
 
 import UI.UIData;
 
+import airport.Airport;
 import airport.Airports;
+import driver.FlightBuilder;
 import plane.Planes;
 import leg.Legs;
 import utils.QueryFactory;
@@ -148,7 +150,7 @@ public enum ServerInterface {
 
 	}
 
-	public Legs getDepartingLegs (String teamName) {
+	public Legs getDepartingLegs (Airport departureAirport, ZonedDateTime departureDate) {
 		URL url;
 		HttpURLConnection connection;
 		BufferedReader reader;
@@ -164,18 +166,10 @@ public enum ServerInterface {
 			 * QueryFactory provides the parameter annotations for the HTTP GET query string
 			 */
 
-			//  Pass airport code and zdtDisembarkingTime to the below variables instead of explicitly defining them as I did here:
-
-			String code = "BOS";
-			// had to define gmt locally to make get it in the zdtDisembarkingTime variable, but you could pass this as well
-
-			ZoneId gmt = ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0));
-			ZonedDateTime zdtDisembarkingTime = ZonedDateTime.of(LocalDateTime.of(2020,05,20,0,0), gmt);
-
-			url = new URL(mUrlBase + QueryFactory.getLegs(teamName,code,zdtDisembarkingTime));
+			url = new URL(mUrlBase + QueryFactory.getLegs(FlightBuilder.teamName(),departureAirport,departureDate));
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
-			connection.setRequestProperty("User-Agent", teamName);
+			connection.setRequestProperty("User-Agent", FlightBuilder.teamName());
 
 			/**
 			 * If response code of SUCCESS read the XML string returned

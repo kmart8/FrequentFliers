@@ -1,5 +1,10 @@
 package UI;
 
+import dao.ServerInterface;
+import leg.Leg;
+import leg.Legs;
+import utils.LocalFlightDatabase;
+
 import javax.swing.*;
 import java.awt.*;
 import java.awt.event.ActionEvent;
@@ -12,7 +17,6 @@ import java.util.List;
 public class ReservationApp {
     // Automatically generated variables for handling Swing components in the GUI Builder
     private JComboBox seatingTypeComboBox;
-    private JList list1;
     private JButton addFlightToCartButton;
     private JButton viewFullFlightDetailsButton;
     private JButton quitButton;
@@ -32,7 +36,7 @@ public class ReservationApp {
     private List<JComponent> busyList = new ArrayList<>();
 
     // Container that stores the current state of user input and validates new input
-    private static UIData model;
+    private static UIModel model;
 
     /**
      * Main method is required by JavaFX, which is used by the GUI Designer,
@@ -50,10 +54,10 @@ public class ReservationApp {
      *
      * @param newModel is an instantiation of UIData
      */
-    public void initializeUIElements(UIData newModel) {
+    public void initializeUIElements(UIModel newModel) {
         // If no model is provided, initialize a new one
         if (model == null)
-            model = new UIData();
+            model = new UIModel();
         else
             model = newModel;
 
@@ -64,7 +68,7 @@ public class ReservationApp {
         buildBusyList();
 
         // Set the default seating types
-        seatingTypeComboBox.setModel(new DefaultComboBoxModel<String>(model.getSeatingPossibilities()));
+        //seatingTypeComboBox.setModel(new DefaultComboBoxModel<String>(model.getSeatingPossibilities()));
         System.out.println("Finished Initialization");
     }
 
@@ -82,6 +86,17 @@ public class ReservationApp {
                 // Execute search functionality here
                 System.out.println("Search Button User Interaction");
                 busy(true);
+                if(model.departureAirport() != null && model.departureDate() != null) {
+                    Legs legs = ServerInterface.INSTANCE.getDepartingLegs(model.departureAirport(), model.departureDate());
+                    if(legs != null) {
+                        for (Leg leg : legs) {
+                            System.out.println(leg.toString());
+                        }
+                    }else
+                        System.out.println("No departing flights were found for that date and airport");
+                }else
+                    System.out.println("Departure airport or departure date is empty, cannot search for flights");
+                busy(false);
             }
         });
 
@@ -136,7 +151,7 @@ public class ReservationApp {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("Reset User Interaction");
-                initializeUIElements(new UIData());
+                initializeUIElements(new UIModel());
             }
         });
 
@@ -151,7 +166,7 @@ public class ReservationApp {
         seatingTypeComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                model.setSeatingType(seatingTypeComboBox.getSelectedItem().toString());
+                //model.setSeatingType(seatingTypeComboBox.getSelectedItem().toString());
             }
         });
     }

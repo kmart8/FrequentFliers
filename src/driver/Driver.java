@@ -30,7 +30,7 @@ public class Driver {
 	 * @param args is the arguments passed to java vm in format of "CS509.sample teamName" where teamName is a valid team
 	 */
 	public static void main(String[] args) {
-		if (args.length != 1) {
+		/**if (args.length != 1) {
 			System.err.println("usage: CS509.sample teamName");
 			System.exit(-1);
 			return;
@@ -53,7 +53,9 @@ public class Driver {
 		for (Leg leg : legs) {
 			System.out.println(leg.toString());
 		}
-		//FlightBuilder.generateGUI();
+		 */
+		System.out.println("Hello world");
+		FlightBuilder.generateGUI();
 	}
 }
 

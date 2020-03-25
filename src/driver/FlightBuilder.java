@@ -2,47 +2,33 @@ package driver;
 
 import UI.ReservationApp;
 import UI.UIData;
-import airport.Airport;
-import airport.Airports;
-import dao.ServerInterface;
-import plane.Planes;
+import UI.UIModel;
 
 public class FlightBuilder {
+    private static String teamName = "FrequentFliers";
     private static ReservationApp ui;
-    private static UIData model;
-    private static Airports airportList;
-    private static Planes planeList;
+    private static UIModel model;
 
     // Singleton variable
-    private static FlightBuilder INSTANCE = null;
+    private static FlightBuilder single_instance = null;
 
     // static method to create instance of Singleton
     public static FlightBuilder getInstance() {
-        if (INSTANCE == null) {
-            INSTANCE = new FlightBuilder();
+        if (single_instance == null) {
+            single_instance = new FlightBuilder();
         }
-        return INSTANCE;
+        return single_instance;
     }
-
 
     public static void generateGUI() {
         ui = new ReservationApp();
-        model = new UIData();
-        buildAirportsAndPlanes();
+        model = new UIModel();
         ui.initializeUIElements(model);
         System.out.println("New Application Created");
     }
 
-    public static Airport getAirportByString(String airportString){
-        for(Airport apt : airportList){
-            if(airportString.equals(apt.name()) || airportString.equals(apt.code()))
-                return apt;
-        }
-        return null;
+    public static String teamName(){
+        return teamName;
     }
 
-    private static void buildAirportsAndPlanes(){
-        airportList = ServerInterface.INSTANCE.getAirports(model.getTeamName());
-        planeList = ServerInterface.INSTANCE.getPlanes(model.getTeamName());
-    }
 }

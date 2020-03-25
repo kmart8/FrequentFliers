@@ -3,6 +3,7 @@
  */
 package utils;
 
+import airport.Airport;
 import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 /**
@@ -33,20 +34,20 @@ public class QueryFactory {
 	/**
 	 * Return query string that can be passed to HTTP URL to request list of legs
 	 * @param teamName
-	 * @param code is the airport code
-	 * @param zdtDisembarkingTime is the the flight departure date of type ZonedDateTime
+	 * @param departureAirport is the airport
+	 * @param departureDate is the the flight departure date of type ZonedDateTime
 	 * @return
 	 */
 
-	public static String getLegs (String teamName, String code, ZonedDateTime zdtDisembarkingTime) {
+	public static String getLegs (String teamName, Airport departureAirport, ZonedDateTime departureDate) {
 
 		// DateTimeFormatter
 		DateTimeFormatter dateStyle = DateTimeFormatter.ofPattern("yyyy_MM_dd");
 
 		// Converting ZonedDateTime to string query can understand
-		String disembarkingTime = dateStyle.format(zdtDisembarkingTime);
-		System.out.println("?team=" + teamName + "&action=list&list_type=departing&airport="+code+"&day="+disembarkingTime);
-		return "?team=" + teamName + "&action=list&list_type=departing&airport="+code+"&day="+disembarkingTime;
+		String departureDateString = dateStyle.format(departureDate);
+		System.out.println("?team=" + teamName + "&action=list&list_type=departing&airport="+departureAirport.code()+"&day="+departureDateString);
+		return "?team=" + teamName + "&action=list&list_type=departing&airport="+departureAirport.code()+"&day="+departureDateString;
 
 	}
 	/**
