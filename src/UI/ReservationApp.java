@@ -17,6 +17,7 @@ import java.util.List;
 public class ReservationApp {
     // Automatically generated variables for handling Swing components in the GUI Builder
     private JComboBox seatingTypeComboBox;
+    private JList list1;
     private JButton addFlightToCartButton;
     private JButton viewFullFlightDetailsButton;
     private JButton quitButton;
