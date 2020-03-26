@@ -73,10 +73,10 @@ public class DaoPlane {
          */
         Plane plane = new Plane();
 
-        plane.mModel = model;
-        plane.mManufacturer = manufacturer;
-        plane.mCoachSeats = coachSeats;
-        plane.mFirstClassSeats = firstClassSeats;
+        plane.model(model);
+        plane.manufacturer(manufacturer);
+        plane.coachSeats(coachSeats);
+        plane.firstClassSeats(firstClassSeats);
 
         return plane;
     }

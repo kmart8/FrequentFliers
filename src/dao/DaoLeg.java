@@ -24,7 +24,7 @@ import org.xml.sax.SAXException;
 
 import leg.Leg;
 import leg.Legs;
-import utils.LocalFlightDatabase;
+import plane.Plane;
 
 public class DaoLeg {
     public static Legs addAll (String xmlLegs) throws NullPointerException {
@@ -69,14 +69,14 @@ public class DaoLeg {
         int reservedCoachSeats;
         int reservedFirstClassSeats;
         int legDuration;
-        String plane; // the plane model
+        Plane plane; // the plane model
         BigDecimal coachPrice;
         BigDecimal firstClassPrice;
         String flightTime;
 
         // The plane element has attributes of model and manufacturer
         Element elementLeg = (Element) nodeLeg;
-        plane = elementLeg.getAttributeNode("Airplane").getValue();
+        plane = LocalFlightDatabase.getInstance().getPlaneByString(elementLeg.getAttributeNode("Airplane").getValue());
         legDuration = Integer.parseInt(elementLeg.getAttributeNode("FlightTime").getValue());
         flightNumber = Integer.parseInt(elementLeg.getAttributeNode("Number").getValue());
 

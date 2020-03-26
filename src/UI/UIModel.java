@@ -2,7 +2,8 @@ package UI;
 
 import airport.Airport;
 import leg.Legs;
-import utils.LocalFlightDatabase;
+import dao.LocalFlightDatabase;
+import utils.Saps;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
@@ -10,33 +11,27 @@ import java.time.format.DateTimeParseException;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * This class serves as a model for the ReservationApp. It is controlled by the FlightBuilder. Stored values are
+ * assigned to a UIData object which can be loaded or exported. This class parses and validates user input.
+ *
+ * @author Chris Collins
+ * @version 1.0 2020-03-26
+ * @since 2020-03-06
+ *
+ */
 public class UIModel{
-    //
+    // Container for storing, loading, or exporting valid input
     private UIData savedInput;
 
-    // Create a ZoneId object that represents GMT
-    private ZoneId gmt = ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0));
-
     // Initialize a date format list for displaying/parsing dates to/from the user
-    private List<DateTimeFormatter> acceptedDateFormats = new ArrayList<>();
+    private List<DateTimeFormatter> acceptedDateFormats = new ArrayList<>(){{
+        add(DateTimeFormatter.ofPattern ("MM/dd/yyyy"));
+        add(DateTimeFormatter.ofPattern("M/dd/yyyy"));
+        add(DateTimeFormatter.ofPattern("MM/dd/yy"));
+        add(DateTimeFormatter.ofPattern("M/dd/yy"));}};
 
-    // Create ZonedDateTimes to limit user input
-    private ZonedDateTime earliestDate = ZonedDateTime.of(LocalDateTime.of(2020,5,1,0,0), gmt);
-    private ZonedDateTime latestDate = ZonedDateTime.of(LocalDateTime.of(2020,6,1,0,0), gmt);
-
-    // Create a minimum and maximum number of passengers to limit user input
-    private int maximumPassengers = 15;
-    private int minimumPassengers = 1;
-
-
-    // Create a minimum and maximum number of layovers to limit user input
-    private int maximumLayovers = 2;
-    private int minimumLayovers = 0;
-
-    // Initialize a list of seating types
-    private String[] seatingPossibilities = {"Any","Coach","First Class"};
-
-    //
+    // List of legs currently being displayed to the user
     private Legs displayList;
 
     /**
@@ -46,10 +41,6 @@ public class UIModel{
         savedInput = new UIData();
         savedInput.numberOfLayovers(2);
         savedInput.numberOfPassengers(1);
-        acceptedDateFormats.add(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
-        acceptedDateFormats.add(DateTimeFormatter.ofPattern("M/dd/yyyy"));
-        acceptedDateFormats.add(DateTimeFormatter.ofPattern("MM/dd/yy"));
-        acceptedDateFormats.add(DateTimeFormatter.ofPattern("M/dd/yy"));
     }
 
     /**
@@ -60,77 +51,66 @@ public class UIModel{
         savedInput = loadedData;
     }
 
+    /**
+     * Returns the UIData object used to store valid input
+     * @return valid input stored in a UIData object
+     */
     public UIData getAcceptedInput(){
         return savedInput;
     }
 
-
     /**
      * Returns the number of passengers as a string
-     * @return a string with the number of passengers
+     * @return a String with the number of passengers
      */
     public String getNumberOfPassengers() {
         return Integer.toString(savedInput.numberOfPassengers());
     }
 
     /**
-     * Attempts to parse and validate the input string as a number of passengers
-     * @param numberOfPassengers a non-empty String with the number of passengers
+     * Attempts to update the stored number of passengers according to user input
+     * @param numberOfPassengers a String with the number of passengers
      */
     public void setNumberOfPassengers(String numberOfPassengers) {
         // Attempt to parse the input string, make no changes on failure
-        int passengers;
-        try {
-            passengers = Integer.parseInt(numberOfPassengers);
-        } catch (NumberFormatException ex) {
-            System.out.println("Warning: User input of " + numberOfPassengers + " is invalid syntax for the number of passengers");
-            return;
+        if (isValidPassengers(numberOfPassengers)) {
+            int passengers = Integer.parseInt(numberOfPassengers);
+
+            // If the number of passengers has not changed, make no changes and do not announce updates
+            if (passengers == savedInput.numberOfPassengers())
+                return;
+            else {
+                savedInput.numberOfPassengers(passengers);
+                System.out.println("User input updated the number of passengers to " + numberOfPassengers);
+            }
         }
-
-        // If the number of layovers has not changed, make no changes and do not announce updates
-        if (passengers == savedInput.numberOfPassengers())
-            return;
-
-        // If the number of passengers is within the acceptable range, overwrite the stored value
-        if (passengers >= minimumPassengers && passengers <= maximumPassengers) {
-            savedInput.numberOfPassengers(passengers);
-            System.out.println("User input updated the number of passengers to " + numberOfPassengers);
-        }else
-            System.out.println("Warning: User input of " + numberOfPassengers + " is invalid for the number of passengers");
     }
 
     /**
      * Returns the number of layovers as a string
-     * @return a string with the number of layovers
+     * @return a String with the number of layovers
      */
     public String getNumberOfLayovers() {
         return Integer.toString(savedInput.numberOfLayovers());
     }
 
     /**
-     * Attempts to parse and validate the input string as a number of layovers
-     * @param numberOfLayovers a non-empty String with the number of layovers
+     * Attempts to update the stored number of layovers according to user input
+     * @param numberOfLayovers a String with the maximum number of layovers
      */
     public void setNumberOfLayovers(String numberOfLayovers) {
         // Attempt to parse the input string, make no changes on failure
-        int layovers;
-        try {
-            layovers = Integer.parseInt(numberOfLayovers);
-        } catch (NumberFormatException ex) {
-            System.out.println("Warning: User input of " + numberOfLayovers + " is invalid syntax for the number of layovers");
-            return;
+        if (isValidLayovers(numberOfLayovers)) {
+            int layovers = Integer.parseInt(numberOfLayovers);
+
+            // If the number of layovers has not changed, make no changes and do not announce updates
+            if (layovers == savedInput.numberOfLayovers())
+                return;
+            else {
+                savedInput.numberOfLayovers(layovers);
+                System.out.println("User input updated the number of layovers to " + numberOfLayovers);
+            }
         }
-
-        // If the number of layovers has not changed, make no changes and do not announce updates
-        if (layovers == savedInput.numberOfLayovers())
-            return;
-
-        // If the number of layovers is within the acceptable range, overwrite the stored value
-        if (layovers >= minimumLayovers && layovers <= maximumLayovers) {
-            savedInput.numberOfLayovers(layovers);
-            System.out.println("User input updated the number of layovers to " + numberOfLayovers);
-        }else
-            System.out.println("Warning: User input of " + numberOfLayovers + " is invalid for the number of layovers");
     }
 
     /**
@@ -139,14 +119,6 @@ public class UIModel{
      */
     public String getSeatingType() {
         return savedInput.seatingType();
-    }
-
-    /**
-     * Returns the list of seating types
-     * @return a String[] with the names of seating types
-     */
-    public String[] getSeatingPossibilities() {
-        return seatingPossibilities;
     }
 
     /**
@@ -169,34 +141,32 @@ public class UIModel{
     }
 
     /**
-     * Attempts to parse and validate the input string as an airport name/code
-     * @param arrivalAirport a String with the arrival airport name or code
+     * Attempts to update the stored arrival airport according to user input
+     * @param arrivalAirport a String with the airport code or name
      */
     public void setArrivalAirport(String arrivalAirport) {
-        // If the string is empty, then set the airport to null
-        if (arrivalAirport.equals("")){
-            // If the airport was already null, make no changes
+        // Attempt to parse the input string, make no changes on failure
+        Airport airport = validateAirport(arrivalAirport);
+
+        // If the date was already null, make no changes
+        if(airport == null) {
             if (savedInput.arrivalAirport() != null) {
                 savedInput.arrivalAirport(null);
-                System.out.println("User removed arrival airport");
+                System.out.println("Departure airport removed");
             }
             return;
         }
 
         // If the new arrival airport is the same as the departure airport, make no changes
-        if(savedInput.departureAirport() != null && (arrivalAirport.equals(savedInput.departureAirport().name()) || arrivalAirport.equals(savedInput.departureAirport().name()))) {
-            System.out.println("Warning: User input of " + arrivalAirport + " cannot be the same as the departure airport");
+        if(airport.equals(savedInput.departureAirport())) {
+            System.out.println("Warning: User input of " + arrivalAirport + " cannot be the same as the arrival airport");
             return;
         }
 
-        // If the new airport is different from the previous one, validate the airport string and overwrite the stored value
-        if(savedInput.arrivalAirport() == null || (!arrivalAirport.equals(savedInput.arrivalAirport().name()) && !arrivalAirport.equals(savedInput.arrivalAirport().code()))) {
-            Airport airport = LocalFlightDatabase.getInstance().getAirportByString(arrivalAirport);
-            if(airport != null) {
-                savedInput.arrivalAirport(airport);
-                System.out.println("User input updated the arrival airport to " + airport.name());
-            }else
-                System.out.println("Warning: User input of " + arrivalAirport + " was not recognized as a valid airport, should be 3 letter airport code");
+        // If the new airport is different from the previous one, overwrite the stored value
+        if(!airport.equals(savedInput.departureAirport())) {
+            savedInput.departureAirport(airport);
+            System.out.println("User input updated the departure airport to " + airport.name());
         }
     }
 
@@ -212,34 +182,32 @@ public class UIModel{
     }
 
     /**
-     * Attempts to parse and validate the input string as an airport name/code
-     * @param departureAirport a String with the departure airport name or code
+     * Attempts to update the stored departure airport according to user input
+     * @param departureAirport a String with the airport code or name
      */
     public void setDepartureAirport(String departureAirport) {
-        // If the string is empty, then set the airport to null
-        if (departureAirport.equals("")){
-            // If the airport was already null, make no changes
+        // Attempt to parse the input string, make no changes on failure
+        Airport airport = validateAirport(departureAirport);
+
+        // If the date was already null, make no changes
+        if(airport == null) {
             if (savedInput.departureAirport() != null) {
                 savedInput.departureAirport(null);
-                System.out.println("User removed departure airport");
+                System.out.println("Departure airport removed");
             }
             return;
         }
 
         // If the new departure airport is the same as the arrival airport, make no changes
-        if(savedInput.arrivalAirport() != null && (!departureAirport.equals(savedInput.arrivalAirport().name()) || !departureAirport.equals(savedInput.arrivalAirport().name()))) {
+        if(airport.equals(savedInput.arrivalAirport())) {
             System.out.println("Warning: User input of " + departureAirport + " cannot be the same as the arrival airport");
             return;
         }
 
-        // If the new airport is different from the previous one, validate the airport string and overwrite the stored value
-        if(savedInput.departureAirport() == null || (!departureAirport.equals(savedInput.departureAirport().name()) && !departureAirport.equals(savedInput.departureAirport().code()))) {
-            Airport airport = LocalFlightDatabase.getInstance().getAirportByString(departureAirport);
-            if(airport != null) {
-                savedInput.departureAirport(airport);
-                System.out.println("User input updated the departure airport to " + airport.name());
-            }else
-                System.out.println("Warning: User input of " + departureAirport + " was not recognized as a valid airport, should be 3 letter airport code");
+        // If the new airport is different from the previous one, overwrite the stored value
+        if(!airport.equals(savedInput.departureAirport())) {
+            savedInput.departureAirport(airport);
+            System.out.println("User input updated the departure airport to " + airport.name());
         }
     }
 
@@ -255,40 +223,30 @@ public class UIModel{
     }
 
     /**
-     * Attempts to parse and validate the input arrival date string as a zoned date time
+     * Attempts to update the stored arrival date according to user input
      * @param arrivalDate a String with the formatted date
      */
     public void setArrivalDate(String arrivalDate) {
-        // If the string is empty, then set the date to null
-        if (arrivalDate.equals("")){
-            // If the date was already null, make no changes
+        // Attempt to parse the input string, make no changes on failure
+        ZonedDateTime date = validateDate(arrivalDate);
+
+        // If the date was already null, make no changes
+        if(date == null) {
             if (savedInput.arrivalDate() != null) {
                 savedInput.arrivalDate(null);
-                System.out.println("User removed arrival date");
+                System.out.println("Arrival date removed");
             }
             return;
         }
 
-        // Attempt to parse the input string, make no changes on failure
-        ZonedDateTime date = null;
-        for(DateTimeFormatter formatter : acceptedDateFormats){
-            try {
-                date = ZonedDateTime.of(LocalDate.parse(arrivalDate, formatter), LocalTime.MIN, gmt);
-                break;
-            } catch (DateTimeParseException ex1) {}
-        }
-        if (date == null) {
-            System.out.println("Warning: User input of " + arrivalDate + " is invalid syntax for the arrival date, should be: MM/dd/yyyy");
-            return;
-        }
-
         // If the old date was null or different from the new one, validate the new date and overwrite the stored value
-        if (savedInput.arrivalDate()== null || date.compareTo(savedInput.arrivalDate()) != 0) {
-            if(date.compareTo(earliestDate) >= 0 && date.compareTo(latestDate) < 0 && (savedInput.departureDate() == null || date.compareTo(savedInput.departureDate()) > 0)) {
+        if (savedInput.arrivalDate()== null || !date.equals(savedInput.arrivalDate())) {
+            // Make sure the new arrival date is after the departure date
+            if(savedInput.departureDate() == null || date.compareTo(savedInput.departureDate()) > 0) {
                 savedInput.arrivalDate(date);
                 System.out.println("User input updated the arrival date to " + arrivalDate);
             }else
-                System.out.println("Warning: User input of " + arrivalDate + " is invalid for the arrival date");
+                System.out.println("Warning: User input of " + arrivalDate + " is before the departure date");
         }
     }
 
@@ -304,40 +262,30 @@ public class UIModel{
     }
 
     /**
-     * Attempts to parse and validate the input departure date string as a zoned date time
+     * Attempts to update the stored departure date according to user input
      * @param departureDate a String with the formatted date
      */
     public void setDepartureDate(String departureDate) {
-        // If the string is empty, then set the date to null
-        if (departureDate.equals("")){
-            // If the date was already null, make no changes
+        // Attempt to parse the input string
+        ZonedDateTime date = validateDate(departureDate);
+
+        // If the date was already null, make no changes
+        if(date == null) {
             if (savedInput.departureDate() != null) {
                 savedInput.departureDate(null);
-                System.out.println("User removed departure date");
+                System.out.println("Arrival date removed");
             }
             return;
         }
 
-        // Attempt to parse the input string, make no changes on failure
-        ZonedDateTime date = null;
-        for(DateTimeFormatter formatter : acceptedDateFormats){
-            try {
-                date = ZonedDateTime.of(LocalDate.parse(departureDate, formatter), LocalTime.MIN, gmt);
-                break;
-            } catch (DateTimeParseException ex1) {}
-        }
-        if (date == null) {
-            System.out.println("Warning: User input of " + departureDate + " is invalid syntax for the departure date, should be: MM/dd/yyyy");
-            return;
-        }
-
         // If the old date was null or different from the new one, validate the new date and overwrite the stored value
-        if (savedInput.departureDate() == null || date.compareTo(savedInput.departureDate()) != 0) {
-            if(date.compareTo(earliestDate) >= 0 && date.compareTo(latestDate) < 0 && (savedInput.arrivalDate() == null || date.compareTo(savedInput.arrivalDate()) < 0)) {
+        if (savedInput.departureDate()== null || !date.equals(savedInput.departureDate())) {
+            // Make sure the new departure date is before the arrival date
+            if(savedInput.arrivalDate() == null || date.compareTo(savedInput.arrivalDate()) > 0) {
                 savedInput.departureDate(date);
                 System.out.println("User input updated the departure date to " + departureDate);
             }else
-                System.out.println("Warning: User input of " + departureDate + " is invalid for the departure date");
+                System.out.println("Warning: User input of " + departureDate + " is after the arrival date");
         }
     }
 
@@ -348,4 +296,114 @@ public class UIModel{
     public Legs getDisplayList(){
         return displayList;
     }
+
+    /**
+     * Attempts to parse and validate a date String as a ZonedDateTime
+     * @param date a String with the formatted date
+     *
+     * @return a valid ZonedDateTime, or null if the String could not be parsed or the date is outside the valid range
+     */
+    private ZonedDateTime validateDate(String date){
+        ZonedDateTime parsedDate = null;
+        // If the string is empty, then set the date to null
+        if (date == null || date.equals(""))
+            return null;
+
+        // Try to parse the date string according to accepted input formats for date values
+        for(DateTimeFormatter formatter : acceptedDateFormats){
+            try {
+                parsedDate = ZonedDateTime.of(LocalDate.parse(date, formatter), LocalTime.MIN, ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0)));
+                break;
+            } catch (DateTimeParseException ex1) {}
+        }
+
+        // If the parsed date was never assigned, then none of the parses succeeded and the input format was invalid
+        if (parsedDate == null) {
+            System.out.println("Warning: User input of " + date + " is invalid syntax for the date, should be: MM/dd/yyyy");
+            return null;
+        }
+
+        // Validate the range of the parsed date
+        if (parsedDate.compareTo(Saps.EARLIEST_DATE) >= 0 && parsedDate.compareTo(Saps.LATEST_DATE) < 0){
+            return parsedDate;
+        } else{
+            System.out.println("Warning: User input of " + date + " is outside the valid range of 05/01/2020 through 5/31/2020");
+            return null;
+        }
+    }
+
+    /**
+     * Attempts to parse and validate an airport String as an Airport object
+     * @param airport a String containing the name or code of an airport
+     *
+     * @return a valid Airport, or null if the String did not match any known airports
+     */
+    private Airport validateAirport(String airport){
+        Airport parsedAirport = null;
+        // If the string is empty, then set the airport to null
+        if (airport == null || airport.equals(""))
+            return null;
+
+        // Try to match the provided string with possible airports
+        parsedAirport = LocalFlightDatabase.getInstance().getAirportByString(airport);
+
+        // If no matching airport is returned, then the user input was not a valid airport
+        if(parsedAirport == null) {
+            System.out.println("Warning: User input of " + airport + " was not recognized as a valid airport, should be 3 letter airport code");
+            return null;
+        }
+
+        return  parsedAirport;
+    }
+
+    /**
+     * Attempts to parse and validate an number of layovers from a String
+     * @param layovers a String containing the maximum number of layovers
+     *
+     * @return false if the String could not be parsed as an Integer or the number of layovers is outside the valid range, otherwise return true
+     */
+    private boolean isValidLayovers(String layovers){
+        // Attempt to parse the input string
+        int parsedLayovers;
+        try {
+            parsedLayovers = Integer.parseInt(layovers);
+        } catch (NumberFormatException ex) {
+            System.out.println("Warning: User input of " + layovers + " is invalid syntax for the number of layovers");
+            return false;
+        }
+
+        // Confirm the number of layovers is within the acceptable range
+        if (parsedLayovers >= Saps.MIN_LAYOVERS && parsedLayovers <= Saps.MAX_LAYOVERS) {
+            return true;
+        }else {
+            System.out.println("Warning: User input of " + layovers + " is outside the valid range of 0-2");
+            return false;
+        }
+    }
+
+    /**
+     * Attempts to parse and validate an number of passengers from a String
+     * @param passengers a String containing the maximum number of passengers
+     *
+     * @return false if the String could not be parsed as an Integer or the number of passengers is outside the valid range, otherwise return true
+     */
+    private boolean isValidPassengers(String passengers){
+        // Attempt to parse the input string
+        int parsedLayovers;
+        try {
+            parsedLayovers = Integer.parseInt(passengers);
+        } catch (NumberFormatException ex) {
+            System.out.println("Warning: User input of " + passengers + " is invalid syntax for the number of passengers");
+            return false;
+        }
+
+        // Confirm the number of layovers is within the acceptable range
+        if (parsedLayovers >= Saps.MIN_PASSENGERS && parsedLayovers <= Saps.MAX_PASSENGERS) {
+            return true;
+        }else {
+            System.out.println("Warning: User input of " + passengers + " is outside the valid range of 1-15");
+            return false;
+        }
+    }
+
 }

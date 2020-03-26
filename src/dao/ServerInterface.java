@@ -22,6 +22,7 @@ import driver.FlightBuilder;
 import plane.Planes;
 import leg.Legs;
 import utils.QueryFactory;
+import utils.Saps;
 
 /**
  * This class provides an interface to the CS509 server. It provides sample methods to perform
@@ -166,10 +167,10 @@ public enum ServerInterface {
 			 * QueryFactory provides the parameter annotations for the HTTP GET query string
 			 */
 
-			url = new URL(mUrlBase + QueryFactory.getLegs(FlightBuilder.teamName(),departureAirport,departureDate));
+			url = new URL(mUrlBase + QueryFactory.getLegs(Saps.TEAM_NAME, departureAirport,departureDate));
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
-			connection.setRequestProperty("User-Agent", FlightBuilder.teamName());
+			connection.setRequestProperty("User-Agent", Saps.TEAM_NAME);
 
 			/**
 			 * If response code of SUCCESS read the XML string returned

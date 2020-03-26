@@ -1,10 +1,9 @@
 package leg;
 
 import airport.Airport;
-import utils.LocalFlightDatabase;
+import plane.Plane;
 
 import java.math.BigDecimal;
-import java.math.BigInteger;
 import java.time.ZonedDateTime;
 
 public class Leg {
@@ -18,7 +17,7 @@ public class Leg {
     public int reservedCoachSeats;
     public int reservedFirstClassSeats;
     public int legDuration;
-    public String plane; // the plane model
+    public Plane plane; // the plane model
     public BigDecimal coachPrice;
     public BigDecimal firstClassPrice;
 
@@ -32,13 +31,13 @@ public class Leg {
         reservedCoachSeats = Integer.MAX_VALUE;
         reservedFirstClassSeats = Integer.MAX_VALUE;
         legDuration = Integer.MAX_VALUE;
-        plane = "";
-        coachPrice = new BigDecimal(-1);
-        firstClassPrice =  new BigDecimal(-1);
+        plane = new Plane();
+        coachPrice = null;
+        firstClassPrice =  null;
     }
     // Constructor
     public Leg(Airport dAirport, Airport bAirport, ZonedDateTime dTime, ZonedDateTime bTime, int fNumber, int rCoach, int rFirstClass,
-               int lDuration, String pNumber, BigDecimal cPrice, BigDecimal fCPrice) {
+               int lDuration, Plane plane, BigDecimal cPrice, BigDecimal fCPrice) {
 
         disembarkingAirport = dAirport;
         boardingAirport = bAirport;
@@ -48,7 +47,7 @@ public class Leg {
         reservedCoachSeats = rCoach;
         reservedFirstClassSeats = rFirstClass;
         legDuration = lDuration;
-        plane = pNumber;
+        this.plane = plane;
         coachPrice = cPrice;
         firstClassPrice = fCPrice;
     }
@@ -57,7 +56,7 @@ public class Leg {
         return disembarkingAirport.code()+' '+boardingAirport.code()+' '+disembarkingTime.toString()+' '+
                 boardingTime.toString()+' '+flightNumber+' '+reservedCoachSeats+' '+
                 reservedFirstClassSeats+' '+
-                legDuration+' '+plane+' '+coachPrice+' '+firstClassPrice;
+                legDuration+' '+plane.model()+' '+coachPrice+' '+firstClassPrice;
 
     }
     // get Methods
@@ -93,7 +92,7 @@ public class Leg {
         return legDuration;
     }
 
-    public String getPlane() {
+    public Plane getPlane() {
         return plane;
     }
 

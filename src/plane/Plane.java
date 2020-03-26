@@ -24,16 +24,16 @@ public class Plane {
      * Plane attributes as defined by the CS509 server interface XML
      */
     /** Plane Manufacturer */
-    public String mManufacturer;
+    private String mManufacturer;
 
     /** Plane Model */
-    public String mModel;
+    private String mModel;
 
     /** # of first class seats*/
-    public int mFirstClassSeats;
+    private int mFirstClassSeats;
 
     /** # of coach seats */
-    public int mCoachSeats;
+    private int mCoachSeats;
 
     /**
      * Default constructor
@@ -126,6 +126,161 @@ public class Plane {
 
     public String toString() {
         return mManufacturer+" "+mModel+" "+mFirstClassSeats+" "+mCoachSeats;
+    }
+
+    /**
+     * Set the manufacturer for the plane
+     *
+     * @param manufacturer The manufacturer name
+     * @throws IllegalArgumentException if manufacturer is invalid
+     */
+    public void manufacturer (String manufacturer) {
+        if (isValidManufacturer(manufacturer))
+            mManufacturer = manufacturer;
+        else
+            throw new IllegalArgumentException (manufacturer);
+    }
+
+    /**
+     * get the manufacturer name
+     *
+     * @return Plane manufacturer
+     */
+    public String manufacturer () {
+        return mManufacturer;
+    }
+
+    /**
+     * Set the model for the plane
+     *
+     * @param model The plane model
+     * @throws IllegalArgumentException if model is invalid
+     */
+    public void model (String model) {
+        if (isValidModel(model))
+            mModel = model;
+        else
+            throw new IllegalArgumentException (model);
+    }
+
+    /**
+     * get the model
+     *
+     * @return Plane model
+     */
+    public String model () { return mModel; }
+
+    /**
+     * Set the number of coach seats for the plane
+     *
+     * @param seats The number of coach seats
+     * @throws IllegalArgumentException if number of seats invalid
+     */
+    public void coachSeats (int seats) {
+        if (isValidSeats(seats))
+            mCoachSeats = seats;
+        else
+            throw new IllegalArgumentException (Integer.toString(seats));
+    }
+
+    public void coachSeats (String seats) {
+        if (isValidSeats(seats))
+            mCoachSeats = Integer.parseInt(seats);
+        else
+            throw new IllegalArgumentException (seats);
+    }
+
+    /**
+     * Get the number of coach seats on the plane
+     *
+     * @return The total number of coach seats
+     */
+    public double coachSeats () {
+        return mCoachSeats;
+    }
+
+    /**
+     * Set the number of first class seats for the plane
+     *
+     * @param seats The number of first class seats
+     * @throws IllegalArgumentException if number of seats invalid
+     */
+    public void firstClassSeats (int seats) {
+        if (isValidSeats(seats))
+            mFirstClassSeats = seats;
+        else
+            throw new IllegalArgumentException (Integer.toString(seats));
+    }
+
+    public void firstClassSeats (String seats) {
+        if (isValidSeats(seats))
+            mFirstClassSeats = Integer.parseInt(seats);
+        else
+            throw new IllegalArgumentException (seats);
+    }
+
+    /**
+     * Get the number of first class seats on the plane
+     *
+     * @return The total number of first class seats
+     */
+    public double firstClassSeats () {
+        return mFirstClassSeats;
+    }
+
+    /**
+     * Check for invalid plane manufacturer.
+     *
+     * @param manufacturer is the name of the manufacturer to validate
+     * @return false if null or empty string, else assume valid and return true
+     */
+    public boolean isValidManufacturer (String manufacturer) {
+        // If the name is null or empty it can't be valid
+        if ((manufacturer == null) || (manufacturer == ""))
+            return false;
+        return true;
+    }
+
+    /**
+     * Check for invalid plane model.
+     *
+     * @param model is the model to validate
+     * @return false if null or empty string, else assume valid and return true
+     */
+    public boolean isValidModel (String model) {
+        // If the name is null or empty it can't be valid
+        if ((model == null) || (model == ""))
+            return false;
+        return true;
+    }
+
+    /**
+     * Check if number of seats is valid
+     *
+     * @param seats is the number of seats to validate
+     * @return true if number of seats is positive
+     */
+    public boolean isValidSeats (int seats) {
+        // Verify seats is within valid range
+        if (seats < 0)
+            return false;
+        return true;
+    }
+
+    /**
+     * Check if number of seats is valid
+     *
+     * @param seats is the number of seats represented as a String
+     * @return true if number of seats is positive
+     */
+    public boolean isValidSeats (String seats) {
+        int parsedSeats;
+        try {
+            parsedSeats = Integer.parseInt(seats);
+        } catch (NullPointerException | NumberFormatException ex) {
+            return false;
+        }
+        return isValidSeats (parsedSeats);
     }
 }
 
