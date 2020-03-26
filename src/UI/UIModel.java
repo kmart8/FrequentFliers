@@ -196,7 +196,7 @@ public class UIModel{
                 savedInput.arrivalAirport(airport);
                 System.out.println("User input updated the arrival airport to " + airport.name());
             }else
-                System.out.println("Warning: User input of " + arrivalAirport + " was not recognized as a valid airport");
+                System.out.println("Warning: User input of " + arrivalAirport + " was not recognized as a valid airport, should be 3 letter airport code");
         }
     }
 
@@ -239,7 +239,7 @@ public class UIModel{
                 savedInput.departureAirport(airport);
                 System.out.println("User input updated the departure airport to " + airport.name());
             }else
-                System.out.println("Warning: User input of " + departureAirport + " was not recognized as a valid airport");
+                System.out.println("Warning: User input of " + departureAirport + " was not recognized as a valid airport, should be 3 letter airport code");
         }
     }
 
@@ -278,7 +278,7 @@ public class UIModel{
             } catch (DateTimeParseException ex1) {}
         }
         if (date == null) {
-            System.out.println("Warning: User input of " + arrivalDate + " is invalid syntax for the arrival date");
+            System.out.println("Warning: User input of " + arrivalDate + " is invalid syntax for the arrival date, should be: MM/dd/yyyy");
             return;
         }
 
@@ -327,7 +327,7 @@ public class UIModel{
             } catch (DateTimeParseException ex1) {}
         }
         if (date == null) {
-            System.out.println("Warning: User input of " + departureDate + " is invalid syntax for the departure date");
+            System.out.println("Warning: User input of " + departureDate + " is invalid syntax for the departure date, should be: MM/dd/yyyy");
             return;
         }
 
