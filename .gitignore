@@ -1,2 +1,6 @@
 # Default ignored files
 /FrequentFliers.iml
+/src/META-INF/
+/src/resources/META-INF/
+/bin/artifacts/
+/.idea/
