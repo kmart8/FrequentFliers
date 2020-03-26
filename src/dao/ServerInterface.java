@@ -150,7 +150,7 @@ public enum ServerInterface {
 
 	}
 
-	public Legs getDepartingLegs (Airport departureAirport, ZonedDateTime departureDate) {
+	public Legs getDepartingLegs (Airport departureAirport, LocalDate departureDate) {
 		URL url;
 		HttpURLConnection connection;
 		BufferedReader reader;

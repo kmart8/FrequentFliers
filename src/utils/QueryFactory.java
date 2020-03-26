@@ -4,8 +4,10 @@
 package utils;
 
 import airport.Airport;
-import java.time.ZonedDateTime;
+
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
+
 /**
  * @author blake
  * @version 1.2
@@ -38,18 +40,17 @@ public class QueryFactory {
 	 * @param departureDate is the the flight departure date of type ZonedDateTime
 	 * @return
 	 */
-
-	public static String getLegs (String teamName, Airport departureAirport, ZonedDateTime departureDate) {
+	public static String getLegs (String teamName, Airport departureAirport, LocalDate departureDate) {
 
 		// DateTimeFormatter
 		DateTimeFormatter dateStyle = DateTimeFormatter.ofPattern("yyyy_MM_dd");
 
 		// Converting ZonedDateTime to string query can understand
 		String departureDateString = dateStyle.format(departureDate);
-		System.out.println("?team=" + teamName + "&action=list&list_type=departing&airport="+departureAirport.code()+"&day="+departureDateString);
 		return "?team=" + teamName + "&action=list&list_type=departing&airport="+departureAirport.code()+"&day="+departureDateString;
 
 	}
+
 	/**
 	 * Lock the server database so updates can be written
 	 * 

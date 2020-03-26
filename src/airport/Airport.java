@@ -33,7 +33,7 @@ public class Airport implements Comparable<Airport>, Comparator<Airport> {
 	private double mLatitude;          
 	
 	/** Longitude of the airport in decimal format */
-	private double mLongitude;         
+	private double mLongitude;
 	
 	/**
 	 * Default constructor

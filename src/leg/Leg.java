@@ -113,4 +113,35 @@ public class Leg {
     public void setBoardingTime(ZonedDateTime newBoardingTime) {
         boardingTime = newBoardingTime;
     }
+
+    /**
+     * Determine if two leg objects are the same leg
+     *
+     * Compare another object to this leg and return true if the other
+     * object specifies the same leg as this object.
+     * Legs are the same if they have the same flight number.
+     *
+     * @param obj is the object to compare against this object
+     * @return true if the param is the same leg as this, else false
+     */
+    @Override
+    public boolean equals (Object obj) {
+        // every object is equal to itself
+        if (obj == this)
+            return true;
+
+        // null not equal to anything
+        if (obj == null)
+            return false;
+
+        // can't be equal if obj is not an instance of Leg
+        if (!(obj instanceof Leg))
+            return false;
+
+        // if the flight numbers are equal, the Legs are the same
+        Leg rhs = (Leg) obj;
+        if (rhs.flightNumber == flightNumber)
+            return true;
+        return false;
+    }
 }

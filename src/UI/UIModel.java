@@ -7,6 +7,8 @@ import utils.LocalFlightDatabase;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.ArrayList;
+import java.util.List;
 
 public class UIModel{
     //
@@ -14,8 +16,9 @@ public class UIModel{
 
     // Create a ZoneId object that represents GMT
     private ZoneId gmt = ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0));
-    // Initialize a date format for displaying/parsing dates to/from the user
-    private DateTimeFormatter dateStyle1 = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+
+    // Initialize a date format list for displaying/parsing dates to/from the user
+    private List<DateTimeFormatter> acceptedDateFormats = new ArrayList<>();
 
     // Create ZonedDateTimes to limit user input
     private ZonedDateTime earliestDate = ZonedDateTime.of(LocalDateTime.of(2020,5,1,0,0), gmt);
@@ -43,6 +46,10 @@ public class UIModel{
         savedInput = new UIData();
         savedInput.numberOfLayovers(2);
         savedInput.numberOfPassengers(1);
+        acceptedDateFormats.add(DateTimeFormatter.ofPattern("MM/dd/yyyy"));
+        acceptedDateFormats.add(DateTimeFormatter.ofPattern("M/dd/yyyy"));
+        acceptedDateFormats.add(DateTimeFormatter.ofPattern("MM/dd/yy"));
+        acceptedDateFormats.add(DateTimeFormatter.ofPattern("M/dd/yy"));
     }
 
     /**
@@ -184,7 +191,7 @@ public class UIModel{
 
         // If the new airport is different from the previous one, validate the airport string and overwrite the stored value
         if(savedInput.arrivalAirport() == null || (!arrivalAirport.equals(savedInput.arrivalAirport().name()) && !arrivalAirport.equals(savedInput.arrivalAirport().code()))) {
-            Airport airport = LocalFlightDatabase.getAirportByString(arrivalAirport);
+            Airport airport = LocalFlightDatabase.getInstance().getAirportByString(arrivalAirport);
             if(airport != null) {
                 savedInput.arrivalAirport(airport);
                 System.out.println("User input updated the arrival airport to " + airport.name());
@@ -227,7 +234,7 @@ public class UIModel{
 
         // If the new airport is different from the previous one, validate the airport string and overwrite the stored value
         if(savedInput.departureAirport() == null || (!departureAirport.equals(savedInput.departureAirport().name()) && !departureAirport.equals(savedInput.departureAirport().code()))) {
-            Airport airport = LocalFlightDatabase.getAirportByString(departureAirport);
+            Airport airport = LocalFlightDatabase.getInstance().getAirportByString(departureAirport);
             if(airport != null) {
                 savedInput.departureAirport(airport);
                 System.out.println("User input updated the departure airport to " + airport.name());
@@ -242,7 +249,7 @@ public class UIModel{
      */
     public String getArrivalDate() {
         if(savedInput.arrivalDate() != null)
-            return dateStyle1.format(savedInput.arrivalDate());
+            return acceptedDateFormats.get(0).format(savedInput.arrivalDate());
         else
             return "";
     }
@@ -263,10 +270,14 @@ public class UIModel{
         }
 
         // Attempt to parse the input string, make no changes on failure
-        ZonedDateTime date;
-        try {
-            date = ZonedDateTime.of(LocalDate.parse(arrivalDate, dateStyle1), LocalTime.MIN, gmt);
-        } catch (DateTimeParseException ex) {
+        ZonedDateTime date = null;
+        for(DateTimeFormatter formatter : acceptedDateFormats){
+            try {
+                date = ZonedDateTime.of(LocalDate.parse(arrivalDate, formatter), LocalTime.MIN, gmt);
+                break;
+            } catch (DateTimeParseException ex1) {}
+        }
+        if (date == null) {
             System.out.println("Warning: User input of " + arrivalDate + " is invalid syntax for the arrival date");
             return;
         }
@@ -287,7 +298,7 @@ public class UIModel{
      */
     public String getDepartureDate() {
         if (savedInput.departureDate() != null)
-            return dateStyle1.format(savedInput.departureDate());
+            return acceptedDateFormats.get(0).format(savedInput.departureDate());
         else
             return "";
     }
@@ -308,10 +319,14 @@ public class UIModel{
         }
 
         // Attempt to parse the input string, make no changes on failure
-        ZonedDateTime date;
-        try {
-            date = ZonedDateTime.of(LocalDate.parse(departureDate, dateStyle1), LocalTime.MIN, gmt);
-        } catch (DateTimeParseException ex) {
+        ZonedDateTime date = null;
+        for(DateTimeFormatter formatter : acceptedDateFormats){
+            try {
+                date = ZonedDateTime.of(LocalDate.parse(departureDate, formatter), LocalTime.MIN, gmt);
+                break;
+            } catch (DateTimeParseException ex1) {}
+        }
+        if (date == null) {
             System.out.println("Warning: User input of " + departureDate + " is invalid syntax for the departure date");
             return;
         }

@@ -3,8 +3,11 @@ package dao;
 import java.io.IOException;
 import java.io.StringReader;
 import java.math.BigDecimal;
+import java.text.NumberFormat;
+import java.text.ParseException;
 import java.time.*;
 import java.time.format.DateTimeFormatter;
+import java.util.Locale;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -57,6 +60,7 @@ public class DaoLeg {
     static private Leg buildLeg (Node nodeLeg) {
         DateTimeFormatter serverDateTimeStyle = DateTimeFormatter.ofPattern("yyyy MMM dd HH:mm zzz");
         ZoneId gmt = ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0));
+        NumberFormat serverPriceStyle = NumberFormat.getCurrencyInstance(Locale.US);
         Airport disembarkingAirport;
         Airport boardingAirport;
         ZonedDateTime disembarkingTime;
@@ -82,7 +86,7 @@ public class DaoLeg {
         Element elementDisembarkingAirportCode = (Element)elementDisembarking.getElementsByTagName("Code").item(0);
         Element elementDisembarkingTime = (Element)elementDisembarking.getElementsByTagName("Time").item(0);
 
-        disembarkingAirport = LocalFlightDatabase.getAirportByString(getCharacterDataFromElement(elementDisembarkingAirportCode));
+        disembarkingAirport = LocalFlightDatabase.getInstance().getAirportByString(getCharacterDataFromElement(elementDisembarkingAirportCode));
         disembarkingTime = ZonedDateTime.of(LocalDateTime.parse(getCharacterDataFromElement(elementDisembarkingTime), serverDateTimeStyle), gmt);
 
         Element elementBoarding = (Element)elementLeg.getElementsByTagName("Departure").item(0);
@@ -90,17 +94,27 @@ public class DaoLeg {
         Element elementBoardingAirportCode = (Element)elementBoarding.getElementsByTagName("Code").item(0);
         Element elementBoardingTime = (Element)elementBoarding.getElementsByTagName("Time").item(0);
 
-        boardingAirport = LocalFlightDatabase.getAirportByString(getCharacterDataFromElement(elementBoardingAirportCode));
+        boardingAirport = LocalFlightDatabase.getInstance().getAirportByString(getCharacterDataFromElement(elementBoardingAirportCode));
         boardingTime = ZonedDateTime.of(LocalDateTime.parse(getCharacterDataFromElement(elementBoardingTime), serverDateTimeStyle), gmt);
 
         Element elementSeating = (Element)elementLeg.getElementsByTagName("Seating").item(0);
 
         Element elementCoach = (Element)elementSeating.getElementsByTagName("Coach").item(0);
-        coachPrice = new BigDecimal(elementCoach.getAttributeNode("Price").getValue().substring(1));
+        try{
+            coachPrice = new BigDecimal(serverPriceStyle.parse(elementCoach.getAttributeNode("Price").getValue()).toString());
+        }
+        catch(ParseException pe){
+            coachPrice = new BigDecimal(0);
+        }
         reservedCoachSeats = Integer.parseInt(getCharacterDataFromElement(elementCoach));
 
         Element elementFirstClass = (Element)elementSeating.getElementsByTagName("FirstClass").item(0);
-        firstClassPrice = new BigDecimal(elementFirstClass.getAttributeNode("Price").getValue().substring(1));
+        try{
+            firstClassPrice = new BigDecimal(serverPriceStyle.parse(elementFirstClass.getAttributeNode("Price").getValue()).toString());
+        }
+        catch(ParseException pe){
+            firstClassPrice = new BigDecimal(0);
+        }
         reservedFirstClassSeats = Integer.parseInt(getCharacterDataFromElement(elementFirstClass));
 
         /**

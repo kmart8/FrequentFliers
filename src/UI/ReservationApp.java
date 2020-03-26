@@ -1,23 +1,16 @@
 package UI;
 
-import dao.ServerInterface;
 import leg.Leg;
 import leg.Legs;
+import utils.LocalFlightDatabase;
 
 import javax.swing.*;
-import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableModel;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.math.BigDecimal;
-import java.sql.Time;
 import java.text.NumberFormat;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
@@ -25,7 +18,6 @@ import java.util.List;
 import java.util.Locale;
 
 import static java.lang.Math.floor;
-import static java.lang.Math.floorMod;
 
 public class ReservationApp {
     // Automatically generated variables for handling Swing components in the GUI Builder
@@ -121,7 +113,8 @@ public class ReservationApp {
                 busy(true);
                 UIData userInput = model.getAcceptedInput();
                 if (userInput.departureAirport() != null && userInput.departureDate() != null) {
-                    model.setDisplayList(ServerInterface.INSTANCE.getDepartingLegs(userInput.departureAirport(), userInput.departureDate()));
+
+                    model.setDisplayList(LocalFlightDatabase.getInstance().getLegList(userInput.departureAirport(), userInput.departureDate().toLocalDate(), false));
                     buildFlightTable();
                 } else
                     System.out.println("Departure airport or departure date is empty, cannot search for flights");
@@ -248,13 +241,14 @@ public class ReservationApp {
         Legs displayList = model.getDisplayList();
         if(displayList != null) {
             DefaultTableModel table = (DefaultTableModel) flightDisplayTable.getModel();
+            table.setRowCount(0);
             DateTimeFormatter dateStyle = DateTimeFormatter.ofPattern("MM/dd/yyyy");
             DateTimeFormatter timeStyle = DateTimeFormatter.ofPattern("HH:mm a");
             DateTimeFormatter flightTimeStyle = DateTimeFormatter.ofPattern("HH:mm");
-            NumberFormat priceStyle = NumberFormat.getInstance(Locale.US);
+            NumberFormat priceStyle = NumberFormat.getCurrencyInstance(Locale.US);
             for (Leg leg : displayList) {
-                String coachPrice = "$" + priceStyle.format(leg.coachPrice);
-                String firstClassPrice = "$" + priceStyle.format(leg.firstClassPrice);
+                String coachPrice = priceStyle.format(leg.coachPrice);
+                String firstClassPrice = priceStyle.format(leg.firstClassPrice);
                 String departureAirport = leg.boardingAirport.code();
                 String departureDate = dateStyle.format(leg.boardingTime);
                 String departureTime = timeStyle.format(leg.boardingTime);
