@@ -21,10 +21,10 @@ public class FlightBuilder {
     }
 
     public static void generateGUI() {
+        System.out.println("New Application Requested");
         ui = new ReservationApp();
         model = new UIModel();
         ui.initializeUIElements(model);
-        System.out.println("New Application Created");
     }
 
     public static String teamName(){

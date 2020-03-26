@@ -3,21 +3,33 @@ package UI;
 import dao.ServerInterface;
 import leg.Leg;
 import leg.Legs;
-import utils.LocalFlightDatabase;
 
 import javax.swing.*;
+import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableColumn;
+import javax.swing.table.TableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.math.BigDecimal;
+import java.sql.Time;
+import java.text.NumberFormat;
+import java.time.LocalDateTime;
+import java.time.LocalTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Locale;
+
+import static java.lang.Math.floor;
+import static java.lang.Math.floorMod;
 
 public class ReservationApp {
     // Automatically generated variables for handling Swing components in the GUI Builder
-    private JComboBox seatingTypeComboBox;
+    private JComboBox<String> seatingTypeComboBox;
     private JButton addFlightToCartButton;
     private JButton viewFullFlightDetailsButton;
     private JButton quitButton;
@@ -37,18 +49,10 @@ public class ReservationApp {
     // and signal to the user that the program is busy
     private List<JComponent> busyList = new ArrayList<>();
 
-    // Table columns initialized for flight display
-    private TableColumn prices = new TableColumn();
-    private TableColumn departureAirports = new TableColumn();
-    private TableColumn arrivalAirports = new TableColumn();
-    private TableColumn departureDates = new TableColumn();
-    private TableColumn arrivalDates = new TableColumn();
-    private TableColumn flightNumbers = new TableColumn();
-    private TableColumn planes  = new TableColumn();
-
     // Container that stores the current state of user input and validates new input
     private static UIModel model;
 
+    private static DefaultTableModel flightDisplayData = new DefaultTableModel();
     /**
      * Main method is required by JavaFX, which is used by the GUI Designer,
      * but is not needed for any other reason
@@ -67,7 +71,7 @@ public class ReservationApp {
      */
     public void initializeUIElements(UIModel newModel) {
         // If no model is provided, initialize a new one
-        if (model == null)
+        if (newModel == null)
             model = new UIModel();
         else
             model = newModel;
@@ -79,10 +83,23 @@ public class ReservationApp {
         buildBusyList();
 
         // Set the default seating types
-        //seatingTypeComboBox.setModel(new DefaultComboBoxModel<String>(model.getSeatingPossibilities()));
+        seatingTypeComboBox.setModel(new DefaultComboBoxModel<String>(model.getSeatingPossibilities()));
 
         // Set the columns of the table
-
+        flightDisplayData.addColumn("Coach Price");
+        flightDisplayData.addColumn("First Class Price");
+        flightDisplayData.addColumn("Flight Time");
+        flightDisplayData.addColumn("Departure Airport");
+        flightDisplayData.addColumn("Departure Date");
+        flightDisplayData.addColumn("Departure Time");
+        flightDisplayData.addColumn("Arrival Airport");
+        flightDisplayData.addColumn("Arrival Date");
+        flightDisplayData.addColumn("Arrival Time");
+        flightDisplayData.addColumn("Flight Number");
+        flightDisplayData.addColumn("Plane Model");
+        flightDisplayData.addColumn("Coach Seats Reserved");
+        flightDisplayData.addColumn("First Class Seats Reserved");
+        flightDisplayTable.setModel(flightDisplayData);
 
         System.out.println("Finished Initialization");
     }
@@ -92,6 +109,7 @@ public class ReservationApp {
      * The contents of the overriden methods have been modified to respond appropriately to user interaction
      */
     public ReservationApp() {
+        // As far as I can tell $$$setupUI$$$ is called right at the beginning of this constructor
 
         //When the search button is pressed, set the busy status to true
         //The status should remain true until the search is completed or the operation is canceled
@@ -101,15 +119,11 @@ public class ReservationApp {
                 // Execute search functionality here
                 System.out.println("Search Button User Interaction");
                 busy(true);
-                if(model.departureAirport() != null && model.departureDate() != null) {
-                    Legs legs = ServerInterface.INSTANCE.getDepartingLegs(model.departureAirport(), model.departureDate());
-                    if(legs != null) {
-                        for (Leg leg : legs) {
-                            System.out.println(leg.toString());
-                        }
-                    }else
-                        System.out.println("No departing flights were found for that date and airport");
-                }else
+                UIData userInput = model.getAcceptedInput();
+                if (userInput.departureAirport() != null && userInput.departureDate() != null) {
+                    model.setDisplayList(ServerInterface.INSTANCE.getDepartingLegs(userInput.departureAirport(), userInput.departureDate()));
+                    buildFlightTable();
+                } else
                     System.out.println("Departure airport or departure date is empty, cannot search for flights");
                 busy(false);
             }
@@ -194,7 +208,7 @@ public class ReservationApp {
         if (frameHandle != null)
             frameHandle.dispose();
         frameHandle = new JFrame("ReservationApp");
-        frameHandle.setContentPane(new ReservationApp().mainPanel);
+        frameHandle.setContentPane(mainPanel);
         frameHandle.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frameHandle.pack();
         frameHandle.setVisible(true);
@@ -228,6 +242,35 @@ public class ReservationApp {
         for (JComponent element : busyList) {
             element.setEnabled(!tf);
         }
+    }
+
+    private void buildFlightTable(){
+        Legs displayList = model.getDisplayList();
+        if(displayList != null) {
+            DefaultTableModel table = (DefaultTableModel) flightDisplayTable.getModel();
+            DateTimeFormatter dateStyle = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+            DateTimeFormatter timeStyle = DateTimeFormatter.ofPattern("HH:mm a");
+            DateTimeFormatter flightTimeStyle = DateTimeFormatter.ofPattern("HH:mm");
+            NumberFormat priceStyle = NumberFormat.getInstance(Locale.US);
+            for (Leg leg : displayList) {
+                String coachPrice = "$" + priceStyle.format(leg.coachPrice);
+                String firstClassPrice = "$" + priceStyle.format(leg.firstClassPrice);
+                String departureAirport = leg.boardingAirport.code();
+                String departureDate = dateStyle.format(leg.boardingTime);
+                String departureTime = timeStyle.format(leg.boardingTime);
+                String arrivalAirport = leg.disembarkingAirport.code();
+                String arrivalDate = dateStyle.format(leg.disembarkingTime);
+                String arrivalTime = timeStyle.format(leg.disembarkingTime);
+                String flightNumber = Integer.toString(leg.flightNumber);
+                String plane = leg.plane;
+                String coachSeatsReserved = Integer.toString(leg.reservedCoachSeats);
+                String firstClassSeatsReserved = Integer.toString(leg.reservedFirstClassSeats);
+                String flightTime = flightTimeStyle.format(LocalTime.of((int) floor((double)leg.legDuration /60.0), leg.legDuration % 60));
+                table.addRow(new Object[] {coachPrice, firstClassPrice, flightTime, departureAirport,departureDate,departureTime,arrivalAirport,arrivalDate,arrivalTime,flightNumber,plane, coachSeatsReserved, firstClassSeatsReserved});
+            }
+        }else
+            System.out.println("No flights were found matching the provided criteria");
+        System.out.println("Flights matching the provided criteria have been displayed");
     }
 
 }

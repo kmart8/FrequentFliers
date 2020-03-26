@@ -2,11 +2,15 @@ package dao;
 
 import java.io.IOException;
 import java.io.StringReader;
+import java.math.BigDecimal;
+import java.time.*;
+import java.time.format.DateTimeFormatter;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.parsers.ParserConfigurationException;
 
+import airport.Airport;
 import org.w3c.dom.CharacterData;
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
@@ -17,6 +21,7 @@ import org.xml.sax.SAXException;
 
 import leg.Leg;
 import leg.Legs;
+import utils.LocalFlightDatabase;
 
 public class DaoLeg {
     public static Legs addAll (String xmlLegs) throws NullPointerException {
@@ -50,35 +55,53 @@ public class DaoLeg {
      * @post plane object instantiated. Caller responsible for deallocating memory.
      */
     static private Leg buildLeg (Node nodeLeg) {
-        String disembarkingAirport;
-        String boardingAirport;
-        String disembarkingTime;
-        float boardingTime;
+        DateTimeFormatter serverDateTimeStyle = DateTimeFormatter.ofPattern("yyyy MMM dd HH:mm zzz");
+        ZoneId gmt = ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0));
+        Airport disembarkingAirport;
+        Airport boardingAirport;
+        ZonedDateTime disembarkingTime;
+        ZonedDateTime boardingTime;
         int flightNumber;
         int reservedCoachSeats;
         int reservedFirstClassSeats;
-        float legDuration;
+        int legDuration;
         String plane; // the plane model
-        float coachPrice;
-        float firstClassPrice;
+        BigDecimal coachPrice;
+        BigDecimal firstClassPrice;
         String flightTime;
 
         // The plane element has attributes of model and manufacturer
         Element elementLeg = (Element) nodeLeg;
         plane = elementLeg.getAttributeNode("Airplane").getValue();
-        flightTime = elementLeg.getAttributeNode("FlightTime").getValue();
+        legDuration = Integer.parseInt(elementLeg.getAttributeNode("FlightTime").getValue());
         flightNumber = Integer.parseInt(elementLeg.getAttributeNode("Number").getValue());
 
         // The # of first class seats and # of coach seats are child elements
-        Element elementDeparture;
-        elementDeparture = (Element)elementLeg.getElementsByTagName("Departure").item(0);
+        Element elementDisembarking = (Element)elementLeg.getElementsByTagName("Arrival").item(0);
 
-        Element elementCdTm;
-        elementCdTm = (Element)elementDeparture.getElementsByTagName("Code").item(0);
-        disembarkingAirport = getCharacterDataFromElement(elementCdTm);
+        Element elementDisembarkingAirportCode = (Element)elementDisembarking.getElementsByTagName("Code").item(0);
+        Element elementDisembarkingTime = (Element)elementDisembarking.getElementsByTagName("Time").item(0);
 
-        elementCdTm = (Element)elementDeparture.getElementsByTagName("Time").item(0);
-        disembarkingTime = getCharacterDataFromElement(elementCdTm);
+        disembarkingAirport = LocalFlightDatabase.getAirportByString(getCharacterDataFromElement(elementDisembarkingAirportCode));
+        disembarkingTime = ZonedDateTime.of(LocalDateTime.parse(getCharacterDataFromElement(elementDisembarkingTime), serverDateTimeStyle), gmt);
+
+        Element elementBoarding = (Element)elementLeg.getElementsByTagName("Departure").item(0);
+
+        Element elementBoardingAirportCode = (Element)elementBoarding.getElementsByTagName("Code").item(0);
+        Element elementBoardingTime = (Element)elementBoarding.getElementsByTagName("Time").item(0);
+
+        boardingAirport = LocalFlightDatabase.getAirportByString(getCharacterDataFromElement(elementBoardingAirportCode));
+        boardingTime = ZonedDateTime.of(LocalDateTime.parse(getCharacterDataFromElement(elementBoardingTime), serverDateTimeStyle), gmt);
+
+        Element elementSeating = (Element)elementLeg.getElementsByTagName("Seating").item(0);
+
+        Element elementCoach = (Element)elementSeating.getElementsByTagName("Coach").item(0);
+        coachPrice = new BigDecimal(elementCoach.getAttributeNode("Price").getValue().substring(1));
+        reservedCoachSeats = Integer.parseInt(getCharacterDataFromElement(elementCoach));
+
+        Element elementFirstClass = (Element)elementSeating.getElementsByTagName("FirstClass").item(0);
+        firstClassPrice = new BigDecimal(elementFirstClass.getAttributeNode("Price").getValue().substring(1));
+        reservedFirstClassSeats = Integer.parseInt(getCharacterDataFromElement(elementFirstClass));
 
         /**
          * Instantiate an empty Plane object and initialize with data from XML node
@@ -86,10 +109,16 @@ public class DaoLeg {
         Leg leg = new Leg();
 
         leg.disembarkingAirport = disembarkingAirport;
+        leg.boardingAirport = boardingAirport;
         leg.disembarkingTime = disembarkingTime;
+        leg.boardingTime = boardingTime;
         leg.flightNumber = flightNumber;
         leg.plane = plane;
-        leg.flightTime = flightTime;
+        leg.legDuration = legDuration;
+        leg.coachPrice = coachPrice;
+        leg.firstClassPrice = firstClassPrice;
+        leg.reservedCoachSeats = reservedCoachSeats;
+        leg.reservedFirstClassSeats = reservedFirstClassSeats;
 
         return leg;
     }

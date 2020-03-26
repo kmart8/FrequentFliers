@@ -3,16 +3,6 @@
  */
 package driver;
 
-import java.util.Collections;
-
-import airport.Airport;
-import airport.Airports;
-import plane.Plane;
-import plane.Planes;
-import leg.Leg;
-import leg.Legs;
-import dao.ServerInterface;
-
 /**
  * @author blake
  * @since 2016-02-24

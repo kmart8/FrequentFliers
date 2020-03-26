@@ -1,39 +1,44 @@
 package leg;
 
+import airport.Airport;
+import utils.LocalFlightDatabase;
+
+import java.math.BigDecimal;
+import java.math.BigInteger;
+import java.time.ZonedDateTime;
+
 public class Leg {
 
     // Fields
-    public String disembarkingAirport;
-    public String boardingAirport;
-    public String disembarkingTime;
-    public float boardingTime;
+    public Airport disembarkingAirport;
+    public Airport boardingAirport;
+    public ZonedDateTime disembarkingTime;
+    public ZonedDateTime boardingTime;
     public int flightNumber;
     public int reservedCoachSeats;
     public int reservedFirstClassSeats;
-    public float legDuration;
+    public int legDuration;
     public String plane; // the plane model
-    public float coachPrice;
-    public float firstClassPrice;
-    public String flightTime;
+    public BigDecimal coachPrice;
+    public BigDecimal firstClassPrice;
 
     // Default Constructor
     public Leg() {
-        disembarkingAirport = "";
-        boardingAirport = "";
-        disembarkingTime = "";
-        boardingTime = Float.MAX_VALUE;
+        disembarkingAirport = new Airport();
+        boardingAirport = new Airport();
+        disembarkingTime = null;
+        boardingTime = null;
         flightNumber = Integer.MAX_VALUE;
         reservedCoachSeats = Integer.MAX_VALUE;
         reservedFirstClassSeats = Integer.MAX_VALUE;
-        legDuration = Float.MAX_VALUE;
+        legDuration = Integer.MAX_VALUE;
         plane = "";
-        coachPrice = Float.MAX_VALUE;
-        firstClassPrice = Float.MAX_VALUE;
-        flightTime = "";
+        coachPrice = new BigDecimal(-1);
+        firstClassPrice =  new BigDecimal(-1);
     }
     // Constructor
-    public Leg(String dAirport, String bAirport, String dTime, float bTime, int fNumber, int rCoach, int rFirstClass,
-               float lDuration, String pNumber, float cPrice, float fCPrice) {
+    public Leg(Airport dAirport, Airport bAirport, ZonedDateTime dTime, ZonedDateTime bTime, int fNumber, int rCoach, int rFirstClass,
+               int lDuration, String pNumber, BigDecimal cPrice, BigDecimal fCPrice) {
 
         disembarkingAirport = dAirport;
         boardingAirport = bAirport;
@@ -49,26 +54,26 @@ public class Leg {
     }
 
     public String toString() {
-        return disembarkingAirport+' '+boardingAirport+' '+disembarkingTime+' '+
-                boardingTime+' '+flightNumber+' '+reservedCoachSeats+' '+
+        return disembarkingAirport.code()+' '+boardingAirport.code()+' '+disembarkingTime.toString()+' '+
+                boardingTime.toString()+' '+flightNumber+' '+reservedCoachSeats+' '+
                 reservedFirstClassSeats+' '+
                 legDuration+' '+plane+' '+coachPrice+' '+firstClassPrice;
 
     }
     // get Methods
-    public String getDisembarkingAirport() {
+    public Airport getDisembarkingAirport() {
         return disembarkingAirport;
     }
 
-    public String getBoardingAirport() {
+    public Airport getBoardingAirport() {
         return boardingAirport;
     }
 
-    public String getDisembarkingTime() {
+    public ZonedDateTime getDisembarkingTime() {
         return disembarkingTime;
     }
 
-    public float getBoardingTime() {
+    public ZonedDateTime getBoardingTime() {
         return boardingTime;
     }
 
@@ -92,20 +97,20 @@ public class Leg {
         return plane;
     }
 
-    public float getCoachPrice() {
+    public BigDecimal getCoachPrice() {
         return coachPrice;
     }
 
-    public float getFirstClassPrice() {
+    public BigDecimal getFirstClassPrice() {
         return firstClassPrice;
     }
 
     // set Methods
-    public void setDisembarkingTime(String newDisembarkingTime) {
+    public void setDisembarkingTime(ZonedDateTime newDisembarkingTime) {
         disembarkingTime = newDisembarkingTime;
     }
 
-    public void setBoardingTime(float newBoardingTime) {
+    public void setBoardingTime(ZonedDateTime newBoardingTime) {
         boardingTime = newBoardingTime;
     }
 }

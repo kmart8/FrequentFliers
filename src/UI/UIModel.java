@@ -1,13 +1,16 @@
 package UI;
 
 import airport.Airport;
+import leg.Legs;
 import utils.LocalFlightDatabase;
 
 import java.time.*;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
 
-public class UIModel extends UIData {
+public class UIModel{
+    //
+    private UIData savedInput;
 
     // Create a ZoneId object that represents GMT
     private ZoneId gmt = ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0));
@@ -27,22 +30,40 @@ public class UIModel extends UIData {
     private int maximumLayovers = 2;
     private int minimumLayovers = 0;
 
-
-
     // Initialize a list of seating types
     private String[] seatingPossibilities = {"Any","Coach","First Class"};
 
+    //
+    private Legs displayList;
+
+    /**
+     * Constructor initializes a new data container and sets default values
+     */
     public UIModel(){
-        super.numberOfLayovers(2);
-        super.numberOfPassengers(1);
+        savedInput = new UIData();
+        savedInput.numberOfLayovers(2);
+        savedInput.numberOfPassengers(1);
     }
+
+    /**
+     * Constructor loads a data container to set the initial state of the UIModel
+     * @param loadedData UIData to load into the UIModel
+     */
+    public UIModel(UIData loadedData){
+        savedInput = loadedData;
+    }
+
+    public UIData getAcceptedInput(){
+        return savedInput;
+    }
+
 
     /**
      * Returns the number of passengers as a string
      * @return a string with the number of passengers
      */
     public String getNumberOfPassengers() {
-        return Integer.toString(super.numberOfPassengers());
+        return Integer.toString(savedInput.numberOfPassengers());
     }
 
     /**
@@ -60,12 +81,12 @@ public class UIModel extends UIData {
         }
 
         // If the number of layovers has not changed, make no changes and do not announce updates
-        if (passengers == super.numberOfPassengers())
+        if (passengers == savedInput.numberOfPassengers())
             return;
 
         // If the number of passengers is within the acceptable range, overwrite the stored value
         if (passengers >= minimumPassengers && passengers <= maximumPassengers) {
-            super.numberOfPassengers(passengers);
+            savedInput.numberOfPassengers(passengers);
             System.out.println("User input updated the number of passengers to " + numberOfPassengers);
         }else
             System.out.println("Warning: User input of " + numberOfPassengers + " is invalid for the number of passengers");
@@ -76,7 +97,7 @@ public class UIModel extends UIData {
      * @return a string with the number of layovers
      */
     public String getNumberOfLayovers() {
-        return Integer.toString(super.numberOfLayovers());
+        return Integer.toString(savedInput.numberOfLayovers());
     }
 
     /**
@@ -94,12 +115,12 @@ public class UIModel extends UIData {
         }
 
         // If the number of layovers has not changed, make no changes and do not announce updates
-        if (layovers == super.numberOfLayovers())
+        if (layovers == savedInput.numberOfLayovers())
             return;
 
         // If the number of layovers is within the acceptable range, overwrite the stored value
         if (layovers >= minimumLayovers && layovers <= maximumLayovers) {
-            super.numberOfLayovers(layovers);
+            savedInput.numberOfLayovers(layovers);
             System.out.println("User input updated the number of layovers to " + numberOfLayovers);
         }else
             System.out.println("Warning: User input of " + numberOfLayovers + " is invalid for the number of layovers");
@@ -110,7 +131,7 @@ public class UIModel extends UIData {
      * @return a string with the departure date
      */
     public String getSeatingType() {
-        return super.seatingType();
+        return savedInput.seatingType();
     }
 
     /**
@@ -126,7 +147,7 @@ public class UIModel extends UIData {
      * @param seatingType  a string with the selected seating type
      */
     public void setSeatingType(String seatingType) {
-        super.seatingType(seatingType);
+        savedInput.seatingType(seatingType);
     }
 
     /**
@@ -134,10 +155,10 @@ public class UIModel extends UIData {
      * @return a string with the airport name
      */
     public String getArrivalAirport() {
-        if (super.arrivalAirport() == null)
+        if (savedInput.arrivalAirport() == null)
             return "";
         else
-            return super.arrivalAirport().name();
+            return savedInput.arrivalAirport().name();
     }
 
     /**
@@ -148,24 +169,24 @@ public class UIModel extends UIData {
         // If the string is empty, then set the airport to null
         if (arrivalAirport.equals("")){
             // If the airport was already null, make no changes
-            if (super.arrivalAirport() != null) {
-                super.arrivalAirport(null);
+            if (savedInput.arrivalAirport() != null) {
+                savedInput.arrivalAirport(null);
                 System.out.println("User removed arrival airport");
             }
             return;
         }
 
         // If the new arrival airport is the same as the departure airport, make no changes
-        if(super.departureAirport() != null && (arrivalAirport.equals(super.departureAirport().name()) || arrivalAirport.equals(super.departureAirport().name()))) {
+        if(savedInput.departureAirport() != null && (arrivalAirport.equals(savedInput.departureAirport().name()) || arrivalAirport.equals(savedInput.departureAirport().name()))) {
             System.out.println("Warning: User input of " + arrivalAirport + " cannot be the same as the departure airport");
             return;
         }
 
         // If the new airport is different from the previous one, validate the airport string and overwrite the stored value
-        if(super.arrivalAirport() == null || (!arrivalAirport.equals(super.arrivalAirport().name()) && !arrivalAirport.equals(super.arrivalAirport().code()))) {
+        if(savedInput.arrivalAirport() == null || (!arrivalAirport.equals(savedInput.arrivalAirport().name()) && !arrivalAirport.equals(savedInput.arrivalAirport().code()))) {
             Airport airport = LocalFlightDatabase.getAirportByString(arrivalAirport);
             if(airport != null) {
-                super.arrivalAirport(airport);
+                savedInput.arrivalAirport(airport);
                 System.out.println("User input updated the arrival airport to " + airport.name());
             }else
                 System.out.println("Warning: User input of " + arrivalAirport + " was not recognized as a valid airport");
@@ -177,10 +198,10 @@ public class UIModel extends UIData {
      * @return a string with the airport name
      */
     public String getDepartureAirport() {
-        if (super.departureAirport() == null)
+        if (savedInput.departureAirport() == null)
             return "";
         else
-            return super.departureAirport().name();
+            return savedInput.departureAirport().name();
     }
 
     /**
@@ -191,24 +212,24 @@ public class UIModel extends UIData {
         // If the string is empty, then set the airport to null
         if (departureAirport.equals("")){
             // If the airport was already null, make no changes
-            if (super.departureAirport() != null) {
-                super.departureAirport(null);
+            if (savedInput.departureAirport() != null) {
+                savedInput.departureAirport(null);
                 System.out.println("User removed departure airport");
             }
             return;
         }
 
         // If the new departure airport is the same as the arrival airport, make no changes
-        if(super.arrivalAirport() != null && (!departureAirport.equals(super.arrivalAirport().name()) || !departureAirport.equals(super.arrivalAirport().name()))) {
+        if(savedInput.arrivalAirport() != null && (!departureAirport.equals(savedInput.arrivalAirport().name()) || !departureAirport.equals(savedInput.arrivalAirport().name()))) {
             System.out.println("Warning: User input of " + departureAirport + " cannot be the same as the arrival airport");
             return;
         }
 
         // If the new airport is different from the previous one, validate the airport string and overwrite the stored value
-        if(super.departureAirport() == null || (!departureAirport.equals(super.departureAirport().name()) && !departureAirport.equals(super.departureAirport().code()))) {
+        if(savedInput.departureAirport() == null || (!departureAirport.equals(savedInput.departureAirport().name()) && !departureAirport.equals(savedInput.departureAirport().code()))) {
             Airport airport = LocalFlightDatabase.getAirportByString(departureAirport);
             if(airport != null) {
-                super.departureAirport(airport);
+                savedInput.departureAirport(airport);
                 System.out.println("User input updated the departure airport to " + airport.name());
             }else
                 System.out.println("Warning: User input of " + departureAirport + " was not recognized as a valid airport");
@@ -220,8 +241,8 @@ public class UIModel extends UIData {
      * @return a string with the arrival date
      */
     public String getArrivalDate() {
-        if(super.arrivalDate() != null)
-            return dateStyle1.format(super.arrivalDate());
+        if(savedInput.arrivalDate() != null)
+            return dateStyle1.format(savedInput.arrivalDate());
         else
             return "";
     }
@@ -234,8 +255,8 @@ public class UIModel extends UIData {
         // If the string is empty, then set the date to null
         if (arrivalDate.equals("")){
             // If the date was already null, make no changes
-            if (super.arrivalDate() != null) {
-                super.arrivalDate(null);
+            if (savedInput.arrivalDate() != null) {
+                savedInput.arrivalDate(null);
                 System.out.println("User removed arrival date");
             }
             return;
@@ -251,9 +272,9 @@ public class UIModel extends UIData {
         }
 
         // If the old date was null or different from the new one, validate the new date and overwrite the stored value
-        if (super.arrivalDate()== null || date.compareTo(super.arrivalDate()) != 0) {
-            if(date.compareTo(earliestDate) >= 0 && date.compareTo(latestDate) < 0 && (super.departureDate() == null || date.compareTo(super.departureDate()) > 0)) {
-                super.arrivalDate(date);
+        if (savedInput.arrivalDate()== null || date.compareTo(savedInput.arrivalDate()) != 0) {
+            if(date.compareTo(earliestDate) >= 0 && date.compareTo(latestDate) < 0 && (savedInput.departureDate() == null || date.compareTo(savedInput.departureDate()) > 0)) {
+                savedInput.arrivalDate(date);
                 System.out.println("User input updated the arrival date to " + arrivalDate);
             }else
                 System.out.println("Warning: User input of " + arrivalDate + " is invalid for the arrival date");
@@ -265,8 +286,8 @@ public class UIModel extends UIData {
      * @return a string with the departure date
      */
     public String getDepartureDate() {
-        if (super.departureDate() != null)
-            return dateStyle1.format(super.departureDate());
+        if (savedInput.departureDate() != null)
+            return dateStyle1.format(savedInput.departureDate());
         else
             return "";
     }
@@ -279,8 +300,8 @@ public class UIModel extends UIData {
         // If the string is empty, then set the date to null
         if (departureDate.equals("")){
             // If the date was already null, make no changes
-            if (super.departureDate() != null) {
-                super.departureDate(null);
+            if (savedInput.departureDate() != null) {
+                savedInput.departureDate(null);
                 System.out.println("User removed departure date");
             }
             return;
@@ -296,12 +317,20 @@ public class UIModel extends UIData {
         }
 
         // If the old date was null or different from the new one, validate the new date and overwrite the stored value
-        if (super.departureDate() == null || date.compareTo(super.departureDate()) != 0) {
-            if(date.compareTo(earliestDate) >= 0 && date.compareTo(latestDate) < 0 && (super.arrivalDate() == null || date.compareTo(super.arrivalDate()) < 0)) {
-                super.departureDate(date);
+        if (savedInput.departureDate() == null || date.compareTo(savedInput.departureDate()) != 0) {
+            if(date.compareTo(earliestDate) >= 0 && date.compareTo(latestDate) < 0 && (savedInput.arrivalDate() == null || date.compareTo(savedInput.arrivalDate()) < 0)) {
+                savedInput.departureDate(date);
                 System.out.println("User input updated the departure date to " + departureDate);
             }else
                 System.out.println("Warning: User input of " + departureDate + " is invalid for the departure date");
         }
+    }
+
+    public void setDisplayList(Legs displayList){
+        this.displayList = displayList;
+    }
+
+    public Legs getDisplayList(){
+        return displayList;
     }
 }
