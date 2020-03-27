@@ -164,9 +164,9 @@ public class UIModel{
         }
 
         // If the new airport is different from the previous one, overwrite the stored value
-        if(!airport.equals(savedInput.departureAirport())) {
-            savedInput.departureAirport(airport);
-            System.out.println("User input updated the departure airport to " + airport.name());
+        if(!airport.equals(savedInput.arrivalAirport())) {
+            savedInput.arrivalAirport(airport);
+            System.out.println("User input updated the arrival airport to " + airport.name());
         }
     }
 
@@ -242,7 +242,7 @@ public class UIModel{
         // If the old date was null or different from the new one, validate the new date and overwrite the stored value
         if (savedInput.arrivalDate()== null || !date.equals(savedInput.arrivalDate())) {
             // Make sure the new arrival date is after the departure date
-            if(savedInput.departureDate() == null || date.compareTo(savedInput.departureDate()) > 0) {
+            if(savedInput.departureDate() == null || date.compareTo(savedInput.departureDate()) >= 0) {
                 savedInput.arrivalDate(date);
                 System.out.println("User input updated the arrival date to " + arrivalDate);
             }else
@@ -281,7 +281,7 @@ public class UIModel{
         // If the old date was null or different from the new one, validate the new date and overwrite the stored value
         if (savedInput.departureDate()== null || !date.equals(savedInput.departureDate())) {
             // Make sure the new departure date is before the arrival date
-            if(savedInput.arrivalDate() == null || date.compareTo(savedInput.arrivalDate()) > 0) {
+            if(savedInput.arrivalDate() == null || date.compareTo(savedInput.arrivalDate()) <= 0) {
                 savedInput.departureDate(date);
                 System.out.println("User input updated the departure date to " + departureDate);
             }else

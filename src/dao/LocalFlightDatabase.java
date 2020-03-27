@@ -169,7 +169,7 @@ public class LocalFlightDatabase {
                 legList = new Legs();
             for(Leg leg: potentialLegs){
                 // For each leg in the new list, make sure there is no old version on the current list
-                //      Note: Equality is currently determined only by flight number (ovverriden in the Leg class, as number of reserved seats may change)
+                //      Note: Equality is currently determined only by flight number (overriden in the Leg class, as number of reserved seats may change)
                 if(legList.contains(leg))
                     legList.remove(leg);
                 legList.add(leg);
