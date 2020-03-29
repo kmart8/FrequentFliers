@@ -355,7 +355,7 @@ public class UIController {
             return null;
 
         // Try to match the provided string with possible airports
-        parsedAirport = LocalFlightDatabase.getInstance().getAirportByString(airport);
+        parsedAirport = LocalFlightDatabase.getInstance().getAirportFromString(airport);
 
         // If no matching airport is returned, then the user input was not a valid airport
         if(parsedAirport == null) {
