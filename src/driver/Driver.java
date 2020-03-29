@@ -44,7 +44,7 @@ public class Driver {
 			System.out.println(leg.toString());
 		}
 		 */
-		FlightBuilder.generateGUI();
+		FlightBuilder.getInstance().generateGUI();
 	}
 }
 

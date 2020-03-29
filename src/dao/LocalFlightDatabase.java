@@ -26,9 +26,9 @@ import java.util.List;
 
 public class LocalFlightDatabase {
     // Storage for objects constructed by the ServerInterface
-    private Planes planeList;
-    private Airports airportList;
-    private Legs legList;
+    private Planes planeList = new Planes();
+    private Airports airportList = new Airports();
+    private Legs legList = new Legs();
 
     // Create a request container and list for storing which requests for departing legs have already been made
     private class BoardingLegsRequest {
@@ -58,12 +58,12 @@ public class LocalFlightDatabase {
     /** get the full list of airports provided by the server
      *
      * @param override if true, obtains a new list of airports from the server even if one already exists
-     * @return the list of airports
+     * @return the list of airports (possibly empty)
      */
     public Airports getAirportList(boolean override){
         // If airports have not been built from the server or an override of the current airport list is requested,
         // get a new list of airports from the server
-        if (airportList == null || override)
+        if (airportList.size() == 0 || override)
                 airportList = ServerInterface.INSTANCE.getAirports(Saps.TEAM_NAME);
         return airportList;
     }
@@ -71,19 +71,19 @@ public class LocalFlightDatabase {
     /** get the full list of planes provided by the server
      *
      * @param override if true, obtains a new list of planes from the server even if one already exists
-     * @return the list of planes
+     * @return the list of planes (possibly empty)
      */
     public Planes getPlaneList(boolean override){
         // If planes have not been built from the server or an override of the current plane list is requested,
         // get a new list of planes from the server
-        if (planeList == null || override)
+        if (planeList.size() == 0 || override)
             planeList = ServerInterface.INSTANCE.getPlanes(Saps.TEAM_NAME);
         return planeList;
     }
 
     /** get the full list of legs currently in storage
      *
-     * @return the list of legs (possibly null)
+     * @return the list of legs (possibly empty)
      */
     public Legs getLegList(){
         return legList;
@@ -95,7 +95,7 @@ public class LocalFlightDatabase {
      * @param boardingDate returned legs must have this boarding date
      * @param override if true, obtains a new list of legs from the server even if the same request has been previously made
      *
-     * @return only legs that match the specified boarding airport and boarding date (possibly null)
+     * @return only legs that match the specified boarding airport and boarding date (possibly empty)
      */
     public Legs getLegList(Airport boardingAirport, LocalDate boardingDate, boolean override){
         Legs requestedLegs = new Legs();
@@ -111,23 +111,18 @@ public class LocalFlightDatabase {
         // Even if a matching request has been made previously, if an ovverride is requested, add the requested legs to the legList
         else if(override)
             requestedLegs = ServerInterface.INSTANCE.getBoardingLegs(boardingAirport, boardingDate);
-
-        // If nothing has been added to the requested list, the request has already been made previously
-        if(requestedLegs.size() == 0){
-            // Iterate through the legList and find legs matching the request
-            for(Leg leg:legList){
+            // Otherwise, find and return matching legs from the leg list
+        else{
+            for(Leg leg:legList) {
+                // Verify that the boarding airport and boarding time match the requested ones
                 if (leg.boardingAirport.equals(boardingAirport) && leg.boardingTime.toLocalDate().equals(boardingDate))
                     requestedLegs.add(leg);
             }
+            return requestedLegs;
         }
 
-        // If no legs match the input, return null
-        // Otherwise, add the legs to the leg list
-        if (requestedLegs.size()==0)
-            return null;
-        else
-            addLegs(requestedLegs);
-
+        // If new legs have been provided by the server, add them to the leg list and return them
+        addLegs(requestedLegs);
         return requestedLegs;
     }
 
@@ -161,16 +156,16 @@ public class LocalFlightDatabase {
 
     /** add new legs to the legList, while removing any duplicate old legs (probably should override .add in the Legs class instead)
      *
-     * @param potentialLegs list of new legs to add to the leg list
+     * @param potentialLegs list of new legs to add to the leg list (possibly empty)
      */
+    /// Can unique be implemented at the list side?
     private void addLegs(Legs potentialLegs){
-        if(potentialLegs != null){
-            for(Leg leg: potentialLegs) {
-                // For each leg in the new list, make sure there is no old version on the current list
-                //      Note: Equality is currently determined only by flight number (overriden in the Leg class, as number of reserved seats may change)
+        for(Leg leg: potentialLegs){
+            // For each leg in the new list, make sure there is no old version on the current list
+            //      Note: Equality is currently determined only by flight number (overriden in the Leg class, as number of reserved seats may change)
+            if(legList.contains(leg))
                 legList.remove(leg);
-                legList.add(leg);
-            }
+            legList.add(leg);
         }
     }
 }
