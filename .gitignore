@@ -1,6 +1,11 @@
 # Default ignored files
 /FrequentFliers.iml
+# .jar output configuration and files
 /src/META-INF/
 /src/resources/META-INF/
 /bin/artifacts/
+# Intellij configuration files
 /.idea/
+# Visual Paradigm integrated files and folders
+/vpproject/
+/FrequentFliers.vpdm/
