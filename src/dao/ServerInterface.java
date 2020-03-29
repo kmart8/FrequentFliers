@@ -11,14 +11,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.*;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-
-import UI.UIData;
 
 import airport.Airport;
 import airport.Airports;
-import driver.FlightBuilder;
 import plane.Planes;
 import leg.Legs;
 import utils.QueryFactory;
