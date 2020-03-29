@@ -11,14 +11,9 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.*;
-import java.time.LocalDateTime;
-import java.time.ZonedDateTime;
-
-import UI.UIData;
 
 import airport.Airport;
 import airport.Airports;
-import driver.FlightBuilder;
 import plane.Planes;
 import leg.Legs;
 import utils.QueryFactory;
@@ -65,7 +60,7 @@ public enum ServerInterface {
 			 * Create an HTTP connection to the server for a GET 
 			 * QueryFactory provides the parameter annotations for the HTTP GET query string
 			 */
-			url = new URL(mUrlBase + QueryFactory.getAirports(teamName));
+			url = new URL(mUrlBase + QueryFactory.getAirportsQuery(teamName));
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 			connection.setRequestProperty("User-Agent", teamName);
@@ -116,7 +111,7 @@ public enum ServerInterface {
 			 * Create an HTTP connection to the server for a GET
 			 * QueryFactory provides the parameter annotations for the HTTP GET query string
 			 */
-			url = new URL(mUrlBase + QueryFactory.getPlanes(teamName));
+			url = new URL(mUrlBase + QueryFactory.getPlanesQuery(teamName));
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 			connection.setRequestProperty("User-Agent", teamName);
@@ -151,15 +146,15 @@ public enum ServerInterface {
 
 	}
 
-	public Legs betBoardingLegs(Airport departureAirport, LocalDate departureDate) {
+	public Legs getBoardingLegs(Airport boardingAirport, LocalDate boardingDate) {
 		URL url;
 		HttpURLConnection connection;
 		BufferedReader reader;
 		String line;
 		StringBuffer result = new StringBuffer();
 
-		String xmlDepartingLegs;
-		Legs departingLegs;
+		String xmlBoardingLegs;
+		Legs boardingLegs;
 
 		try {
 			/**
@@ -167,7 +162,7 @@ public enum ServerInterface {
 			 * QueryFactory provides the parameter annotations for the HTTP GET query string
 			 */
 
-			url = new URL(mUrlBase + QueryFactory.getLegs(Saps.TEAM_NAME, departureAirport,departureDate));
+			url = new URL(mUrlBase + QueryFactory.getBoardingLegsQuery(Saps.TEAM_NAME, boardingAirport,boardingDate));
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 			connection.setRequestProperty("User-Agent", Saps.TEAM_NAME);
@@ -196,9 +191,9 @@ public enum ServerInterface {
 			return null;
 		}
 
-		xmlDepartingLegs = result.toString();
-		departingLegs = DaoLeg.addAll(xmlDepartingLegs);
-		return departingLegs;
+		xmlBoardingLegs = result.toString();
+		boardingLegs = DaoLeg.addAll(xmlBoardingLegs);
+		return boardingLegs;
 	}
 	
 	/**

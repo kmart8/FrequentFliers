@@ -106,11 +106,11 @@ public class LocalFlightDatabase {
         // If no matching request has been made previously, store the request and add the requested legs to the legList
         if(!previousLegRequests.contains(newRequest)) {
             previousLegRequests.add(newRequest);
-            requestedLegs = ServerInterface.INSTANCE.betBoardingLegs(boardingAirport, boardingDate);
+            requestedLegs = ServerInterface.INSTANCE.getBoardingLegs(boardingAirport, boardingDate);
         }
         // Even if a matching request has been made previously, if an ovverride is requested, add the requested legs to the legList
         else if(override)
-            requestedLegs = ServerInterface.INSTANCE.betBoardingLegs(boardingAirport, boardingDate);
+            requestedLegs = ServerInterface.INSTANCE.getBoardingLegs(boardingAirport, boardingDate);
 
         // If nothing has been added to the requested list, the request has already been made previously
         if(requestedLegs.size() == 0){
@@ -137,7 +137,7 @@ public class LocalFlightDatabase {
      *
      * @return the airport object which matches the specified string, or null if no matches
      */
-    public Airport getAirportByString(String airportString){
+    public Airport getAirportFromString(String airportString){
         for(Airport apt : getAirportList(false)){
             if(airportString.compareToIgnoreCase(apt.name()) == 0 || airportString.compareToIgnoreCase(apt.code()) == 0)
                 return apt;
@@ -151,7 +151,7 @@ public class LocalFlightDatabase {
      *
      * @return the plane object which matches the specified string, or null if no matches
      */
-    public Plane getPlaneByString(String planeString){
+    public Plane getPlaneFromModel(String planeString){
         for(Plane plane : getPlaneList(false)){
             if(planeString.compareToIgnoreCase(plane.model()) == 0)
                 return plane;

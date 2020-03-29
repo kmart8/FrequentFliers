@@ -76,7 +76,7 @@ public class DaoLeg {
 
         // The plane element has attributes of model and manufacturer
         Element elementLeg = (Element) nodeLeg;
-        plane = LocalFlightDatabase.getInstance().getPlaneByString(elementLeg.getAttributeNode("Airplane").getValue());
+        plane = LocalFlightDatabase.getInstance().getPlaneFromModel(elementLeg.getAttributeNode("Airplane").getValue());
         legDuration = Integer.parseInt(elementLeg.getAttributeNode("FlightTime").getValue());
         flightNumber = Integer.parseInt(elementLeg.getAttributeNode("Number").getValue());
 
@@ -86,7 +86,7 @@ public class DaoLeg {
         Element elementDisembarkingAirportCode = (Element)elementDisembarking.getElementsByTagName("Code").item(0);
         Element elementDisembarkingTime = (Element)elementDisembarking.getElementsByTagName("Time").item(0);
 
-        disembarkingAirport = LocalFlightDatabase.getInstance().getAirportByString(getCharacterDataFromElement(elementDisembarkingAirportCode));
+        disembarkingAirport = LocalFlightDatabase.getInstance().getAirportFromString(getCharacterDataFromElement(elementDisembarkingAirportCode));
         disembarkingTime = ZonedDateTime.of(LocalDateTime.parse(getCharacterDataFromElement(elementDisembarkingTime), serverDateTimeStyle), gmt);
 
         Element elementBoarding = (Element)elementLeg.getElementsByTagName("Departure").item(0);
@@ -94,7 +94,7 @@ public class DaoLeg {
         Element elementBoardingAirportCode = (Element)elementBoarding.getElementsByTagName("Code").item(0);
         Element elementBoardingTime = (Element)elementBoarding.getElementsByTagName("Time").item(0);
 
-        boardingAirport = LocalFlightDatabase.getInstance().getAirportByString(getCharacterDataFromElement(elementBoardingAirportCode));
+        boardingAirport = LocalFlightDatabase.getInstance().getAirportFromString(getCharacterDataFromElement(elementBoardingAirportCode));
         boardingTime = ZonedDateTime.of(LocalDateTime.parse(getCharacterDataFromElement(elementBoardingTime), serverDateTimeStyle), gmt);
 
         Element elementSeating = (Element)elementLeg.getElementsByTagName("Seating").item(0);

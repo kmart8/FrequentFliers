@@ -22,7 +22,7 @@ public class QueryFactory {
 	 * @param teamName is the name of the team to specify the data copy on server
 	 * @return the query String which can be appended to URL to form HTTP GET request
 	 */
-	public static String getAirports(String teamName) {
+	public static String getAirportsQuery(String teamName) {
 		return "?team=" + teamName + "&action=list&list_type=airports";
 	}
 
@@ -31,23 +31,23 @@ public class QueryFactory {
 	 * @param teamName
 	 * @return
 	 */
-	public static String getPlanes(String teamName) { return "?team=" + teamName + "&action=list&list_type=airplanes";}
+	public static String getPlanesQuery(String teamName) { return "?team=" + teamName + "&action=list&list_type=airplanes";}
 
 	/**
 	 * Return query string that can be passed to HTTP URL to request list of legs
 	 * @param teamName
-	 * @param departureAirport is the airport
-	 * @param departureDate is the the flight departure date of type ZonedDateTime
+	 * @param boardingAirport is the airport
+	 * @param boardingDate is the the flight departure date of type ZonedDateTime
 	 * @return
 	 */
-	public static String getLegs (String teamName, Airport departureAirport, LocalDate departureDate) {
+	public static String getBoardingLegsQuery(String teamName, Airport boardingAirport, LocalDate boardingDate) {
 
 		// DateTimeFormatter
 		DateTimeFormatter dateStyle = DateTimeFormatter.ofPattern("yyyy_MM_dd");
 
 		// Converting ZonedDateTime to string query can understand
-		String departureDateString = dateStyle.format(departureDate);
-		return "?team=" + teamName + "&action=list&list_type=departing&airport="+departureAirport.code()+"&day="+departureDateString;
+		String departureDateString = dateStyle.format(boardingDate);
+		return "?team=" + teamName + "&action=list&list_type=departing&airport="+boardingAirport.code()+"&day="+departureDateString;
 
 	}
 
