@@ -236,9 +236,7 @@ public class Plane {
      */
     public boolean isValidManufacturer (String manufacturer) {
         // If the name is null or empty it can't be valid
-        if ((manufacturer == null) || (manufacturer == ""))
-            return false;
-        return true;
+        return (manufacturer != null) && (manufacturer != "");
     }
 
     /**
@@ -249,9 +247,7 @@ public class Plane {
      */
     public boolean isValidModel (String model) {
         // If the name is null or empty it can't be valid
-        if ((model == null) || (model == ""))
-            return false;
-        return true;
+        return (model != null) && (model != "");
     }
 
     /**
@@ -262,9 +258,7 @@ public class Plane {
      */
     public boolean isValidSeats (int seats) {
         // Verify seats is within valid range
-        if (seats < 0)
-            return false;
-        return true;
+        return seats >= 0;
     }
 
     /**

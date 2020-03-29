@@ -292,15 +292,11 @@ public class Airport implements Comparable<Airport>, Comparator<Airport> {
 		
 		// if all fields are equal, the Airports are the same
 		Airport rhs = (Airport) obj;
-		if ((rhs.mName.equalsIgnoreCase(mName)) &&
-				(rhs.mCode.equalsIgnoreCase(mCode)) &&
-				(rhs.mLatitude == mLatitude) &&
-				(rhs.mLongitude == mLongitude)) {
-			return true;
-		}
-		
-		return false;	
-	}
+        return (rhs.mName.equalsIgnoreCase(mName)) &&
+                (rhs.mCode.equalsIgnoreCase(mCode)) &&
+                (rhs.mLatitude == mLatitude) &&
+                (rhs.mLongitude == mLongitude);
+    }
 	
 	/**
 	 * Determine if object instance has valid attribute data
@@ -324,13 +320,9 @@ public class Airport implements Comparable<Airport>, Comparator<Airport> {
 			return false;
 		
 		// Verify latitude and longitude are within range
-		if ((mLatitude > Saps.MAX_LATITUDE) || (mLatitude < Saps.MIN_LATITUDE) ||
-			(mLongitude > Saps.MAX_LONGITUDE) || (mLongitude < Saps.MIN_LONGITUDE)) {
-			return false;
-		}
-		
-		return true;
-	}
+        return (!(mLatitude > Saps.MAX_LATITUDE)) && (!(mLatitude < Saps.MIN_LATITUDE)) &&
+                (!(mLongitude > Saps.MAX_LONGITUDE)) && (!(mLongitude < Saps.MIN_LONGITUDE));
+    }
 	
 	/**
 	 * Check for invalid 3 character airport code
@@ -340,9 +332,7 @@ public class Airport implements Comparable<Airport>, Comparator<Airport> {
 	 */
 	public boolean isValidCode (String code) {
 		// If we don't have a 3 character code it can't be valid valid
-		if ((code == null) || (code.length() != 3))
-			return false;
-		return true;
+		return (code != null) && (code.length() == 3);
 	}
 	
 	/**
@@ -353,9 +343,7 @@ public class Airport implements Comparable<Airport>, Comparator<Airport> {
 	 */
 	public boolean isValidName (String name) {
 		// If the name is null or empty it can't be valid
-		if ((name == null) || (name == ""))
-			return false;
-		return true;
+		return (name != null) && (name != "");
 	}
 	
 	/**
@@ -366,9 +354,7 @@ public class Airport implements Comparable<Airport>, Comparator<Airport> {
 	 */
 	public boolean isValidLatitude (double latitude) {
 		// Verify latitude is within valid range
-		if ((latitude > Saps.MAX_LATITUDE) || (latitude < Saps.MIN_LATITUDE))
-			return false;
-		return true;
+		return (!(latitude > Saps.MAX_LATITUDE)) && (!(latitude < Saps.MIN_LATITUDE));
 	}
 	
 	/**
@@ -395,9 +381,7 @@ public class Airport implements Comparable<Airport>, Comparator<Airport> {
 	 */
 	public boolean isValidLongitude (double longitude) {
 		// Verify longitude is within valid range
-		if ((longitude > Saps.MAX_LONGITUDE) || (longitude < Saps.MIN_LONGITUDE))
-			return false;
-		return true;
+		return (!(longitude > Saps.MAX_LONGITUDE)) && (!(longitude < Saps.MIN_LONGITUDE));
 	}
 	
 	/**

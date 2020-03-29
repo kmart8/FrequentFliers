@@ -139,8 +139,6 @@ public class Leg {
 
         // if the flight numbers are equal, the Legs are the same
         Leg rhs = (Leg) obj;
-        if (rhs.flightNumber == flightNumber)
-            return true;
-        return false;
+        return rhs.flightNumber == flightNumber;
     }
 }

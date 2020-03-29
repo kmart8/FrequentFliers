@@ -31,15 +31,15 @@ public class LocalFlightDatabase {
     private Legs legList;
 
     // Create a request container and list for storing which requests for departing legs have already been made
-    private class DepartingLegsRequest{
-        private String departureCode;
-        private String departureDateString;
-        public DepartingLegsRequest(Airport departureAirport, LocalDate departureDate){
-            departureCode = departureAirport.code();
-            departureDateString = departureDate.toString();
+    private class BoardingLegsRequest {
+        private String boardingAirportCode;
+        private String boardingDateString;
+        public BoardingLegsRequest(Airport boardingAirport, LocalDate boardingDate){
+            boardingAirportCode = boardingAirport.code();
+            boardingDateString = boardingDate.toString();
         }
     }
-    private List<DepartingLegsRequest> previousLegRequests = new ArrayList<>();
+    private List<BoardingLegsRequest> previousLegRequests = new ArrayList<>();
 
     // Singleton variable
     private static LocalFlightDatabase single_instance = null;
@@ -91,32 +91,32 @@ public class LocalFlightDatabase {
 
     /** get the list of legs currently in storage with the specified departure airport and departure date
      *
-     * @param disembarkingAirport returned legs must have this disembarking airport
-     * @param disembarkingDate returned legs must have this disembarking date
+     * @param boardingAirport returned legs must have this boarding airport
+     * @param boardingDate returned legs must have this boarding date
      * @param override if true, obtains a new list of legs from the server even if the same request has been previously made
      *
-     * @return only legs that match the specified departure airport and departure date (possibly null)
+     * @return only legs that match the specified boarding airport and boarding date (possibly null)
      */
-    public Legs getLegList(Airport disembarkingAirport, LocalDate disembarkingDate, boolean override){
+    public Legs getLegList(Airport boardingAirport, LocalDate boardingDate, boolean override){
         Legs requestedLegs = new Legs();
 
         // Initialize a request to check against previous requests
-        DepartingLegsRequest newRequest = new DepartingLegsRequest(disembarkingAirport, disembarkingDate);
+        BoardingLegsRequest newRequest = new BoardingLegsRequest(boardingAirport, boardingDate);
 
         // If no matching request has been made previously, store the request and add the requested legs to the legList
         if(!previousLegRequests.contains(newRequest)) {
             previousLegRequests.add(newRequest);
-            requestedLegs = ServerInterface.INSTANCE.getDepartingLegs(disembarkingAirport, disembarkingDate);
+            requestedLegs = ServerInterface.INSTANCE.betBoardingLegs(boardingAirport, boardingDate);
         }
         // Even if a matching request has been made previously, if an ovverride is requested, add the requested legs to the legList
         else if(override)
-            requestedLegs = ServerInterface.INSTANCE.getDepartingLegs(disembarkingAirport, disembarkingDate);
+            requestedLegs = ServerInterface.INSTANCE.betBoardingLegs(boardingAirport, boardingDate);
 
         // If nothing has been added to the requested list, the request has already been made previously
         if(requestedLegs.size() == 0){
             // Iterate through the legList and find legs matching the request
             for(Leg leg:legList){
-                if (leg.boardingAirport.equals(disembarkingAirport) && leg.boardingTime.toLocalDate().equals(disembarkingDate))
+                if (leg.boardingAirport.equals(boardingAirport) && leg.boardingTime.toLocalDate().equals(boardingDate))
                     requestedLegs.add(leg);
             }
         }
@@ -164,15 +164,13 @@ public class LocalFlightDatabase {
      * @param potentialLegs list of new legs to add to the leg list
      */
     private void addLegs(Legs potentialLegs){
-        if(potentialLegs != null)
-            if(legList == null)
-                legList = new Legs();
-            for(Leg leg: potentialLegs){
+        if(potentialLegs != null){
+            for(Leg leg: potentialLegs) {
                 // For each leg in the new list, make sure there is no old version on the current list
                 //      Note: Equality is currently determined only by flight number (overriden in the Leg class, as number of reserved seats may change)
-                if(legList.contains(leg))
-                    legList.remove(leg);
+                legList.remove(leg);
                 legList.add(leg);
+            }
         }
     }
 }

@@ -151,7 +151,7 @@ public enum ServerInterface {
 
 	}
 
-	public Legs getDepartingLegs (Airport departureAirport, LocalDate departureDate) {
+	public Legs betBoardingLegs(Airport departureAirport, LocalDate departureDate) {
 		URL url;
 		HttpURLConnection connection;
 		BufferedReader reader;
