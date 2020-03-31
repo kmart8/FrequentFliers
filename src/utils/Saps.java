@@ -18,9 +18,14 @@ import java.time.ZonedDateTime;
  */
 public class Saps {
 	/**
-	 * Constant value used for server access
+	 * Constant valueS used for server access
 	 */
 	public static final String TEAM_NAME = "FrequentFliers";
+
+	/**
+	 * Universal Resource Locator (web address) of the CS509 reservation server
+	 */
+	public static final String SERVER_URL =  "http://cs509.cs.wpi.edu:8181/CS509.server/ReservationSystem";
 
 	/**
 	 * Constant values used for latitude and longitude range validation

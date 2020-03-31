@@ -64,7 +64,7 @@ public class LocalFlightDatabase {
         // If airports have not been built from the server or an override of the current airport list is requested,
         // get a new list of airports from the server
         if (airportList.size() == 0 || override)
-                airportList = ServerInterface.INSTANCE.getAirports(Saps.TEAM_NAME);
+                airportList = ServerInterface.INSTANCE.getAirports();
         return airportList;
     }
 
@@ -77,7 +77,7 @@ public class LocalFlightDatabase {
         // If planes have not been built from the server or an override of the current plane list is requested,
         // get a new list of planes from the server
         if (planeList.size() == 0 || override)
-            planeList = ServerInterface.INSTANCE.getPlanes(Saps.TEAM_NAME);
+            planeList = ServerInterface.INSTANCE.getPlanes();
         return planeList;
     }
 

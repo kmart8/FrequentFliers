@@ -30,21 +30,15 @@ import utils.Saps;
  */
 public enum ServerInterface {
 	INSTANCE;
-	
-	/** 
-	 * mUrlBase is the Universal Resource Locator (web address) of the CS509 reservation server
-	 */
-	private final String mUrlBase = "http://cs509.cs.wpi.edu:8181/CS509.server/ReservationSystem";
 
 	/**
 	 * Return a collection of all the airports from server
 	 * 
 	 * Retrieve the list of airports available to the specified teamName via HTTPGet of the server
-	 * 
-	 * @param teamName identifies the name of the team requesting the collection of airports
+	 *
 	 * @return collection of Airports from server or null if error.
 	 */
-	public Airports getAirports (String teamName) {
+	public Airports getAirports () {
 
 		URL url;
 		HttpURLConnection connection;
@@ -60,10 +54,10 @@ public enum ServerInterface {
 			 * Create an HTTP connection to the server for a GET 
 			 * QueryFactory provides the parameter annotations for the HTTP GET query string
 			 */
-			url = new URL(mUrlBase + QueryFactory.getAirportsQuery(teamName));
+			url = new URL(Saps.SERVER_URL + QueryFactory.getAirportsQuery());
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
-			connection.setRequestProperty("User-Agent", teamName);
+			connection.setRequestProperty("User-Agent", Saps.TEAM_NAME);
 
 			/**
 			 * If response code of SUCCESS read the XML string returned
@@ -95,7 +89,7 @@ public enum ServerInterface {
 		
 	}
 
-	public Planes getPlanes (String teamName) {
+	public Planes getPlanes () {
 
 		URL url;
 		HttpURLConnection connection;
@@ -111,10 +105,10 @@ public enum ServerInterface {
 			 * Create an HTTP connection to the server for a GET
 			 * QueryFactory provides the parameter annotations for the HTTP GET query string
 			 */
-			url = new URL(mUrlBase + QueryFactory.getPlanesQuery(teamName));
+			url = new URL(Saps.SERVER_URL + QueryFactory.getPlanesQuery());
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
-			connection.setRequestProperty("User-Agent", teamName);
+			connection.setRequestProperty("User-Agent", Saps.TEAM_NAME);
 
 			/**
 			 * If response code of SUCCESS read the XML string returned
@@ -162,7 +156,7 @@ public enum ServerInterface {
 			 * QueryFactory provides the parameter annotations for the HTTP GET query string
 			 */
 
-			url = new URL(mUrlBase + QueryFactory.getBoardingLegsQuery(Saps.TEAM_NAME, boardingAirport,boardingDate));
+			url = new URL(Saps.SERVER_URL + QueryFactory.getBoardingLegsQuery(boardingAirport, boardingDate));
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 			connection.setRequestProperty("User-Agent", Saps.TEAM_NAME);
@@ -200,22 +194,21 @@ public enum ServerInterface {
 	 * Lock the database for updating by the specified team. The operation will fail if the lock is held by another team.
 	 * 
 	 * @post database locked
-	 * 
-	 * @param teamName is the name of team requesting server lock
+	 *
 	 * @return true if the server was locked successfully, else false
 	 */
-	public boolean lock (String teamName) {
+	public boolean lock () {
 		URL url;
 		HttpURLConnection connection;
 
 		try {
-			url = new URL(mUrlBase);
+			url = new URL(Saps.SERVER_URL);
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("POST");
-			connection.setRequestProperty("User-Agent", teamName);
+			connection.setRequestProperty("User-Agent", Saps.TEAM_NAME);
 			connection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
 			
-			String params = QueryFactory.lock(teamName);
+			String params = QueryFactory.lock();
 			
 			connection.setDoOutput(true);
 			DataOutputStream writer = new DataOutputStream(connection.getOutputStream());
@@ -252,20 +245,19 @@ public enum ServerInterface {
 	 * The server interface to unlock the server interface uses HTTP POST protocol
 	 * 
 	 * @post database unlocked if specified teamName was previously holding lock
-	 * 
-	 * @param teamName is the name of the team holding the lock
+	 *
 	 * @return true if the server was successfully unlocked.
 	 */
-	public boolean unlock (String teamName) {
+	public boolean unlock () {
 		URL url;
 		HttpURLConnection connection;
 		
 		try {
-			url = new URL(mUrlBase);
+			url = new URL(Saps.SERVER_URL);
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("POST");
 			
-			String params = QueryFactory.unlock(teamName);
+			String params = QueryFactory.unlock();
 			
 			connection.setDoOutput(true);
 			connection.setDoInput(true);
