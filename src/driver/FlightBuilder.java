@@ -1,8 +1,7 @@
 package driver;
 
-import UI.ReservationApp;
-import UI.UIModel;
-import UI.UIController;
+import ui.UIModel;
+import ui.UIController;
 import dao.LocalFlightDatabase;
 /**
  * This class handles initialization of the UIModel, UIController, and ReservationApp viewer. It also serves as

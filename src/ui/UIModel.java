@@ -1,4 +1,4 @@
-package UI;
+package ui;
 
 import airport.Airport;
 import java.time.ZonedDateTime;

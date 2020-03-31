@@ -1,4 +1,4 @@
-package UI;
+package ui;
 
 import driver.FlightBuilder;
 import leg.Leg;
