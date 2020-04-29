@@ -3,6 +3,17 @@
  */
 package driver;
 
+import dao.ServerInterface;
+import airport.Airports;
+import airport.Airport;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Collections;
+import java.util.Date;
+
+import java.util.Hashtable;
+import java.util.TimeZone;
+
 /**
  * @author blake
  * @since 2016-02-24
@@ -19,20 +30,20 @@ public class Driver {
 	 * 
 	 * @param args is the arguments passed to java vm in format of "CS509.sample teamName" where teamName is a valid team
 	 */
-	public static void main(String[] args) {
+	public static void main(String[] args) throws ParseException {
 		/**if (args.length != 1) {
 			System.err.println("usage: CS509.sample teamName");
 			System.exit(-1);
 			return;
 		}
-
+		// XML PARSE TESTS //
 		String teamName = args[0];
 		// Try to get a list of airports
-		//Airports airports = ServerInterface.INSTANCE.getAirports(teamName);
-		//Collections.sort(airports);
-		//for (Airport airport : airports) {
-		//	System.out.println(airport.toString());
-		//}
+		Airports airports = ServerInterface.INSTANCE.getAirports(teamName);
+		Collections.sort(airports);
+		for (Airport airport : airports) {
+			System.out.println(airport.toString());
+		}
 		// Try to get a list of planes
 		//Planes planes = ServerInterface.INSTANCE.getPlanes(teamName);
 		//for (Plane plane : planes) {
@@ -45,6 +56,14 @@ public class Driver {
 		}
 		 */
 		FlightBuilder.getInstance().generateGUI();
+
+		// GMT TO LOCAL TIME CONVERSION TEST //
+		/**
+		Airports airports = ServerInterface.INSTANCE.getAirports();
+		Collections.sort(airports);
+		for (Airport airport : airports) {
+			airport.convertGMTtoLocalTime("2011-23-03 16:40:44");
+		}*/
 	}
 }
 

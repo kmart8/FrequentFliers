@@ -3,9 +3,15 @@
  */
 package airport;
 
-import java.util.Comparator;
-
 import utils.Saps;
+
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.Comparator;
+import java.util.Date;
+import java.util.Hashtable;
+import java.util.TimeZone;
+
 
 /**
  * This class holds values pertaining to a single Airport. Class member attributes
@@ -132,10 +138,10 @@ public class Airport implements Comparable<Airport>, Comparator<Airport> {
 	public String toString() {
 		StringBuffer sb = new StringBuffer();
 		
-		sb.append(mCode).append(", ");
+		sb.append("'").append(mCode).append("'").append(","); /**.append(", ");
 		sb.append("(").append(String.format("%1$.3f", mLatitude)).append(", ");
 		sb.append(String.format("%1$.3f", mLongitude)).append("), ");
-		sb.append(mName);
+		sb.append(mName);*/
 
 		return sb.toString();
 	}
@@ -398,6 +404,87 @@ public class Airport implements Comparable<Airport>, Comparator<Airport> {
 			return false;
 		}
 		return isValidLongitude (lon);
+	}
+
+	public String convertGMTtoLocalTime(String inpt) {
+		// input a datetime string in the following format (can be changed)
+		// outputs a converted datetime for the respective airport object
+
+		SimpleDateFormat sdfgmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+		sdfgmt.setTimeZone(TimeZone.getTimeZone("GMT"));
+
+		SimpleDateFormat sdfconv = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+
+		// Storing time zone of all airports in database in a hash table
+		Hashtable<String, String> h = new Hashtable<String, String>();
+
+		h.put("ANC","America/Anchorage");
+		h.put ("ATL", "America/New_York") ;
+		h.put ("AUS", "America/Chicago") ;
+		h.put ("BDL", "America/New_York") ;
+		h.put ("BNA", "America/Chicago") ;
+		h.put ("BOS", "America/New_York") ;
+		h.put ("BWI", "America/New_York") ;
+		h.put ("CLE", "America/New_York") ;
+		h.put ("CLT", "America/New_York") ;
+		h.put ("CMH", "America/New_York") ;
+		h.put ("CVG", "America/New_York") ;
+		h.put ("DCA", "America/New_York") ;
+		h.put ("DEN", "America/Denver") ;
+		h.put ("DFW", "America/Chicago") ;
+		h.put ("DTW", "America/Detroit") ;
+		h.put ("EWR", "America/New_York") ;
+		h.put ("FLL", "America/New_York") ;
+		h.put ("HNL", "Pacific/Honolulu") ;
+		h.put ("HOU", "America/Chicago") ;
+		h.put ("IAD", "America/New_York") ;
+		h.put ("IAH", "America/Chicago") ;
+		h.put ("IND", "America/Indiana/Indianapolis") ;
+		h.put ("JFK", "America/New_York") ;
+		h.put ("LAS", "America/Los_Angeles") ;
+		h.put ("LAX", "America/Los_Angeles") ;
+		h.put ("LGA", "America/New_York") ;
+		h.put ("MCI", "America/Chicago") ;
+		h.put ("MCO", "America/New_York") ;
+		h.put ("MDW", "America/Chicago") ;
+		h.put ("MEM", "America/Chicago") ;
+		h.put ("MIA", "America/New_York") ;
+		h.put ("MSP", "America/Chicago") ;
+		h.put ("MSY", "America/Chicago") ;
+		h.put ("OAK", "America/Los_Angeles") ;
+		h.put ("ONT", "America/Los_Angeles") ;
+		h.put ("ORD", "America/Chicago") ;
+		h.put ("PDX", "America/Los_Angeles") ;
+		h.put ("PHL", "America/New_York") ;
+		h.put ("PHX", "America/Phoenix") ;
+		h.put ("PIT", "America/New_York") ;
+		h.put ("RDU", "America/New_York") ;
+		h.put ("RSW", "America/New_York") ;
+		h.put ("SAN", "America/Los_Angeles") ;
+		h.put ("SAT", "America/Chicago") ;
+		h.put ("SEA", "America/Los_Angeles") ;
+		h.put ("SFO", "America/Los_Angeles") ;
+		h.put ("SJC", "America/Los_Angeles") ;
+		h.put ("SLC", "America/Denver") ;
+		h.put ("SMF", "America/Los_Angeles") ;
+		h.put ("SNA", "America/Los_Angeles") ;
+		h.put ("STL", "America/Chicago") ;
+		h.put ("TPA", "America/New_York") ;
+
+		String zone = h.get(mCode);
+
+		sdfconv.setTimeZone(TimeZone.getTimeZone(zone));
+
+		//String inpt = "2011-23-03 16:40:44";
+		Date inptdate = null;
+		try {
+			inptdate = sdfgmt.parse(inpt);
+		} catch (ParseException e) {e.printStackTrace();}
+
+		System.out.println("GMT:\t\t" + sdfgmt.format(inptdate));
+		System.out.println("Converted:\t" + sdfconv.format(inptdate));
+
+		return sdfconv.format(inptdate);
 	}
 
 }
