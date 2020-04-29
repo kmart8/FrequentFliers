@@ -55,14 +55,15 @@ public class Driver {
 			System.out.println(leg.toString());
 		}
 		 */
-		FlightBuilder.getInstance().generateGUI();
+		//FlightBuilder.getInstance().generateGUI();
 
 		// GMT TO LOCAL TIME CONVERSION TEST //
 		/**
 		Airports airports = ServerInterface.INSTANCE.getAirports();
 		Collections.sort(airports);
 		for (Airport airport : airports) {
-			airport.convertGMTtoLocalTime("2011-23-03 16:40:44");
+			System.out.println(airport.toString());
+			airport.convertGMTtoLocalTime("2011-23-03 00:00:00");
 		}*/
 	}
 }

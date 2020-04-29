@@ -415,10 +415,10 @@ public class Airport implements Comparable<Airport>, Comparator<Airport> {
 
 		SimpleDateFormat sdfconv = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
-		// Storing time zone of all airports in database in a hash table
+		// Storing time zone of all airports in a hash table
 		Hashtable<String, String> h = new Hashtable<String, String>();
 
-		h.put("ANC","America/Anchorage");
+		h.put ("ANC","America/Anchorage");
 		h.put ("ATL", "America/New_York") ;
 		h.put ("AUS", "America/Chicago") ;
 		h.put ("BDL", "America/New_York") ;
