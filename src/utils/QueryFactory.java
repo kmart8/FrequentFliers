@@ -13,6 +13,7 @@ import java.time.format.DateTimeFormatter;
  * @version 1.2
  * @since 2016-02-24
  *
+ * Formats arguments into query strings that can be passed to HTTP URL to interact with the server
  */
 public class QueryFactory {
 
@@ -46,7 +47,7 @@ public class QueryFactory {
 	}
 
 	/**
-	 * Lock the server database so updates can be written
+	 * Return query string that can be passed to HTTP URL to lock the server database so updates can be written
 	 *
 	 * @return the String written to HTTP POST to lock server database 
 	 */
@@ -55,7 +56,7 @@ public class QueryFactory {
 	}
 	
 	/**
-	 * Unlock the server database after updates are written
+	 *  Return query string that can be passed to HTTP URL to unlock the server database after updates are written
 	 *
 	 * @return the String written to the HTTP POST to unlock server database
 	 */
