@@ -26,6 +26,12 @@ import leg.Leg;
 import leg.Legs;
 import plane.Plane;
 
+/**
+ * @author Kevin Martin
+ * @version 1.1 2019-01-21
+ * @since 2020-04-30
+ *
+ */
 public class DaoLeg {
     public static Legs addAll (String xmlLegs) throws NullPointerException {
         Legs legs = new Legs();

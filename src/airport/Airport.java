@@ -7,6 +7,8 @@ import utils.Saps;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.Hashtable;
@@ -19,9 +21,9 @@ import java.util.TimeZone;
  * XML received from the server to Java primitives. Attributes are accessed via getter and 
  * setter methods.
  * 
- * @author blake
- * @version 1.3 2019-01-21
- * @since 2016-02-24
+ * @author Kevin Martin
+ * @version 1.0 2020-04-30
+ * @since 2020-04-30
  * 
  */
 public class Airport implements Comparable<Airport>, Comparator<Airport> {
@@ -406,14 +408,12 @@ public class Airport implements Comparable<Airport>, Comparator<Airport> {
 		return isValidLongitude (lon);
 	}
 
-	public String convertGMTtoLocalTime(String inpt) {
-		// input a datetime string in the following format (can be changed)
-		// outputs a converted datetime for the respective airport object
+	public ZonedDateTime convertGMTtoLocalTime(ZonedDateTime GMTZonedDateTime) {
 
-		SimpleDateFormat sdfgmt = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		sdfgmt.setTimeZone(TimeZone.getTimeZone("GMT"));
+		// Requires that the input time is GMT, or else the calculation will not be accurate
+		// input a GMT ZonedDatetime
+		// outputs a local ZonedDateTime for the respective airport object
 
-		SimpleDateFormat sdfconv = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
 		// Storing time zone of all airports in a hash table
 		Hashtable<String, String> h = new Hashtable<String, String>();
@@ -473,18 +473,12 @@ public class Airport implements Comparable<Airport>, Comparator<Airport> {
 
 		String zone = h.get(mCode);
 
-		sdfconv.setTimeZone(TimeZone.getTimeZone(zone));
+		//return ZonedDateTime.of(GMTZonedDateTime.toLocalDateTime(), TimeZone.getTimeZone(zone).toZoneId());
+		// this displays the input time and the offset but doesn't explicitly show the converted time
 
-		//String inpt = "2011-23-03 16:40:44";
-		Date inptdate = null;
-		try {
-			inptdate = sdfgmt.parse(inpt);
-		} catch (ParseException e) {e.printStackTrace();}
+		return ZonedDateTime.ofInstant(GMTZonedDateTime.toInstant(), ZoneId.of(zone));
 
-		System.out.println("GMT:\t\t" + sdfgmt.format(inptdate));
-		System.out.println("Converted:\t" + sdfconv.format(inptdate));
 
-		return sdfconv.format(inptdate);
 	}
 
 }

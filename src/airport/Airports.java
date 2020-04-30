@@ -10,9 +10,9 @@ import java.util.ArrayList;
  * Airports can be added to the aggregate using the ArrayList interface. Objects can 
  * be removed from the collection using the ArrayList interface.
  * 
- * @author blake
+ * @author Kevin Martin
  * @version 1.0
- * @since 2016-02-24
+ * @since 2020-04-30
  *
  */
 public class Airports extends ArrayList<Airport> {

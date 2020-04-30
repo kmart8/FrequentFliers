@@ -8,6 +8,8 @@ import airport.Airports;
 import airport.Airport;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.util.Collections;
 import java.util.Date;
 
@@ -15,12 +17,13 @@ import java.util.Hashtable;
 import java.util.TimeZone;
 
 /**
- * @author blake
- * @since 2016-02-24
+ * @author Kevin Martin
+ * @since 2020-04-30
  * @version 1.0
  *
  */
 public class Driver {
+
 
 	/**
 	 * Entry point for CS509 sample code driver
@@ -55,16 +58,17 @@ public class Driver {
 			System.out.println(leg.toString());
 		}
 		 */
-		//FlightBuilder.getInstance().generateGUI();
+		FlightBuilder.getInstance().generateGUI();
 
 		// GMT TO LOCAL TIME CONVERSION TEST //
-		/**
-		Airports airports = ServerInterface.INSTANCE.getAirports();
-		Collections.sort(airports);
-		for (Airport airport : airports) {
-			System.out.println(airport.toString());
-			airport.convertGMTtoLocalTime("2011-23-03 00:00:00");
-		}*/
+		// arbitrary GMT time input
+//		ZonedDateTime zonedDateTime = ZonedDateTime.of(2020, 12, 3, 12, 20, 59, 90000, ZoneId.of("GMT"));
+//		Airports airports = ServerInterface.INSTANCE.getAirports();
+//		Collections.sort(airports);
+//		for (Airport airport : airports) {
+//			System.out.println(airport.toString());
+//			System.out.println(airport.convertGMTtoLocalTime(zonedDateTime));
+//		}
 	}
 }
 

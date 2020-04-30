@@ -6,6 +6,13 @@ import plane.Plane;
 import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 
+/**
+ * @author Kevin Martin
+ * @version 1.1 2019-01-21
+ * @since 2020-04-30
+ *
+ */
+
 public class Leg {
 
     // Fields

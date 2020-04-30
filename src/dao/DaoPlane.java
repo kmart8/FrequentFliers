@@ -18,6 +18,13 @@ import org.xml.sax.SAXException;
 import plane.Plane;
 import plane.Planes;
 
+/**
+ * @author Kevin Martin
+ * @version 1.1 2019-01-21
+ * @since 2020-04-30
+ *
+ */
+
 public class DaoPlane {
     public static Planes addAll (String xmlPlanes) throws NullPointerException {
         Planes planes = new Planes();
