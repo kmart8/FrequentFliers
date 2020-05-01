@@ -23,9 +23,9 @@ import utils.Saps;
  * This class provides an interface to the CS509 server. It provides sample methods to perform
  * HTTP GET and HTTP POSTS
  *   
- * @author blake
- * @version 1.1
- * @since 2016-02-24
+ * @author Kevin Martin
+ * @version 1.0
+ * @since 2020-05-01
  *
  */
 public enum ServerInterface {
@@ -189,7 +189,56 @@ public enum ServerInterface {
 		boardingLegs = DaoLeg.addAll(xmlBoardingLegs);
 		return boardingLegs;
 	}
-	
+
+	public Legs getArrivingLegs(Airport arrivingAirport, LocalDate arrivalDate) {
+		URL url;
+		HttpURLConnection connection;
+		BufferedReader reader;
+		String line;
+		StringBuffer result = new StringBuffer();
+
+		String xmlArrivingLegs;
+		Legs arrivingLegs;
+
+		try {
+			/**
+			 * Create an HTTP connection to the server for a GET
+			 * QueryFactory provides the parameter annotations for the HTTP GET query string
+			 */
+
+			url = new URL(Saps.SERVER_URL + QueryFactory.getArrivingLegsQuery(arrivingAirport, arrivalDate));
+			connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("GET");
+			connection.setRequestProperty("User-Agent", Saps.TEAM_NAME);
+
+			/**
+			 * If response code of SUCCESS read the XML string returned
+			 * line by line to build the full return string
+			 */
+			int responseCode = connection.getResponseCode();
+			if (responseCode >= HttpURLConnection.HTTP_OK) {
+				InputStream inputStream = connection.getInputStream();
+				String encoding = connection.getContentEncoding();
+				encoding = (encoding == null ? "UTF-8" : encoding);
+
+				reader = new BufferedReader(new InputStreamReader(inputStream));
+				while ((line = reader.readLine()) != null) {
+					result.append(line);
+				}
+				reader.close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+			return null;
+		} catch (Exception e) {
+			e.printStackTrace();
+			return null;
+		}
+
+		xmlArrivingLegs = result.toString();
+		arrivingLegs = DaoLeg.addAll(xmlArrivingLegs);
+		return arrivingLegs;
+	}
 	/**
 	 * Lock the database for updating by the specified team. The operation will fail if the lock is held by another team.
 	 * 

@@ -45,7 +45,14 @@ public class QueryFactory {
 		String departureDateString = dateStyle.format(boardingDate);
 		return "?team=" + Saps.TEAM_NAME + "&action=list&list_type=departing&airport="+boardingAirport.code()+"&day="+departureDateString;
 	}
+	public static String getArrivingLegsQuery(Airport arrivingAirport, LocalDate arrivingDate) {
+		//DateTimeFormatter
+		DateTimeFormatter dateStyle = DateTimeFormatter.ofPattern("yyyy_MM_dd");
 
+		// Converting ZonedDateTime to string query can understand
+		String arrivalDateString = dateStyle.format(arrivingDate);
+		return "?team=" + Saps.TEAM_NAME + "&action=list&list_type=arriving&airport="+arrivingAirport.code()+"&day="+arrivalDateString;
+	}
 	/**
 	 * Return query string that can be passed to HTTP URL to lock the server database so updates can be written
 	 *
