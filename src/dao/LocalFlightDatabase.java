@@ -28,7 +28,8 @@ public class LocalFlightDatabase {
     // Storage for objects constructed by the ServerInterface
     private Planes planeList = new Planes();
     private Airports airportList = new Airports();
-    private Legs legList = new Legs();
+    private Legs boardingLegList = new Legs();
+    private Legs disembarkingLegList = new Legs();
 
     // Create a request container and list for storing which requests for departing legs have already been made
     private class BoardingLegsRequest {
@@ -39,7 +40,18 @@ public class LocalFlightDatabase {
             boardingDateString = boardingDate.toString();
         }
     }
+    //TODO:
     private List<BoardingLegsRequest> previousLegRequests = new ArrayList<>();
+
+    private class DisembarkingLegsRequest {
+        private String disembarkingAirportCode;
+        private String disembarkingDateString;
+        public DisembarkingLegsRequest(Airport disembarkingAirport, LocalDate disembarkingDate){
+            disembarkingAirportCode = disembarkingAirport.code();
+            disembarkingDateString = disembarkingDate.toString();
+        }
+    }
+    private List<DisembarkingLegsRequest> previousDisembarkingLegRequests = new ArrayList<>();
 
     // Singleton variable
     private static LocalFlightDatabase single_instance = null;
@@ -85,9 +97,11 @@ public class LocalFlightDatabase {
      *
      * @return the list of legs (possibly empty)
      */
-    public Legs getLegList(){
-        return legList;
+    public Legs getBoardingLegList(){
+        return boardingLegList;
     }
+
+    public Legs getDisembarkingLegList() { return disembarkingLegList;}
 
     /** get the list of legs currently in storage with the specified departure airport and departure date
      *
@@ -97,7 +111,7 @@ public class LocalFlightDatabase {
      *
      * @return only legs that match the specified boarding airport and boarding date (possibly empty)
      */
-    public Legs getLegList(Airport boardingAirport, LocalDate boardingDate, boolean override){
+    public Legs getBoardingLegList(Airport boardingAirport, LocalDate boardingDate, boolean override){
         Legs requestedLegs = new Legs();
 
         // Initialize a request to check against previous requests
@@ -113,7 +127,7 @@ public class LocalFlightDatabase {
             requestedLegs = ServerInterface.INSTANCE.getBoardingLegs(boardingAirport, boardingDate);
             // Otherwise, find and return matching legs from the leg list
         else{
-            for(Leg leg:legList) {
+            for(Leg leg:boardingLegList) {
                 // Verify that the boarding airport and boarding time match the requested ones
                 if (leg.boardingAirport.equals(boardingAirport) && leg.boardingTime.toLocalDate().equals(boardingDate))
                     requestedLegs.add(leg);
@@ -122,7 +136,36 @@ public class LocalFlightDatabase {
         }
 
         // If new legs have been provided by the server, add them to the leg list and return them
-        addLegs(requestedLegs);
+        addBoardingLegs(requestedLegs);
+        return requestedLegs;
+    }
+    //TODO:
+    public Legs getDisembarkingLegList(Airport disembarkingAirport, LocalDate disembarkingDate, boolean override){
+        Legs requestedLegs = new Legs();
+
+        // Initialize a request to check against previous requests
+        DisembarkingLegsRequest newRequest = new DisembarkingLegsRequest(disembarkingAirport, disembarkingDate);
+
+        // If no matching request has been made previously, store the request and add the requested legs to the legList
+        if(!previousDisembarkingLegRequests.contains(newRequest)) {
+            previousDisembarkingLegRequests.add(newRequest);
+            requestedLegs = ServerInterface.INSTANCE.getDisembarkingLegs(disembarkingAirport, disembarkingDate);
+        }
+        // Even if a matching request has been made previously, if an ovverride is requested, add the requested legs to the legList
+        else if(override)
+            requestedLegs = ServerInterface.INSTANCE.getDisembarkingLegs(disembarkingAirport, disembarkingDate);
+            // Otherwise, find and return matching legs from the leg list
+        else{
+            for(Leg leg:disembarkingLegList) {
+                // Verify that the boarding airport and boarding time match the requested ones
+                if (leg.disembarkingAirport.equals(disembarkingAirport) && leg.disembarkingTime.toLocalDate().equals(disembarkingDate))
+                    requestedLegs.add(leg);
+            }
+            return requestedLegs;
+        }
+
+        // If new legs have been provided by the server, add them to the leg list and return them
+        addDisembarkingLegs(requestedLegs);
         return requestedLegs;
     }
 
@@ -159,13 +202,25 @@ public class LocalFlightDatabase {
      * @param potentialLegs list of new legs to add to the leg list (possibly empty)
      */
     /// Can unique be implemented at the list side?
-    private void addLegs(Legs potentialLegs){
+    private void addBoardingLegs(Legs potentialLegs){
         for(Leg leg: potentialLegs){
             // For each leg in the new list, make sure there is no old version on the current list
             //      Note: Equality is currently determined only by flight number (overriden in the Leg class, as number of reserved seats may change)
-            if(legList.contains(leg))
-                legList.remove(leg);
-            legList.add(leg);
+            if(boardingLegList.contains(leg))
+                boardingLegList.remove(leg);
+            boardingLegList.add(leg);
         }
+
+    }
+
+    private void addDisembarkingLegs(Legs potentialLegs){
+        for(Leg leg: potentialLegs){
+            // For each leg in the new list, make sure there is no old version on the current list
+            //      Note: Equality is currently determined only by flight number (overriden in the Leg class, as number of reserved seats may change)
+            if(disembarkingLegList.contains(leg))
+                disembarkingLegList.remove(leg);
+            disembarkingLegList.add(leg);
+        }
+
     }
 }
