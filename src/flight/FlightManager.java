@@ -117,7 +117,7 @@ public class FlightManager {
             endBoardingWindow = startBoardingWindow.plus(Saps.MAX_LAYOVER_TIME.minus(Saps.MIN_LAYOVER_TIME));
         }
 
-        Legs potentialNewLegs = LocalFlightDatabase.getInstance().getLegList(boardingAirport,startBoardingWindow.toLocalDate(),false);
+        Legs potentialNewLegs = LocalFlightDatabase.getInstance().getBoardingLegList(boardingAirport,startBoardingWindow.toLocalDate(),false);
         Legs invalidNewLegs = new Legs();
 
          for (Leg thisLeg : potentialNewLegs) {
@@ -147,9 +147,8 @@ public class FlightManager {
             endDisembarkingWindow = newFlight.getDepartureTime().minus(Saps.MIN_LAYOVER_TIME);
             startDisembarkingWindow = endDisembarkingWindow.minus(Saps.MIN_LAYOVER_TIME.minus(Saps.MIN_LAYOVER_TIME));
         }
-        // TODO: Switch to get arriving legs after modifying localflightdatabase
 
-        Legs potentialNewLegs = LocalFlightDatabase.getInstance().getLegList(disembarkingAirport,startDisembarkingWindow.toLocalDate(),false);
+        Legs potentialNewLegs = LocalFlightDatabase.getInstance().getDisembarkingLegList(disembarkingAirport,startDisembarkingWindow.toLocalDate(),false);
 
         for (Leg thisLeg : potentialNewLegs) {
             if (thisLeg.disembarkingTime.isBefore(startDisembarkingWindow) || thisLeg.disembarkingTime.isAfter(endDisembarkingWindow)){
