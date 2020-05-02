@@ -4,6 +4,8 @@
 package utils;
 
 import java.time.*;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 /**
  * @author blake
@@ -61,7 +63,7 @@ public class Saps {
 	/**
 	 * Names used for seating selection
 	 */
-	public static final  String[] SEATING_TYPES = {"Any","Coach","First Class"};
+	public static final ArrayList<String> SEATING_TYPES = new ArrayList<>(Arrays.asList("Coach", "First Class"));
 
 	/**
 	 * Lower limit used for date range validation
