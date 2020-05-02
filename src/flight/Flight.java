@@ -119,6 +119,9 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
         return Math.max(legList.size() - 1, 0);
     }
 
+    /** Method to access the filter reason */
+    public String filterReason(){ return filterReason; }
+
     /** Method to check if Flight is a match */
     public void isMatch(UIModel uIFilter) {
         filterReason = "";
