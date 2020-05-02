@@ -1,20 +1,26 @@
 package ui;
 
 import airport.Airport;
+import utils.Saps;
+
+import java.time.Duration;
 import java.time.ZonedDateTime;
 
 /**
  * This class serves as a model for the ReservationApp viewer. It is controlled by the UIController.
  *
  * @author Chris Collins
- * @version 1.0 2020-03-26
+ * @version 2.0 2020-05-01
  * @since 2020-03-06
  *
  */
 public class UIModel {
-    // Initialize empty dates for departure and arrival
-    private ZonedDateTime departureDate;
-    private ZonedDateTime arrivalDate;
+    // Initialize date type for specifying departure or arrival
+    private String timeType;
+
+    // Initialize empty date for departure or arrival
+    private ZonedDateTime startFlightDateTime;
+    private ZonedDateTime endFlightDateTime;
 
     // Initialize empty airports for departure and arrival
     private Airport departureAirport;
@@ -29,20 +35,36 @@ public class UIModel {
     // Initialize the default number of layovers to 2
     private int numberOfLayovers;
 
-    public ZonedDateTime departureDate() {
-        return departureDate;
+    public UIModel(){
+        timeType = "Departure";
+        startFlightDateTime = Saps.EARLIEST_DATE;
+        endFlightDateTime = Saps.EARLIEST_DATE.plus(Duration.ofHours(23).plus(Duration.ofMinutes(59).plus(Duration.ofSeconds(59))));
+        numberOfPassengers = 1;
+        numberOfLayovers = 2;
     }
 
-    public void departureDate(ZonedDateTime departureDate) {
-        this.departureDate = departureDate;
+    public ZonedDateTime startFlightDateTime() {
+        return startFlightDateTime;
     }
 
-    public ZonedDateTime arrivalDate() {
-        return arrivalDate;
+    public void startFlightDateTime(ZonedDateTime date) {
+        startFlightDateTime = date;
     }
 
-    public void arrivalDate(ZonedDateTime arrivalDate) {
-        this.arrivalDate = arrivalDate;
+    public ZonedDateTime endFlightDateTime() {
+        return endFlightDateTime;
+    }
+
+    public void endFlightDateTime(ZonedDateTime date) {
+        endFlightDateTime = date;
+    }
+
+    public String timeType() {
+        return timeType;
+    }
+
+    public void timeType(String dateType) {
+        this.timeType = dateType;
     }
 
     public Airport departureAirport() {
