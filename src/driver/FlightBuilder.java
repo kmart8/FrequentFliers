@@ -3,6 +3,7 @@ package driver;
 import flight.Flight;
 import flight.FlightManager;
 import flight.Flights;
+import leg.Legs;
 import ui.UIModel;
 import ui.UIController;
 import dao.LocalFlightDatabase;
@@ -43,21 +44,23 @@ public class FlightBuilder {
      *  (does not currently store any legs, just assignes them to display in the viewer)
      *  (will eventually be moved, and this function will actually search for flights)
      */
-    public void searchForFlights(){
+    public Flights searchForFlights(){
         // Get the contents of the model
         UIModel userInput = app.getAcceptedInput();
 
         // Confirm that the user has supplied a departure airport and departure date
         if (userInput.departureAirport() != null && userInput.arrivalAirport() != null) {
-            flightController = new FlightManager();
-            flightController.flightFilter(userInput);
-            flightController.enqueueFlight(new Flight());
+            flightController = new FlightManager(userInput);
+            Flight firstFlight = new Flight(new Legs(), userInput.seatingType());
+            flightController.enqueueFlight(firstFlight);
             flightController.completeQueue();
-            Flights displayFlights = flightController.validFlights();
+            return flightController.validFlights();
             // Get legs which match the user input criteria, this will most likely be implemented for flights in later versions (not legs)
             //app.setDisplayList(LocalFlightDatabase.getInstance().getLegList(userInput.departureAirport(), userInput.startFlightDateTime().toLocalDate(), false));
-        } else
+        } else {
             System.out.println("Departure airport or arrival airport is empty, cannot search for flights");
+            return new Flights();
+        }
     }
 
 }
