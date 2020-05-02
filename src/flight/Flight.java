@@ -4,93 +4,168 @@ import airport.Airport;
 import leg.Leg;
 import leg.Legs;
 import ui.UIModel;
-
-import java.time.LocalDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
+import java.math.BigDecimal;
 import java.time.ZonedDateTime;
 import java.util.Comparator;
 
 public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable {
-    // Placeholder class to work on flight manager
-    private Legs legs;
+
+    /** Fields of Flight Class */
+    private Legs legList;
+    private String seatingType;
     private String filterReason;
 
-    public String getFilterReason () {
-        return filterReason;
+    /** Empty Constructor for Flight Object */
+    public Flight() {
+        legList = new Legs();
+        seatingType = "economy";
     }
 
-    public Airport getDepartureAirport () {
-        return new Airport();
-    }
-    public Airport getArrivalAirport () {
-        return new Airport();
-    }
-    public ZonedDateTime getArrivalTime () {
-        return ZonedDateTime.of(LocalDateTime.of(2020,5,1,0,0), ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0)));
-    }
-    public ZonedDateTime getDepartureTime () {
-        return ZonedDateTime.of(LocalDateTime.of(2020,5,1,0,0), ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0)));
+    /** Constructor for Flight Object */
+    public Flight(Legs lList) {
+        legList = lList;
+        seatingType = "economy";
     }
 
-
-    public int getNumberOfLegs(){
-        if (legs.isEmpty()) return 0;
-        else return legs.size();
+    /** Add Leg to end of array */
+    public void addLegToEnd(Leg newLeg) {
+        legList.add(newLeg);
     }
 
-    public int getNumberOfLayovers(){
-        return Math.max(0, getNumberOfLegs()-1);
+    /** Add Leg to the beginning of array */
+    public void addLegToBeginning(Leg newLeg) {
+        legList.add(0, newLeg);
     }
 
-    public void checkMatch(UIModel filter){
-       filterReason = "hello world";
+    /** Method to set seating type */
+    public void setSeatingType(String seatingRequested) {
+        if (seatingRequested.equals("firstClass")) {
+            seatingType = seatingRequested;
+        }
+        else seatingType = "economy";
     }
 
-    public void addLegPrevious(Leg newLeg){
-        legs.add(0, newLeg);
+    /** Method to get Departure Airport of Flight */
+    public Airport getDepartureAirport() {
+        if (legList.size() > 0) {
+            return legList.get(0).getBoardingAirport();
+        }
+        else return null;
     }
 
-    public void addLegAfter(Leg newLeg){
-        legs.add(newLeg);
+    /** Method to get Arrival Airport of Flight */
+    public Airport getArrivalAirport() {
+        if (legList.size() > 0) {
+            return legList.get(legList.size()-1).getDisembarkingAirport();
+        }
+        else return null;
     }
 
-    /**
-     * Compare
-     *
-     *
-     * @return
-     */
-    public int compareTo(Flight other)    {
-        return 1;
+    /** Method to get Time of First Leg Boarding Time */
+    public ZonedDateTime getDepartureTime() {
+        if (legList.size() > 0) {
+            return legList.get(0).getBoardingTime();
+        }
+        else return null;
     }
 
-    /**
-     * Compare two flights for sorting, ordering
-     *
-     *
-     *
-     * @param
-     * @param
-     * @return
-     */
-    public int compare(Flight flight1, Flight flight2) {
-        return 1;
+    /** Method to get Local Time of First Leg Boarding Time */
+    public ZonedDateTime getLocalDepartureTime() {
+        if (legList.size() > 0) {
+            ZonedDateTime departureTime = legList.get(0).getBoardingTime();
+            //TODO: ZonedDateTime localDepartureTime = departureTime + legList.get(0).getBoardingAirport().getOffset()
+            return departureTime;
+        }
+        else return null;
     }
 
-
-    /**
-     * Determine if two flight objects are the same flight
-     *
-     * @param obj is the object to compare against this object
-     * @return true if the
-     */
-    @Override
-    public boolean equals (Object obj) {
-        return true;
+    /** Method to get Time of Last Leg Disembarking Time */
+    public ZonedDateTime getArrivalTime() {
+        if (legList.size() > 0) {
+            return legList.get(legList.size()-1).getDisembarkingTime();
+        }
+        else return null;
     }
 
-    public Object clone() throws CloneNotSupportedException {
-        return super.clone();
+    /** Method to get Local Time of Last Leg Disembarking Time */
+    public ZonedDateTime getLocalArrivalTime() {
+        if (legList.size() > 0) {
+            ZonedDateTime arrivalTime = legList.get(legList.size()-1).getDisembarkingTime();
+            //TODO: ZonedDateTime localArrivalTime = arrivalTime + legList.get(legList.size()-1).getBoardingAirport().getOffset();
+            return arrivalTime;
+        }
+        else return null;
     }
+
+    /** Method to get Total Price */
+    public BigDecimal getTotalPrice() {
+        BigDecimal totalPrice = new BigDecimal("0");
+        if (legList.size() > 0) {
+            if (seatingType.equals("firstClass")) {
+                for (Leg thisLeg : legList) {
+                    totalPrice = totalPrice.add(thisLeg.getFirstClassPrice());
+                }
+            } else {
+                for (Leg thisLeg : legList) {
+                    totalPrice = totalPrice.add(thisLeg.getCoachPrice());
+                }
+            }
+            return totalPrice;
+        } else return null;
+    }
+
+    /** Method to get Number of Layovers */
+    public int getNumberOfLayovers() {
+        return Math.max(legList.size() - 1, 0);
+    }
+
+    /** Method to check if Flight is a match */
+    public void isMatch(UIModel uIFilter) {
+        filterReason = "";
+        boolean full = false;
+        boolean complete = false;
+
+        if (uIFilter.numberOfLayovers() <= getNumberOfLayovers()) {
+            full = true;
+        }
+        if (uIFilter.departureAirport() == getDepartureAirport()
+                && uIFilter.arrivalAirport() == getArrivalAirport()) {
+            complete = true;
+        }
+        if (!complete && full) {
+            if (getNumberOfLayovers() == 2) filterReason = "invalid";
+            else filterReason = "layovers";
+            return;
+        }
+
+        for (Leg thisLeg : legList)
+            if (thisLeg.getRemainingSeats("coach") < uIFilter.numberOfPassengers() &&
+                    thisLeg.getRemainingSeats("firstClass") < uIFilter.numberOfPassengers()) {
+                filterReason = "invalid";
+                return;
+            }
+
+        for (Leg thisLeg : legList)
+            if (thisLeg.getRemainingSeats(seatingType) < uIFilter.numberOfPassengers()) {
+                filterReason = "checkFilter";
+                return;
+            }
+
+    }
+
+    /** Required Compare To Method */
+    public int compareTo(Flight other) {
+        return getTotalPrice().compareTo(other.getTotalPrice());
+    }
+
+    /** Required Compare Method */
+    public int compare(Flight flight1, Flight flight2){
+        return flight1.compareTo(flight2);
+    }
+
+    /** Required Clone Method*/
+    public Flight clone() throws CloneNotSupportedException{
+        return (Flight)super.clone();
+    }
+
 }

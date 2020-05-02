@@ -111,6 +111,13 @@ public class Leg {
         return firstClassPrice;
     }
 
+    //
+    public double getRemainingSeats(String seatType){
+        if (seatType == "firstClass") return plane.firstClassSeats() - reservedFirstClassSeats;
+        else return plane.coachSeats() - reservedCoachSeats;
+    }
+
+
     // set Methods
     public void setDisembarkingTime(ZonedDateTime newDisembarkingTime) {
         disembarkingTime = newDisembarkingTime;
