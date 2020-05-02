@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <form xmlns="http://www.intellij.com/uidesigner/form/" version="1" bind-to-class="ui.ReservationApp">
-  <grid id="27dc6" binding="mainPanel" layout-manager="GridLayoutManager" row-count="4" column-count="8" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
+  <grid id="27dc6" binding="mainPanel" layout-manager="GridLayoutManager" row-count="4" column-count="9" same-size-horizontally="false" same-size-vertically="false" hgap="-1" vgap="-1">
     <margin top="10" left="10" bottom="10" right="10"/>
     <constraints>
-      <xy x="20" y="20" width="1241" height="400"/>
+      <xy x="20" y="20" width="1297" height="400"/>
     </constraints>
     <properties/>
     <border type="none"/>
@@ -19,24 +19,6 @@
           <text value="Departure Airport *"/>
         </properties>
       </component>
-      <component id="40d1" class="javax.swing.JButton" binding="addFlightToCartButton" default-binding="true">
-        <constraints>
-          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="102" height="30"/>
-          </grid>
-        </constraints>
-        <properties>
-          <text value="Add Flight to Cart"/>
-        </properties>
-      </component>
-      <component id="1d58b" class="javax.swing.JButton" binding="viewFullFlightDetailsButton" default-binding="true">
-        <constraints>
-          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="View Full Flight Details"/>
-        </properties>
-      </component>
       <component id="86824" class="javax.swing.JFormattedTextField" binding="departureAirportFormattedTextField">
         <constraints>
           <grid row="0" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
@@ -49,7 +31,7 @@
       </component>
       <scrollpane id="334ea">
         <constraints>
-          <grid row="2" column="0" row-span="1" col-span="8" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
+          <grid row="2" column="0" row-span="1" col-span="9" vsize-policy="7" hsize-policy="7" anchor="0" fill="3" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <horizontalScrollBarPolicy value="31"/>
@@ -67,7 +49,7 @@
           </component>
         </children>
       </scrollpane>
-      <component id="bb444" class="javax.swing.JFormattedTextField" binding="departureDateFormattedTextField">
+      <component id="bb444" class="javax.swing.JFormattedTextField" binding="dateFormattedTextField">
         <constraints>
           <grid row="0" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
@@ -75,17 +57,7 @@
         </constraints>
         <properties>
           <enabled value="true"/>
-        </properties>
-      </component>
-      <component id="f04e5" class="javax.swing.JLabel">
-        <constraints>
-          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
-            <preferred-size width="147" height="16"/>
-          </grid>
-        </constraints>
-        <properties>
-          <labelFor value="bb444"/>
-          <text value="Departure Date *"/>
+          <text value="5/10/2020"/>
         </properties>
       </component>
       <component id="3bd0c" class="javax.swing.JLabel">
@@ -96,7 +68,7 @@
         </constraints>
         <properties>
           <labelFor value="4cda0"/>
-          <text value="Arrival Airport"/>
+          <text value="Arrival Airport*"/>
         </properties>
       </component>
       <component id="4cda0" class="javax.swing.JFormattedTextField" binding="arrivalAirportFormattedTextField">
@@ -107,28 +79,9 @@
         </constraints>
         <properties/>
       </component>
-      <component id="7f80" class="javax.swing.JLabel">
-        <constraints>
-          <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
-            <preferred-size width="147" height="16"/>
-          </grid>
-        </constraints>
-        <properties>
-          <labelFor value="9d0ac"/>
-          <text value="Arrival Date"/>
-        </properties>
-      </component>
-      <component id="9d0ac" class="javax.swing.JFormattedTextField" binding="arrivalDateFormattedTextField">
-        <constraints>
-          <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="150" height="-1"/>
-          </grid>
-        </constraints>
-        <properties/>
-      </component>
       <component id="7a48d" class="javax.swing.JLabel">
         <constraints>
-          <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <labelFor value="32ee6"/>
@@ -137,7 +90,7 @@
       </component>
       <component id="32ee6" class="javax.swing.JFormattedTextField" binding="numberOfPassengersFormattedTextField">
         <constraints>
-          <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+          <grid row="1" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
@@ -147,7 +100,7 @@
       </component>
       <component id="62c4e" class="javax.swing.JFormattedTextField" binding="maximumLayoversFormattedTextField">
         <constraints>
-          <grid row="1" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+          <grid row="1" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="150" height="-1"/>
           </grid>
         </constraints>
@@ -157,16 +110,34 @@
       </component>
       <component id="132b2" class="javax.swing.JLabel">
         <constraints>
-          <grid row="1" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+          <grid row="1" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <labelFor value="62c4e"/>
           <text value="Maximum Layovers"/>
         </properties>
       </component>
+      <component id="9d0ac" class="javax.swing.JFormattedTextField" binding="startTimeFormattedTextField">
+        <constraints>
+          <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="1" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value="00:00:00 AM"/>
+        </properties>
+      </component>
+      <component id="653e" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="0" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="to"/>
+        </properties>
+      </component>
       <component id="28f88" class="javax.swing.JLabel">
         <constraints>
-          <grid row="0" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
+          <grid row="1" column="4" row-span="1" col-span="2" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false">
             <preferred-size width="147" height="16"/>
           </grid>
         </constraints>
@@ -177,7 +148,7 @@
       </component>
       <component id="9917c" class="javax.swing.JComboBox" binding="seatingTypeComboBox" default-binding="true">
         <constraints>
-          <grid row="0" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false">
+          <grid row="1" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="74" height="30"/>
           </grid>
         </constraints>
@@ -191,17 +162,19 @@
           </model>
         </properties>
       </component>
-      <component id="8d4eb" class="javax.swing.JButton" binding="searchForFlightsButton" default-binding="true">
+      <component id="3af6c" class="javax.swing.JFormattedTextField" binding="endTimeFormattedTextField">
         <constraints>
-          <grid row="1" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="0" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="6" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="150" height="-1"/>
+          </grid>
         </constraints>
         <properties>
-          <text value="Search for Flights"/>
+          <text value="11:59:59 PM"/>
         </properties>
       </component>
       <component id="5b4bf" class="javax.swing.JButton" binding="resetButton" default-binding="true">
         <constraints>
-          <grid row="3" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="3" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Reset"/>
@@ -209,10 +182,65 @@
       </component>
       <component id="882c0" class="javax.swing.JButton" binding="quitButton" default-binding="true">
         <constraints>
-          <grid row="3" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+          <grid row="3" column="8" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
         <properties>
           <text value="Quit"/>
+        </properties>
+      </component>
+      <component id="1d58b" class="javax.swing.JButton" binding="viewFullFlightDetailsButton" default-binding="true">
+        <constraints>
+          <grid row="3" column="4" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="View Full Flight Details"/>
+        </properties>
+      </component>
+      <component id="40d1" class="javax.swing.JButton" binding="addFlightToCartButton" default-binding="true">
+        <constraints>
+          <grid row="3" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="102" height="30"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value="Add Flight to Cart"/>
+        </properties>
+      </component>
+      <component id="8d4eb" class="javax.swing.JButton" binding="searchForFlightsButton" default-binding="true">
+        <constraints>
+          <grid row="3" column="0" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Search for Flights"/>
+        </properties>
+      </component>
+      <component id="49a1d" class="javax.swing.JComboBox" binding="comboBox1" default-binding="true">
+        <constraints>
+          <grid row="0" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="90" height="30"/>
+          </grid>
+        </constraints>
+        <properties>
+          <model>
+            <item value="Departure"/>
+            <item value="Arrival"/>
+          </model>
+        </properties>
+      </component>
+      <component id="cc60f" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="0" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Flight Date"/>
+        </properties>
+      </component>
+      <component id="eb20" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="time window:"/>
         </properties>
       </component>
     </children>

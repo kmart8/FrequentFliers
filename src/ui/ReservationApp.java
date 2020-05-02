@@ -40,13 +40,15 @@ public class ReservationApp {
     private JButton resetButton;
     private JButton searchForFlightsButton;
     private JPanel mainPanel;
-    private JFormattedTextField departureDateFormattedTextField;
-    private JFormattedTextField arrivalDateFormattedTextField;
+    private JFormattedTextField dateFormattedTextField;
+    private JFormattedTextField startTimeFormattedTextField;
     private JFormattedTextField departureAirportFormattedTextField;
     private JFormattedTextField arrivalAirportFormattedTextField;
     private JFormattedTextField maximumLayoversFormattedTextField;
     private JFormattedTextField numberOfPassengersFormattedTextField;
     private JTable flightDisplayTable;
+    private JComboBox comboBox1;
+    private JFormattedTextField endTimeFormattedTextField;
     private JFrame frameHandle;
 
     // List of UI components which should be inactive during long operations to prevent user input
@@ -140,18 +142,18 @@ public class ReservationApp {
                 arrivalAirportFormattedTextField.setText(controller.getArrivalAirport());
             }
         });
-        departureDateFormattedTextField.addPropertyChangeListener(new PropertyChangeListener() {
+        dateFormattedTextField.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                controller.setDepartureDate(departureDateFormattedTextField.getText());
-                departureDateFormattedTextField.setText(controller.getDepartureDate());
+                controller.setFlightDate(dateFormattedTextField.getText());
+                dateFormattedTextField.setText(controller.getFlightDate());
             }
         });
-        arrivalDateFormattedTextField.addPropertyChangeListener(new PropertyChangeListener() {
+        startTimeFormattedTextField.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
-                controller.setArrivalDate(arrivalDateFormattedTextField.getText());
-                arrivalDateFormattedTextField.setText(controller.getArrivalDate());
+                controller.setStartTime(startTimeFormattedTextField.getText());
+                startTimeFormattedTextField.setText(controller.getStartTime());
             }
         });
         numberOfPassengersFormattedTextField.addPropertyChangeListener(new PropertyChangeListener() {
@@ -193,6 +195,19 @@ public class ReservationApp {
                 controller.setSeatingType(seatingTypeComboBox.getSelectedItem().toString());
             }
         });
+        endTimeFormattedTextField.addPropertyChangeListener(new PropertyChangeListener() {
+            @Override
+            public void propertyChange(PropertyChangeEvent evt) {
+                controller.setEndTime(endTimeFormattedTextField.getText());
+                endTimeFormattedTextField.setText(controller.getEndTime());
+            }
+        });
+        comboBox1.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.setTimeType(seatingTypeComboBox.getSelectedItem().toString());
+            }
+        });
     }
 
     /**
@@ -221,8 +236,8 @@ public class ReservationApp {
         busyList.add(searchForFlightsButton);
         busyList.add(departureAirportFormattedTextField);
         busyList.add(arrivalAirportFormattedTextField);
-        busyList.add(departureDateFormattedTextField);
-        busyList.add(arrivalDateFormattedTextField);
+        busyList.add(dateFormattedTextField);
+        busyList.add(startTimeFormattedTextField);
         busyList.add(maximumLayoversFormattedTextField);
         busyList.add(numberOfPassengersFormattedTextField);
         busy(false);
