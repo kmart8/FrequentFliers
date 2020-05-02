@@ -49,12 +49,12 @@ public class FlightManager {
     public void completeQueue(){
         while (!constructionQueue.isEmpty()){
             Flight nextFlight = constructionQueue.pop();
-            nextFlight.checkMatch(flightFilter);
-            if (nextFlight.getFilterReason().isEmpty()){
+            nextFlight.isMatch(flightFilter);
+            if (nextFlight.filterReason().isEmpty()){
                 enqueueFlight(nextFlight);
-            } else if (nextFlight.getFilterReason().equals("complete")){
+            } else if (nextFlight.filterReason().equals("complete")){
                 validFlights.add(nextFlight);
-            } else if (nextFlight.getFilterReason().equals("invalid")){
+            } else if (nextFlight.filterReason().equals("invalid")){
                 // Do nothing, do not requeue this flight or derivatives
             } else filteredFlights.add(nextFlight);
         }
@@ -68,18 +68,17 @@ public class FlightManager {
      * @pre the flight filter is not empty
      * @post any newly generated copies are added to the construction queue
      */
-     private void enqueueFlight(Flight newFlight){
-         // TODO: After changing the UIModel, choose to get boarding/arriving legs here
-        if (true){
+     public void enqueueFlight(Flight newFlight){
+        if (flightFilter.timeType().equals("Departure")){
             Legs newLegs = getValidBoardingLegs(newFlight);
             for (Leg thisLeg : newLegs) {
                 Flight copyFlight = new Flight();
                 try{
-                    copyFlight = (Flight) newFlight.clone();
+                    copyFlight = newFlight.clone();
                 } catch (CloneNotSupportedException E){
 
                 }
-                copyFlight.addLegAfter(thisLeg);
+                copyFlight.addLegToEnd(thisLeg);
                 constructionQueue.push(copyFlight);
             }
         } else {
@@ -87,11 +86,11 @@ public class FlightManager {
             for (Leg thisLeg : newLegs) {
                 Flight copyFlight = new Flight();
                 try{
-                    copyFlight = (Flight) newFlight.clone();
+                    copyFlight = newFlight.clone();
                 } catch (CloneNotSupportedException E){
 
                 }
-                copyFlight.addLegBefore(thisLeg);
+                copyFlight.addLegToBeginning(thisLeg);
                 constructionQueue.push(copyFlight);
             }
         }
@@ -105,18 +104,15 @@ public class FlightManager {
      */
      private Legs getValidBoardingLegs(Flight newFlight){
         Airport boardingAirport = flightFilter.departureAirport();
-         // TODO: Collect the time/date ranges correctly after the UIModel is updated
-        ZonedDateTime startBoardingWindow = flightFilter.departureDate();
-        ZonedDateTime endBoardingWindow = flightFilter.departureDate();
+        ZonedDateTime startBoardingWindow = flightFilter.startFlightDateTime();
+        ZonedDateTime endBoardingWindow = flightFilter.endFlightDateTime();
         if (newFlight.getArrivalAirport() != null) {
             boardingAirport = newFlight.getArrivalAirport();
             startBoardingWindow = newFlight.getArrivalTime().plus(Saps.MIN_LAYOVER_TIME);
             endBoardingWindow = startBoardingWindow.plus(Saps.MAX_LAYOVER_TIME.minus(Saps.MIN_LAYOVER_TIME));
         }
+
         Legs potentialNewLegs = LocalFlightDatabase.getInstance().getLegList(boardingAirport,startBoardingWindow.toLocalDate(),false);
-        if (!startBoardingWindow.toLocalDate().equals(endBoardingWindow.toLocalDate())){
-            potentialNewLegs.addAll(LocalFlightDatabase.getInstance().getLegList(boardingAirport,endBoardingWindow.toLocalDate(),false));
-        }
 
          for (Leg thisLeg : potentialNewLegs) {
              if (thisLeg.boardingTime.isBefore(startBoardingWindow) || thisLeg.boardingTime.isAfter(endBoardingWindow)){
@@ -135,19 +131,16 @@ public class FlightManager {
      */
     private Legs getValidArrivingLegs(Flight newFlight){
         Airport disembarkingAirport = flightFilter.arrivalAirport();
-        // TODO: Collect the time/date ranges correctly after the UIModel is updated
-        ZonedDateTime startDisembarkingWindow = flightFilter.arrivalDate();
-        ZonedDateTime endDisembarkingWindow = flightFilter.arrivalDate();
+        ZonedDateTime startDisembarkingWindow = flightFilter.startFlightDateTime();
+        ZonedDateTime endDisembarkingWindow = flightFilter.endFlightDateTime();
         if (newFlight.getDepartureAirport() != null) {
             disembarkingAirport = newFlight.getDepartureAirport();
             endDisembarkingWindow = newFlight.getDepartureTime().minus(Saps.MIN_LAYOVER_TIME);
             startDisembarkingWindow = endDisembarkingWindow.minus(Saps.MIN_LAYOVER_TIME.minus(Saps.MIN_LAYOVER_TIME));
         }
         // TODO: Switch to get arriving legs after modifying localflightdatabase
+
         Legs potentialNewLegs = LocalFlightDatabase.getInstance().getLegList(disembarkingAirport,startDisembarkingWindow.toLocalDate(),false);
-        if (!startDisembarkingWindow.toLocalDate().equals(endDisembarkingWindow.toLocalDate())){
-            potentialNewLegs.addAll(LocalFlightDatabase.getInstance().getLegList(disembarkingAirport,endDisembarkingWindow.toLocalDate(),false));
-        }
 
         for (Leg thisLeg : potentialNewLegs) {
             if (thisLeg.disembarkingTime.isBefore(startDisembarkingWindow) || thisLeg.disembarkingTime.isAfter(endDisembarkingWindow)){

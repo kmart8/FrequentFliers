@@ -66,7 +66,7 @@ public class Saps {
 	/**
 	 * Lower limit used for date range validation
 	 */
-	public static final ZonedDateTime EARLIEST_DATE = ZonedDateTime.of(LocalDateTime.of(2020,5,1,0,0), ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0)));
+	public static final ZonedDateTime EARLIEST_DATE = ZonedDateTime.of(LocalDateTime.of(2020,5,10,0,0), ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0)));
 	/**
 	 * Upper limit used for date range validation
 	 */
