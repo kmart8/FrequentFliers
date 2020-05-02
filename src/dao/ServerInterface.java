@@ -14,6 +14,7 @@ import java.time.*;
 
 import airport.Airport;
 import airport.Airports;
+import leg.Leg;
 import plane.Planes;
 import leg.Legs;
 import utils.QueryFactory;
@@ -190,15 +191,15 @@ public enum ServerInterface {
 		return boardingLegs;
 	}
 
-	public Legs getArrivingLegs(Airport arrivingAirport, LocalDate arrivalDate) {
+	public Legs getDisembarkingLegs(Airport disembarkingAirport, LocalDate disembarkingDate) {
 		URL url;
 		HttpURLConnection connection;
 		BufferedReader reader;
 		String line;
 		StringBuffer result = new StringBuffer();
 
-		String xmlArrivingLegs;
-		Legs arrivingLegs;
+		String xmlDisembarkingLegs;
+		Legs disembarkingLegs;
 
 		try {
 			/**
@@ -206,7 +207,7 @@ public enum ServerInterface {
 			 * QueryFactory provides the parameter annotations for the HTTP GET query string
 			 */
 
-			url = new URL(Saps.SERVER_URL + QueryFactory.getArrivingLegsQuery(arrivingAirport, arrivalDate));
+			url = new URL(Saps.SERVER_URL + QueryFactory.getArrivingLegsQuery(disembarkingAirport, disembarkingDate));
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 			connection.setRequestProperty("User-Agent", Saps.TEAM_NAME);
@@ -235,9 +236,22 @@ public enum ServerInterface {
 			return null;
 		}
 
-		xmlArrivingLegs = result.toString();
-		arrivingLegs = DaoLeg.addAll(xmlArrivingLegs);
-		return arrivingLegs;
+		xmlDisembarkingLegs = result.toString();
+		disembarkingLegs = DaoLeg.addAll(xmlDisembarkingLegs);
+		return disembarkingLegs;
+	}
+
+
+	//TODO:
+	public void postLegReservation() {
+		URL url;
+		HttpURLConnection connection;
+		BufferedReader reader;
+		String line;
+		StringBuffer result = new StringBuffer();
+
+		String xmlBoardingLegs;
+		Legs boardingLegs;
 	}
 	/**
 	 * Lock the database for updating by the specified team. The operation will fail if the lock is held by another team.
