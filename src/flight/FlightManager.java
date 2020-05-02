@@ -20,6 +20,11 @@ public class FlightManager {
     /** Filter for checking the validity of completed flights */
     private UIModel flightFilter;
 
+    public FlightManager(UIModel filter){
+        flightFilter = filter;
+        validFlights = new Flights();
+        filteredFlights = new Flights();
+    }
     /**
      * get valid flights
      *
@@ -48,7 +53,7 @@ public class FlightManager {
      */
     public void completeQueue(){
         while (!constructionQueue.isEmpty()){
-            Flight nextFlight = constructionQueue.pop();
+            Flight nextFlight = constructionQueue.removeFirst();
             nextFlight.isMatch(flightFilter);
             if (nextFlight.filterReason().isEmpty()){
                 enqueueFlight(nextFlight);
@@ -79,7 +84,7 @@ public class FlightManager {
 
                 }
                 copyFlight.addLegToEnd(thisLeg);
-                constructionQueue.push(copyFlight);
+                constructionQueue.add(copyFlight);
             }
         } else {
             Legs newLegs = getValidArrivingLegs(newFlight);
@@ -113,12 +118,16 @@ public class FlightManager {
         }
 
         Legs potentialNewLegs = LocalFlightDatabase.getInstance().getLegList(boardingAirport,startBoardingWindow.toLocalDate(),false);
+        Legs invalidNewLegs = new Legs();
 
          for (Leg thisLeg : potentialNewLegs) {
              if (thisLeg.boardingTime.isBefore(startBoardingWindow) || thisLeg.boardingTime.isAfter(endBoardingWindow)){
-                 potentialNewLegs.remove(thisLeg);
+                 invalidNewLegs.add(thisLeg);
              }
          }
+         if (invalidNewLegs.size() > 0)
+                 for (Leg thisLeg : invalidNewLegs) potentialNewLegs.remove(thisLeg);
+
         return potentialNewLegs;
      }
 
