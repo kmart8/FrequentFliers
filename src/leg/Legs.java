@@ -9,7 +9,10 @@ import java.util.ArrayList;
  *
  */
 
-public class Legs extends ArrayList<Leg>{
+public class Legs extends ArrayList<Leg> implements Cloneable{
     private static final long serialVersionUID = 1L;
 
+    public Legs clone(){
+        return (Legs) super.clone();
+    }
 }
