@@ -1,5 +1,8 @@
 package driver;
 
+import flight.Flight;
+import flight.FlightManager;
+import flight.Flights;
 import ui.UIModel;
 import ui.UIController;
 import dao.LocalFlightDatabase;
@@ -14,6 +17,7 @@ import dao.LocalFlightDatabase;
  */
 public class FlightBuilder {
     private UIController app;
+    private FlightManager flightController;
 
     // Singleton variable
     private static FlightBuilder single_instance = null;
@@ -44,11 +48,16 @@ public class FlightBuilder {
         UIModel userInput = app.getAcceptedInput();
 
         // Confirm that the user has supplied a departure airport and departure date
-        if (userInput.departureAirport() != null && userInput.departureDate() != null) {
+        if (userInput.departureAirport() != null && userInput.arrivalAirport() != null) {
+            flightController = new FlightManager();
+            flightController.flightFilter(userInput);
+            flightController.enqueueFlight(new Flight());
+            flightController.completeQueue();
+            Flights displayFlights = flightController.validFlights();
             // Get legs which match the user input criteria, this will most likely be implemented for flights in later versions (not legs)
-            app.setDisplayList(LocalFlightDatabase.getInstance().getLegList(userInput.departureAirport(), userInput.departureDate().toLocalDate(), false));
+            //app.setDisplayList(LocalFlightDatabase.getInstance().getLegList(userInput.departureAirport(), userInput.startFlightDateTime().toLocalDate(), false));
         } else
-            System.out.println("Departure airport or departure date is empty, cannot search for flights");
+            System.out.println("Departure airport or arrival airport is empty, cannot search for flights");
     }
 
 }
