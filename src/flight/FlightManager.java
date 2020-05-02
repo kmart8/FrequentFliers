@@ -57,8 +57,6 @@ public class FlightManager {
             } else if (nextFlight.getFilterReason().equals("invalid")){
                 // Do nothing, do not requeue this flight or derivatives
             } else filteredFlights.add(nextFlight);
-
-            completeQueue();
         }
     }
 
@@ -93,7 +91,7 @@ public class FlightManager {
                 } catch (CloneNotSupportedException E){
 
                 }
-                copyFlight.addLegAfter(thisLeg);
+                copyFlight.addLegBefore(thisLeg);
                 constructionQueue.push(copyFlight);
             }
         }
@@ -110,10 +108,10 @@ public class FlightManager {
          // TODO: Collect the time/date ranges correctly after the UIModel is updated
         ZonedDateTime startBoardingWindow = flightFilter.departureDate();
         ZonedDateTime endBoardingWindow = flightFilter.departureDate();
-        if (newFlight.getNumberOfLegs() > 0) {
+        if (newFlight.getArrivalAirport() != null) {
             boardingAirport = newFlight.getArrivalAirport();
             startBoardingWindow = newFlight.getArrivalTime().plus(Saps.MIN_LAYOVER_TIME);
-            endBoardingWindow = startBoardingWindow.plus(Saps.MIN_LAYOVER_TIME.minus(Saps.MIN_LAYOVER_TIME));
+            endBoardingWindow = startBoardingWindow.plus(Saps.MAX_LAYOVER_TIME.minus(Saps.MIN_LAYOVER_TIME));
         }
         Legs potentialNewLegs = LocalFlightDatabase.getInstance().getLegList(boardingAirport,startBoardingWindow.toLocalDate(),false);
         if (!startBoardingWindow.toLocalDate().equals(endBoardingWindow.toLocalDate())){
@@ -140,7 +138,7 @@ public class FlightManager {
         // TODO: Collect the time/date ranges correctly after the UIModel is updated
         ZonedDateTime startDisembarkingWindow = flightFilter.arrivalDate();
         ZonedDateTime endDisembarkingWindow = flightFilter.arrivalDate();
-        if (newFlight.getNumberOfLegs() > 0) { 
+        if (newFlight.getDepartureAirport() != null) {
             disembarkingAirport = newFlight.getDepartureAirport();
             endDisembarkingWindow = newFlight.getDepartureTime().minus(Saps.MIN_LAYOVER_TIME);
             startDisembarkingWindow = endDisembarkingWindow.minus(Saps.MIN_LAYOVER_TIME.minus(Saps.MIN_LAYOVER_TIME));
