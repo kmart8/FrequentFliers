@@ -38,6 +38,18 @@ public class UIController {
         add(DateTimeFormatter.ofPattern("M/dd/yy"));
         add(DateTimeFormatter.ofPattern ("M/d/yy"));}};
 
+    // Initialize a date format list for displaying/parsing dates to/from the user
+    private List<DateTimeFormatter> acceptedTimeFormats = new ArrayList<>(){{
+        // TODO: I Dont think most of these work, need to check
+        add(DateTimeFormatter.ofPattern ("hh:mm:ss a"));
+        add(DateTimeFormatter.ofPattern ("hh:mm a"));
+        add(DateTimeFormatter.ofPattern ("h:mm:ss a"));
+        add(DateTimeFormatter.ofPattern ("h:mm a"));
+        add(DateTimeFormatter.ofPattern ("HH:mm:ss "));
+        add(DateTimeFormatter.ofPattern ("HH:mm "));
+        add(DateTimeFormatter.ofPattern ("H:mm:ss "));
+        add(DateTimeFormatter.ofPattern ("H:mm "));}};
+
 
     // List of legs currently being displayed to the user
     private Legs displayList;
@@ -222,81 +234,108 @@ public class UIController {
     }
 
     /**
-     * Returns the arrival date, formatted as a string
+     * Returns the date, formatted as a string
      * @return a string with the arrival date
      */
-    public String getArrivalDate() {
-        if(savedInput.arrivalDate() != null)
-            return acceptedDateFormats.get(0).format(savedInput.arrivalDate());
+    public String getFlightDate() {
+        if(savedInput.startFlightDateTime() != null)
+            return acceptedDateFormats.get(0).format(savedInput.startFlightDateTime());
         else
             return "";
     }
 
     /**
-     * Attempts to update the stored arrival date according to user input
-     * @param arrivalDate a String with the formatted date
+     * Attempts to update the stored date according to user input
+     * @param date a String with the formatted date
      */
-    public void setArrivalDate(String arrivalDate) {
+    public void setFlightDate(String date) {
         // Attempt to parse the input string, make no changes on failure
-        ZonedDateTime date = validateDate(arrivalDate);
+        LocalDate newDate = validateDate(date);
 
         // If the date was already null, make no changes
-        if(date == null) {
-            if (savedInput.arrivalDate() != null) {
-                savedInput.arrivalDate(null);
-                System.out.println("Arrival date removed");
-            }
-            return;
-        }
-
-        // If the old date was null or different from the new one, validate the new date and overwrite the stored value
-        if (savedInput.arrivalDate()== null || !date.equals(savedInput.arrivalDate())) {
-            // Make sure the new arrival date is after the departure date
-            if(savedInput.departureDate() == null || date.compareTo(savedInput.departureDate()) >= 0) {
-                savedInput.arrivalDate(date);
-                System.out.println("User input updated the arrival date to " + arrivalDate);
-            }else
-                System.out.println("Warning: User input of " + arrivalDate + " is before the departure date");
+        if(newDate != null) {
+            LocalDateTime newStart = LocalDateTime.of(newDate, savedInput.startFlightDateTime().toLocalTime());
+            LocalDateTime newEnd = LocalDateTime.of(newDate, savedInput.endFlightDateTime().toLocalTime());
+            savedInput.startFlightDateTime(ZonedDateTime.of(newStart,ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0))));
+            savedInput.endFlightDateTime(ZonedDateTime.of(newEnd,ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0))));
         }
     }
 
     /**
-     * Returns the departure date, formatted as a string
-     * @return a string with the departure date
+     * Returns the time, formatted as a string
+     * @return a string with the start time
      */
-    public String getDepartureDate() {
-        if (savedInput.departureDate() != null)
-            return acceptedDateFormats.get(0).format(savedInput.departureDate());
+    public String getStartTime() {
+        if(savedInput.startFlightDateTime() != null)
+            return acceptedTimeFormats.get(0).format(savedInput.startFlightDateTime());
         else
             return "";
     }
 
     /**
-     * Attempts to update the stored departure date according to user input
-     * @param departureDate a String with the formatted date
+     * Attempts to update the stored start time according to user input
+     * @param time a String with the formatted time
      */
-    public void setDepartureDate(String departureDate) {
-        // Attempt to parse the input string
-        ZonedDateTime date = validateDate(departureDate);
+    public void setStartTime(String time) {
+        // Attempt to parse the input string, make no changes on failure
+        LocalTime newTime = validateTime(time);
 
         // If the date was already null, make no changes
-        if(date == null) {
-            if (savedInput.departureDate() != null) {
-                savedInput.departureDate(null);
-                System.out.println("Arrival date removed");
+        if(newTime != null) {
+            LocalDateTime newStart = LocalDateTime.of(savedInput.startFlightDateTime().toLocalDate(), newTime);
+            if (newStart.isAfter(savedInput.endFlightDateTime().toLocalDateTime())){
+                System.out.println("Warning: User input of " + time + " is after the end of the time window");
+            }else {
+                savedInput.startFlightDateTime(ZonedDateTime.of(newStart, ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0))));
             }
-            return;
         }
+    }
 
-        // If the old date was null or different from the new one, validate the new date and overwrite the stored value
-        if (savedInput.departureDate()== null || !date.equals(savedInput.departureDate())) {
-            // Make sure the new departure date is before the arrival date
-            if(savedInput.arrivalDate() == null || date.compareTo(savedInput.arrivalDate()) <= 0) {
-                savedInput.departureDate(date);
-                System.out.println("User input updated the departure date to " + departureDate);
-            }else
-                System.out.println("Warning: User input of " + departureDate + " is after the arrival date");
+    /**
+     * Returns the time, formatted as a string
+     * @return a string with the end time
+     */
+    public String getEndTime() {
+        if(savedInput.endFlightDateTime() != null)
+            return acceptedTimeFormats.get(0).format(savedInput.endFlightDateTime());
+        else
+            return "";
+    }
+
+    /**
+     * Attempts to update the stored end time according to user input
+     * @param time a String with the formatted time
+     */
+    public void setEndTime(String time) {
+        // Attempt to parse the input string, make no changes on failure
+        LocalTime newTime = validateTime(time);
+
+        // If the date was already null, make no changes
+        if(newTime != null) {
+            LocalDateTime newEnd = LocalDateTime.of(savedInput.endFlightDateTime().toLocalDate(), newTime);
+            if (newEnd.isBefore(savedInput.startFlightDateTime().toLocalDateTime())){
+                System.out.println("Warning: User input of " + time + " is before the beginning of the time window");
+            }else {
+                savedInput.endFlightDateTime(ZonedDateTime.of(newEnd, ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0))));
+            }
         }
+    }
+
+    /**
+     * Returns the stored time type
+     * @return a String indicating the time window is for departure or arrival flights
+     */
+    public String getTimeType() {
+        return savedInput.timeType();
+    }
+
+    /**
+     * Attempts to update the stored time type according to user input
+     * @param timeType a String indicating the time window is for departure or arrival flights
+     */
+    public void setTimeType(String timeType) {
+        if (timeType.equals("Departure") || timeType.equals("Arrival"))
+            savedInput.timeType(timeType);
     }
 
     public void setDisplayList(Legs displayList){
@@ -313,8 +352,8 @@ public class UIController {
      *
      * @return a valid ZonedDateTime, or null if the String could not be parsed or the date is outside the valid range
      */
-    private ZonedDateTime validateDate(String date){
-        ZonedDateTime parsedDate = null;
+    private LocalDate validateDate(String date){
+        LocalDate parsedDate = null;
         // If the string is empty, then set the date to null
         if (date == null || date.equals(""))
             return null;
@@ -322,7 +361,7 @@ public class UIController {
         // Try to parse the date string according to accepted input formats for date values
         for(DateTimeFormatter formatter : acceptedDateFormats){
             try {
-                parsedDate = ZonedDateTime.of(LocalDate.parse(date, formatter), LocalTime.MIN, ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0)));
+                parsedDate = LocalDate.parse(date, formatter);
                 break;
             } catch (DateTimeParseException ex1) {}
         }
@@ -334,12 +373,39 @@ public class UIController {
         }
 
         // Validate the range of the parsed date
-        if (parsedDate.compareTo(Saps.EARLIEST_DATE) >= 0 && parsedDate.compareTo(Saps.LATEST_DATE) < 0){
+        if (parsedDate.compareTo(Saps.EARLIEST_DATE.toLocalDate()) >= 0 && parsedDate.compareTo(Saps.LATEST_DATE.toLocalDate()) < 0){
             return parsedDate;
         } else{
             System.out.println("Warning: User input of " + date + " is outside the valid range of 05/01/2020 through 5/31/2020");
             return null;
         }
+    }
+
+    /**
+     * Attempts to parse and validate a date String as a LocalTime
+     * @param time a String with the formatted time
+     *
+     * @return a valid LocalTime, or null if the String could not be parsed
+     */
+    private LocalTime validateTime(String time){
+        LocalTime parsedTime = null;
+        // If the string is empty, then set the date to null
+        if (time == null || time.equals(""))
+            return null;
+
+        // Try to parse the time string according to accepted input formats for date values
+        for(DateTimeFormatter formatter : acceptedTimeFormats){
+            try {
+                parsedTime = LocalTime.parse(time, formatter);
+                break;
+            } catch (DateTimeParseException ex1) {}
+        }
+
+        // If the parsed date was never assigned, then none of the parses succeeded and the input format was invalid
+        if (parsedTime == null) {
+            System.out.println("Warning: User input of " + time + " is invalid syntax for the date, should be: MM/dd/yyyy");
+            return null;
+        } else return parsedTime;
     }
 
     /**
