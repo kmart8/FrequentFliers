@@ -4,7 +4,10 @@ import airport.Airport;
 import leg.Leg;
 import leg.Legs;
 import ui.UIModel;
+import utils.Saps;
+
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.Comparator;
 
@@ -18,14 +21,17 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
     /** Empty Constructor for Flight Object */
     public Flight() {
         legList = new Legs();
-        seatingType = "economy";
+        seatingType = "Coach";
     }
 
     /** Constructor for Flight Object */
-    public Flight(Legs lList) {
+    public Flight(Legs lList, String seatingType) {
         legList = lList;
-        seatingType = "economy";
+        if (Saps.SEATING_TYPES.contains(seatingType)) this.seatingType = seatingType;
+        else this.seatingType = "Coach";
     }
+
+    public void legList(Legs legs) { legList = legs;}
 
     /** Add Leg to end of array */
     public void addLegToEnd(Leg newLeg) {
@@ -39,10 +45,7 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
 
     /** Method to set seating type */
     public void setSeatingType(String seatingRequested) {
-        if (seatingRequested.equals("firstClass")) {
-            seatingType = seatingRequested;
-        }
-        else seatingType = "economy";
+        if (Saps.SEATING_TYPES.contains(seatingRequested)) seatingType = seatingRequested;
     }
 
     /** Method to get Departure Airport of Flight */
@@ -101,7 +104,7 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
     public BigDecimal getTotalPrice() {
         BigDecimal totalPrice = new BigDecimal("0");
         if (legList.size() > 0) {
-            if (seatingType.equals("firstClass")) {
+            if (seatingType.equals("First Class")) {
                 for (Leg thisLeg : legList) {
                     totalPrice = totalPrice.add(thisLeg.getFirstClassPrice());
                 }
@@ -119,8 +122,14 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
         return Math.max(legList.size() - 1, 0);
     }
 
+    public Duration getTotalTravelTime(){
+        return Duration.between(getDepartureTime(), getArrivalTime());
+    }
     /** Method to access the filter reason */
     public String filterReason(){ return filterReason; }
+
+    /** Method to access the seating type */
+    public String seatingType(){ return seatingType; }
 
     /** Method to check if Flight is a match */
     public void isMatch(UIModel uIFilter) {
@@ -142,17 +151,19 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
         }
 
         for (Leg thisLeg : legList)
-            if (thisLeg.getRemainingSeats("coach") < uIFilter.numberOfPassengers() &&
-                    thisLeg.getRemainingSeats("firstClass") < uIFilter.numberOfPassengers()) {
+            if (thisLeg.getRemainingSeats("Coach") < uIFilter.numberOfPassengers() &&
+                    thisLeg.getRemainingSeats("First Class") < uIFilter.numberOfPassengers()) {
                 filterReason = "invalid";
                 return;
             }
 
         for (Leg thisLeg : legList)
             if (thisLeg.getRemainingSeats(seatingType) < uIFilter.numberOfPassengers()) {
-                filterReason = "checkFilter";
+                filterReason = "seating";
                 return;
             }
+
+        if (complete) filterReason = "complete";
 
     }
 
@@ -168,7 +179,8 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
 
     /** Required Clone Method*/
     public Flight clone() throws CloneNotSupportedException{
-        return (Flight)super.clone();
+        Flight copy = (Flight)super.clone();
+        copy.legList(legList.clone());
+        return copy;
     }
-
 }
