@@ -1,6 +1,8 @@
 package ui;
 
 import driver.FlightBuilder;
+import flight.Flight;
+import flight.Flights;
 import leg.Leg;
 import leg.Legs;
 import utils.Saps;
@@ -15,6 +17,7 @@ import java.text.NumberFormat;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Locale;
 
@@ -47,8 +50,11 @@ public class ReservationApp {
     private JFormattedTextField maximumLayoversFormattedTextField;
     private JFormattedTextField numberOfPassengersFormattedTextField;
     private JTable flightDisplayTable;
+    private JTable legDisplayTable;
     private JComboBox comboBox1;
     private JFormattedTextField endTimeFormattedTextField;
+    private JTabbedPane tabbedPane1;
+    private JTabbedPane DisplayDetails;
     private JFrame frameHandle;
 
     // List of UI components which should be inactive during long operations to prevent user input
@@ -58,8 +64,9 @@ public class ReservationApp {
     // Model that stores the current state of user input and validates new input
     private static UIController controller;
 
-    // Create a table model to modify and store the data of the flightDisplayTable
+    // Create a table model to modify and store the data of the display tables
     private static DefaultTableModel flightDisplayData = new DefaultTableModel();
+    private static DefaultTableModel legDisplayData = new DefaultTableModel();
 
     /**
      * Main method is required by JavaFX, which is used by the GUI Designer,
@@ -80,25 +87,39 @@ public class ReservationApp {
 
         // Create the list of JComponents that should be disabled while the app is busy
         buildBusyList();
-
+        String[] temp = Arrays.copyOf(Saps.SEATING_TYPES.toArray(), Saps.SEATING_TYPES.toArray().length, String[].class);
         // Set the default seating types
-        seatingTypeComboBox.setModel(new DefaultComboBoxModel<String>(Saps.SEATING_TYPES));
+        seatingTypeComboBox.setModel(new DefaultComboBoxModel<String>(temp));
+
+        // Set the columns of the leg table
+        legDisplayData.setColumnCount(0);
+        legDisplayData.addColumn("Coach Price");
+        legDisplayData.addColumn("First Class Price");
+        legDisplayData.addColumn("Flight Time");
+        legDisplayData.addColumn("Departure Airport");
+        legDisplayData.addColumn("Departure Date");
+        legDisplayData.addColumn("Departure Time");
+        legDisplayData.addColumn("Arrival Airport");
+        legDisplayData.addColumn("Arrival Date");
+        legDisplayData.addColumn("Arrival Time");
+        legDisplayData.addColumn("Flight Number");
+        legDisplayData.addColumn("Plane Model");
+        legDisplayData.addColumn("Coach Seats Reserved");
+        legDisplayData.addColumn("First Class Seats Reserved");
+        legDisplayTable.setModel(legDisplayData);
 
         // Set the columns of the table
         flightDisplayData.setColumnCount(0);
-        flightDisplayData.addColumn("Coach Price");
-        flightDisplayData.addColumn("First Class Price");
-        flightDisplayData.addColumn("Flight Time");
+        flightDisplayData.addColumn("Total Price");
         flightDisplayData.addColumn("Departure Airport");
         flightDisplayData.addColumn("Departure Date");
         flightDisplayData.addColumn("Departure Time");
         flightDisplayData.addColumn("Arrival Airport");
         flightDisplayData.addColumn("Arrival Date");
         flightDisplayData.addColumn("Arrival Time");
-        flightDisplayData.addColumn("Flight Number");
-        flightDisplayData.addColumn("Plane Model");
-        flightDisplayData.addColumn("Coach Seats Reserved");
-        flightDisplayData.addColumn("First Class Seats Reserved");
+        flightDisplayData.addColumn("Flight Duration");
+        flightDisplayData.addColumn("Number of Layovers");
+        flightDisplayData.addColumn("Seating Type");
         flightDisplayTable.setModel(flightDisplayData);
 
         System.out.println("Finished Initialization");
@@ -120,8 +141,7 @@ public class ReservationApp {
                 // Set the busy status to true, until the table has been built or the operation is canceled
                 System.out.println("Search Button User Interaction");
                 busy(true);
-                FlightBuilder.getInstance().searchForFlights();
-                buildFlightTable();
+                buildFlightTable(FlightBuilder.getInstance().searchForFlights());
                 busy(false);
             }
         });
@@ -255,46 +275,80 @@ public class ReservationApp {
     }
 
     /**
-     * Updates the table to display the current list of legs stored in the model
+     * Updates the table to display the current list of legs
+     *
+     * @param displayList the list of legs for display
      */
-    private void buildFlightTable(){
-        Legs displayList = controller.getDisplayList();
-        if(displayList != null) {
-            // Get the current model of the table and remove all previous entries
-            DefaultTableModel table = (DefaultTableModel) flightDisplayTable.getModel();
-            table.setRowCount(0);
+private void buildLegTable(Legs displayList){
+        // Get the current model of the table and remove all previous entries
+        DefaultTableModel table = (DefaultTableModel) legDisplayTable.getModel();
+        table.setRowCount(0);
 
-            // Set the default formats for displaying dates, times, and prices
-            DateTimeFormatter dateStyle = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-            DateTimeFormatter timeStyle = DateTimeFormatter.ofPattern("HH:mm a");
-            DateTimeFormatter flightTimeStyle = DateTimeFormatter.ofPattern("HH:mm");
-            NumberFormat priceStyle = NumberFormat.getCurrencyInstance(Locale.US);
+        // Set the default formats for displaying dates, times, and prices
+        DateTimeFormatter dateStyle = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        DateTimeFormatter timeStyle = DateTimeFormatter.ofPattern("hh:mm a");
+        DateTimeFormatter flightTimeStyle = DateTimeFormatter.ofPattern("HH:mm");
+        NumberFormat priceStyle = NumberFormat.getCurrencyInstance(Locale.US);
 
-            // Add a new row to the table for each leg on the list
-            for (Leg leg : displayList) {
-                // Generate correctly formatted strings from Leg attributes
-                String coachPrice = priceStyle.format(leg.coachPrice);
-                String firstClassPrice = priceStyle.format(leg.firstClassPrice);
-                String departureAirport = leg.boardingAirport.code();
-                String departureDate = dateStyle.format(leg.boardingTime);
-                String departureTime = timeStyle.format(leg.boardingTime);
-                String arrivalAirport = leg.disembarkingAirport.code();
-                String arrivalDate = dateStyle.format(leg.disembarkingTime);
-                String arrivalTime = timeStyle.format(leg.disembarkingTime);
-                String flightNumber = Integer.toString(leg.flightNumber);
-                String plane = leg.plane.model();
-                String coachSeatsReserved = Integer.toString(leg.reservedCoachSeats);
-                String firstClassSeatsReserved = Integer.toString(leg.reservedFirstClassSeats);
-                String flightTime = flightTimeStyle.format(LocalTime.of((int) floor((double)leg.legDuration /60.0), leg.legDuration % 60));
+        // Add a new row to the table for each leg on the list
+        for (Leg leg : displayList) {
+            // Generate correctly formatted strings from Leg attributes
+            String coachPrice = priceStyle.format(leg.coachPrice);
+            String firstClassPrice = priceStyle.format(leg.firstClassPrice);
+            String departureAirport = leg.boardingAirport.code();
+            String departureDate = dateStyle.format(leg.boardingTime);
+            String departureTime = timeStyle.format(leg.boardingTime);
+            String arrivalAirport = leg.disembarkingAirport.code();
+            String arrivalDate = dateStyle.format(leg.disembarkingTime);
+            String arrivalTime = timeStyle.format(leg.disembarkingTime);
+            String flightNumber = Integer.toString(leg.flightNumber);
+            String plane = leg.plane.model();
+            String coachSeatsReserved = Integer.toString(leg.reservedCoachSeats);
+            String firstClassSeatsReserved = Integer.toString(leg.reservedFirstClassSeats);
+            String flightTime = flightTimeStyle.format(LocalTime.of((int) floor((double)leg.legDuration /60.0), leg.legDuration % 60));
 
-                // Add these strings as a new row in the table (ORDER MATTERS)
-                table.addRow(new Object[] {coachPrice, firstClassPrice, flightTime, departureAirport,departureDate,
-                                            departureTime,arrivalAirport,arrivalDate,arrivalTime,flightNumber,plane,
-                                            coachSeatsReserved, firstClassSeatsReserved});
+            // Add these strings as a new row in the table (ORDER MATTERS)
+            table.addRow(new Object[] {coachPrice, firstClassPrice, flightTime, departureAirport,departureDate,
+                                        departureTime,arrivalAirport,arrivalDate,arrivalTime,flightNumber,plane,
+                                        coachSeatsReserved, firstClassSeatsReserved});
             }
-        }else
-            System.out.println("No flights were found matching the provided criteria");
-        System.out.println("Flights matching the provided criteria have been displayed");
+        System.out.println("Legs been displayed");
     }
 
+    /**
+     * Updates the table to display the list of flights
+     *
+     * @param displayList the list of flights for display
+     */
+private void buildFlightTable(Flights displayList){
+        // Get the current model of the table and remove all previous entries
+        DefaultTableModel table = (DefaultTableModel) flightDisplayTable.getModel();
+        table.setRowCount(0);
+
+        // Set the default formats for displaying dates, times, and prices
+        DateTimeFormatter dateStyle = DateTimeFormatter.ofPattern("MM/dd/yyyy");
+        DateTimeFormatter timeStyle = DateTimeFormatter.ofPattern("HH:mm a");
+        DateTimeFormatter flightTimeStyle = DateTimeFormatter.ofPattern("HH:mm");
+        NumberFormat priceStyle = NumberFormat.getCurrencyInstance(Locale.US);
+
+        // Add a new row to the table for each leg on the list
+        for (Flight flight : displayList) {
+            // Generate correctly formatted strings from Leg attributes
+            String price = priceStyle.format(flight.getTotalPrice());
+            String departureAirport = flight.getDepartureAirport().code();
+            String departureDate = dateStyle.format(flight.getLocalDepartureTime());
+            String departureTime = timeStyle.format(flight.getLocalDepartureTime());
+            String arrivalAirport = flight.getArrivalAirport().code();
+            String arrivalDate = dateStyle.format(flight.getLocalArrivalTime());
+            String arrivalTime = timeStyle.format(flight.getLocalArrivalTime());
+            String duration = flightTimeStyle.format(LocalTime.MIN.plus(flight.getTotalTravelTime()));
+            String layovers = Integer.toString(flight.getNumberOfLayovers());
+            String seating = flight.seatingType();
+
+            // Add these strings as a new row in the table (ORDER MATTERS)
+            table.addRow(new Object[] {price, departureAirport, departureDate, departureTime,arrivalAirport,
+                    arrivalDate,arrivalTime,duration,layovers,seating});
+        }
+        System.out.println("Flights have been displayed");
+    }
 }
