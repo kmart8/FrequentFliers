@@ -63,4 +63,8 @@ public class FlightBuilder {
         }
     }
 
+    public void bookFlight(Flight flight){
+
+    }
+
 }

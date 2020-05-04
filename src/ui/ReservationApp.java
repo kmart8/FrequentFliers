@@ -1,5 +1,6 @@
 package ui;
 
+import dao.ServerInterface;
 import driver.FlightBuilder;
 import flight.Flight;
 import flight.Flights;
@@ -228,6 +229,12 @@ public class ReservationApp {
                 controller.setTimeType(seatingTypeComboBox.getSelectedItem().toString());
             }
         });
+        addFlightToCartButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                FlightBuilder.getInstance().searchForFlights();
+            }
+        });
     }
 
     /**
@@ -330,6 +337,12 @@ private void buildFlightTable(Flights displayList){
         DateTimeFormatter timeStyle = DateTimeFormatter.ofPattern("HH:mm a");
         DateTimeFormatter flightTimeStyle = DateTimeFormatter.ofPattern("HH:mm");
         NumberFormat priceStyle = NumberFormat.getCurrencyInstance(Locale.US);
+
+        ServerInterface.INSTANCE.lock();
+        for (int i = 0; i < controller.getAcceptedInput().numberOfPassengers(); i++) {
+            ServerInterface.INSTANCE.postLegReservation(displayList.get(0));
+        }
+        ServerInterface.INSTANCE.unlock();
 
         // Add a new row to the table for each leg on the list
         for (Flight flight : displayList) {
