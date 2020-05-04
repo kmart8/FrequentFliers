@@ -79,7 +79,7 @@ public class QueryFactory {
 		return "team=" + Saps.TEAM_NAME + "&action=unlockDB";
 	}
 
-	public static String postLegReservation(String xmlFlights) {
+	public static String postLegReservation(String xmlFlights) { return "team=" + Saps.TEAM_NAME + "&action=buyTickets&flightData=" + xmlFlights; }
 
-		return "team=" + Saps.TEAM_NAME + "&action=buyTickets&flightData=" + xmlFlights; }
+	public static String reset() { return "?team="+ Saps.TEAM_NAME +" &action=resetDB";}
 }

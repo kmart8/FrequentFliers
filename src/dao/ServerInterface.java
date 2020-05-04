@@ -462,7 +462,7 @@ public enum ServerInterface {
 
 	public Node createLegNode(Document document, String seatingType, Leg leg) {
 
-		// create contact element
+		// create leg node
 		Element legNode = document.createElement("Flight");
 
 		// create attribute
@@ -472,7 +472,7 @@ public enum ServerInterface {
 		seatingAttribute.setValue(seatingType);
 
 
-		// append attribute to contact element
+		// append attribute to leg node
 		legNode.setAttributeNode(flightNumberAttribute);
 		legNode.setAttributeNode(seatingAttribute);
 
