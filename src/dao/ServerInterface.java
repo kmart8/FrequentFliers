@@ -410,7 +410,7 @@ public enum ServerInterface {
 		}
 
 		assert document != null;
-		Element root = document.createElement("Flight");
+		Element root = document.createElement("Flights");
 		document.appendChild(root);
 
 		String seatingType = flight.seatingType();
@@ -436,7 +436,7 @@ public enum ServerInterface {
 			// create Transformer for transformation
 			Transformer transformer = transformerFactory.newTransformer();
 			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-			transformer.setOutputProperty("indent", "yes");
+			//transformer.setOutputProperty("indent", "yes");
 
 			StringWriter writer = new StringWriter();
 
