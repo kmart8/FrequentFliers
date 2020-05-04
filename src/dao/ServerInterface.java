@@ -3,22 +3,30 @@
  */
 package dao;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.time.*;
 
 import airport.Airport;
 import airport.Airports;
+import flight.Flight;
 import leg.Leg;
+import org.w3c.dom.Attr;
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
 import plane.Planes;
 import leg.Legs;
 import utils.QueryFactory;
 import utils.Saps;
+
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
+import javax.xml.transform.*;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 /**
  * This class provides an interface to the CS509 server. It provides sample methods to perform
@@ -207,7 +215,7 @@ public enum ServerInterface {
 			 * QueryFactory provides the parameter annotations for the HTTP GET query string
 			 */
 
-			url = new URL(Saps.SERVER_URL + QueryFactory.getArrivingLegsQuery(disembarkingAirport, disembarkingDate));
+			url = new URL(Saps.SERVER_URL + QueryFactory.getDisembarkingLegsQuery(disembarkingAirport, disembarkingDate));
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 			connection.setRequestProperty("User-Agent", Saps.TEAM_NAME);
@@ -242,16 +250,47 @@ public enum ServerInterface {
 	}
 
 
-	//TODO:
-	public void postLegReservation() {
+	public boolean postLegReservation(Flight flight) {
 		URL url;
 		HttpURLConnection connection;
-		BufferedReader reader;
-		String line;
-		StringBuffer result = new StringBuffer();
 
-		String xmlBoardingLegs;
-		Legs boardingLegs;
+		try {
+			url = new URL(Saps.SERVER_URL);
+			connection = (HttpURLConnection) url.openConnection();
+			connection.setRequestMethod("POST");
+			connection.setRequestProperty("User-Agent", Saps.TEAM_NAME);
+			connection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
+
+			String xmlFlights = buildPostXML(flight);
+			String params = QueryFactory.postLegReservation(xmlFlights);
+
+			connection.setDoOutput(true);
+			DataOutputStream writer = new DataOutputStream(connection.getOutputStream());
+			writer.writeBytes(params);
+			writer.flush();
+			writer.close();
+
+			int responseCode = connection.getResponseCode();
+			System.out.println("\nSending 'POST' to post reservation to database");
+			System.out.println(("\nResponse Code : " + responseCode));
+
+			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
+			String line;
+			StringBuffer response = new StringBuffer();
+
+			while ((line = in.readLine()) != null) {
+				response.append(line);
+			}
+			in.close();
+
+			System.out.println(response.toString());
+		}
+		catch (Exception ex) {
+			ex.printStackTrace();
+			return false;
+		}
+		return true;
+
 	}
 	/**
 	 * Lock the database for updating by the specified team. The operation will fail if the lock is held by another team.
@@ -356,5 +395,87 @@ public enum ServerInterface {
 			return false;
 		}
 		return true;
+	}
+
+	public String buildPostXML(Flight flight) {
+
+		Document document = null;
+
+		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+		try {
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			document = builder.newDocument();
+		}catch (ParserConfigurationException parserException) {
+			parserException.printStackTrace();
+		}
+
+		assert document != null;
+		Element root = document.createElement("Flight");
+		document.appendChild(root);
+
+		String seatingType = flight.seatingType();
+		Legs legList = flight.getLegList();
+
+		for (Leg leg : legList) {
+			// add child element
+			Node legNode = createLegNode(document,seatingType,leg);
+			root.appendChild(legNode);
+		}
+		// convert document to string
+		try {
+
+			// create DOMSource for source XML document
+			Source xmlSource = new DOMSource(document);
+
+			// create StreamResult for transformation result
+			//Result result = new StreamResult(new FileOutputStream("post.xml"));
+
+			// create TransformerFactory
+			TransformerFactory transformerFactory = TransformerFactory.newInstance();
+
+			// create Transformer for transformation
+			Transformer transformer = transformerFactory.newTransformer();
+			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+			transformer.setOutputProperty("indent", "yes");
+
+			StringWriter writer = new StringWriter();
+
+			//transform document to string
+			transformer.transform(new DOMSource(document), new StreamResult(writer));
+
+			String xmlString = writer.getBuffer().toString();
+			System.out.println(xmlString);
+
+			return xmlString;
+		}
+
+		// handle exception creating TransformerFactory
+		catch (TransformerFactoryConfigurationError factoryError) {
+			System.err.println("Error creating " + "TransformerFactory");
+			factoryError.printStackTrace();
+		}catch (TransformerException transformerError) {
+			System.err.println("Error transforming document");
+			transformerError.printStackTrace();
+		}
+		return null;
+	}
+
+	public Node createLegNode(Document document, String seatingType, Leg leg) {
+
+		// create contact element
+		Element legNode = document.createElement("Flight");
+
+		// create attribute
+		Attr flightNumberAttribute = document.createAttribute("number");
+		Attr seatingAttribute = document.createAttribute("seating");
+		flightNumberAttribute.setValue(Integer.toString(leg.getFlightNumber()));
+		seatingAttribute.setValue(seatingType);
+
+
+		// append attribute to contact element
+		legNode.setAttributeNode(flightNumberAttribute);
+		legNode.setAttributeNode(seatingAttribute);
+
+		return legNode;
 	}
 }

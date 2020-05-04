@@ -33,6 +33,12 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
 
     public void legList(Legs legs) { legList = legs;}
 
+    // TODO: Having legList and getLegList might be messy, but i need a way to get the list of legs on a flight for the post query
+
+    public Legs getLegList() {
+        return legList;
+    }
+
     /** Add Leg to end of array */
     public void addLegToEnd(Leg newLeg) {
         legList.add(newLeg);
