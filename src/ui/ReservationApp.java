@@ -58,6 +58,8 @@ public class ReservationApp {
     private JFormattedTextField endTimeFormattedTextField;
     private JTabbedPane tabbedPane1;
     private JComboBox comboBox2;
+    private JComboBox sortTypeComboBox;
+    private JComboBox sortDirectionComboBox;
     private JTabbedPane DisplayDetails;
     private JFrame frameHandle;
 
@@ -71,6 +73,11 @@ public class ReservationApp {
     // Create a table model to modify and store the data of the display tables
     private static DefaultTableModel flightDisplayData = new DefaultTableModel();
     private static DefaultTableModel legDisplayData = new DefaultTableModel();
+
+    // Currently selected sort method
+    private static String sortType = "Price";
+    // Currently selected sort direction, true if ascending and false if descending
+    private static boolean isAscending = true;
 
     /**
      * Main method is required by JavaFX, which is used by the GUI Designer,
@@ -259,6 +266,19 @@ public class ReservationApp {
                 }
             }
         });
+        sortTypeComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                sortType = sortTypeComboBox.getSelectedItem().toString();
+            }
+        });
+        sortDirectionComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                String sortDirection = sortDirectionComboBox.getSelectedItem().toString();
+                isAscending = sortDirection.equals("Ascending");
+            }
+        });
     }
 
     /**
@@ -274,7 +294,6 @@ public class ReservationApp {
         frameHandle.pack();
         frameHandle.setLocationRelativeTo(null);
         frameHandle.setVisible(true);
-        NotificationManager.getInstance().popupBusy();
     }
 
 
@@ -329,11 +348,11 @@ private void buildLegTable(Legs displayList){
             String coachPrice = priceStyle.format(leg.coachPrice);
             String firstClassPrice = priceStyle.format(leg.firstClassPrice);
             String departureAirport = leg.boardingAirport.code();
-            String departureDate = dateStyle.format(leg.boardingTime);
-            String departureTime = timeStyle.format(leg.boardingTime);
+            String departureDate = dateStyle.format(leg.getLocalBoardingTime());
+            String departureTime = timeStyle.format(leg.getLocalBoardingTime());
             String arrivalAirport = leg.disembarkingAirport.code();
-            String arrivalDate = dateStyle.format(leg.disembarkingTime);
-            String arrivalTime = timeStyle.format(leg.disembarkingTime);
+            String arrivalDate = dateStyle.format(leg.getDisembarkingTime());
+            String arrivalTime = timeStyle.format(leg.getLocalDisembarkingTime());
             String flightNumber = Integer.toString(leg.flightNumber);
             String plane = leg.plane.model();
             String coachSeatsReserved = Integer.toString(leg.reservedCoachSeats);
@@ -360,18 +379,26 @@ private void buildFlightTable(Flights displayList){
 
         // Set the default formats for displaying dates, times, and prices
         DateTimeFormatter dateStyle = DateTimeFormatter.ofPattern("MM/dd/yyyy");
-        DateTimeFormatter timeStyle = DateTimeFormatter.ofPattern("HH:mm a");
+        DateTimeFormatter timeStyle = DateTimeFormatter.ofPattern("hh:mm a");
         DateTimeFormatter flightTimeStyle = DateTimeFormatter.ofPattern("HH:mm");
         NumberFormat priceStyle = NumberFormat.getCurrencyInstance(Locale.US);
 
         if (displayList.size() ==0)
                 NotificationManager.getInstance().popupError("No flights found!");
-
-        //ServerInterface.INSTANCE.lock();
-        //for (int i = 0; i < controller.getAcceptedInput().numberOfPassengers(); i++) {
-        //    ServerInterface.INSTANCE.postLegReservation(displayList.get(0));
-        //}
-        //ServerInterface.INSTANCE.unlock();
+        else
+            switch (sortType) {
+                case "Duration":
+                    displayList.sortByTravelDuration(isAscending);
+                    break;
+                case "Departure Time":
+                    displayList.sortByDepatureTime(isAscending);
+                    break;
+                case "Arrival Time":
+                    displayList.sortByArrivalTime(isAscending);
+                    break;
+                default:
+                    displayList.sortByPrice(isAscending);
+            }
 
         // Add a new row to the table for each leg on the list
         for (Flight flight : displayList) {

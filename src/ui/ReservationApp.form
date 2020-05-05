@@ -157,32 +157,6 @@
           <text value="Quit"/>
         </properties>
       </component>
-      <component id="1d58b" class="javax.swing.JButton" binding="viewFullFlightDetailsButton" default-binding="true">
-        <constraints>
-          <grid row="3" column="5" row-span="1" col-span="2" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Confirm Reservation"/>
-        </properties>
-      </component>
-      <component id="40d1" class="javax.swing.JButton" binding="addFlightToCartButton" default-binding="true">
-        <constraints>
-          <grid row="3" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
-            <preferred-size width="102" height="30"/>
-          </grid>
-        </constraints>
-        <properties>
-          <text value="Add Flight to Cart"/>
-        </properties>
-      </component>
-      <component id="8d4eb" class="javax.swing.JButton" binding="searchForFlightsButton" default-binding="true">
-        <constraints>
-          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
-        </constraints>
-        <properties>
-          <text value="Search for Flights"/>
-        </properties>
-      </component>
       <component id="49a1d" class="javax.swing.JComboBox" binding="TimeTypeComboBox">
         <constraints>
           <grid row="0" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false">
@@ -285,6 +259,64 @@
           <model>
             <item value="One-Way"/>
             <item value="Round-Trip"/>
+          </model>
+        </properties>
+      </component>
+      <component id="33ea2" class="javax.swing.JLabel">
+        <constraints>
+          <grid row="3" column="1" row-span="1" col-span="1" vsize-policy="0" hsize-policy="0" anchor="8" fill="0" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Sort flights by"/>
+        </properties>
+      </component>
+      <component id="ec5fb" class="javax.swing.JComboBox" binding="sortTypeComboBox">
+        <constraints>
+          <grid row="3" column="2" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <model>
+            <item value="Price"/>
+            <item value="Duration"/>
+            <item value="Departure Time"/>
+            <item value="Arrival Time"/>
+          </model>
+        </properties>
+      </component>
+      <component id="1d58b" class="javax.swing.JButton" binding="viewFullFlightDetailsButton" default-binding="true">
+        <constraints>
+          <grid row="3" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Confirm Reservation"/>
+        </properties>
+      </component>
+      <component id="40d1" class="javax.swing.JButton" binding="addFlightToCartButton" default-binding="true">
+        <constraints>
+          <grid row="3" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
+            <preferred-size width="102" height="30"/>
+          </grid>
+        </constraints>
+        <properties>
+          <text value="Add Flight to Cart"/>
+        </properties>
+      </component>
+      <component id="8d4eb" class="javax.swing.JButton" binding="searchForFlightsButton" default-binding="true">
+        <constraints>
+          <grid row="3" column="4" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <text value="Search for Flights"/>
+        </properties>
+      </component>
+      <component id="2f799" class="javax.swing.JComboBox" binding="sortDirectionComboBox">
+        <constraints>
+          <grid row="3" column="3" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
+        </constraints>
+        <properties>
+          <model>
+            <item value="Ascending"/>
+            <item value="Descending"/>
           </model>
         </properties>
       </component>
