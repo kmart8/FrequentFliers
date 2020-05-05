@@ -7,6 +7,7 @@ import flight.Flight;
 import flight.Flights;
 import leg.Leg;
 import leg.Legs;
+import utils.NotificationManager;
 import utils.Saps;
 
 import javax.swing.*;
@@ -53,7 +54,7 @@ public class ReservationApp {
     private JFormattedTextField numberOfPassengersFormattedTextField;
     private JTable flightDisplayTable;
     private JTable legDisplayTable;
-    private JComboBox comboBox1;
+    private JComboBox TimeTypeComboBox;
     private JFormattedTextField endTimeFormattedTextField;
     private JTabbedPane tabbedPane1;
     private JComboBox comboBox2;
@@ -225,10 +226,10 @@ public class ReservationApp {
                 endTimeFormattedTextField.setText(controller.getEndTime());
             }
         });
-        comboBox1.addActionListener(new ActionListener() {
+        TimeTypeComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                controller.setTimeType(seatingTypeComboBox.getSelectedItem().toString());
+                controller.setTimeType(TimeTypeComboBox.getSelectedItem().toString());
             }
         });
 
@@ -271,7 +272,9 @@ public class ReservationApp {
         frameHandle.setContentPane(mainPanel);
         frameHandle.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         frameHandle.pack();
+        frameHandle.setLocationRelativeTo(null);
         frameHandle.setVisible(true);
+        NotificationManager.getInstance().popupBusy();
     }
 
 
@@ -361,11 +364,14 @@ private void buildFlightTable(Flights displayList){
         DateTimeFormatter flightTimeStyle = DateTimeFormatter.ofPattern("HH:mm");
         NumberFormat priceStyle = NumberFormat.getCurrencyInstance(Locale.US);
 
-        ServerInterface.INSTANCE.lock();
-        for (int i = 0; i < controller.getAcceptedInput().numberOfPassengers(); i++) {
-            ServerInterface.INSTANCE.postLegReservation(displayList.get(0));
-        }
-        ServerInterface.INSTANCE.unlock();
+        if (displayList.size() ==0)
+                NotificationManager.getInstance().popupError("No flights found!");
+
+        //ServerInterface.INSTANCE.lock();
+        //for (int i = 0; i < controller.getAcceptedInput().numberOfPassengers(); i++) {
+        //    ServerInterface.INSTANCE.postLegReservation(displayList.get(0));
+        //}
+        //ServerInterface.INSTANCE.unlock();
 
         // Add a new row to the table for each leg on the list
         for (Flight flight : displayList) {
