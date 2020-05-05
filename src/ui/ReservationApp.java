@@ -62,6 +62,7 @@ public class ReservationApp {
     private JComboBox sortDirectionComboBox;
     private JTabbedPane DisplayDetails;
     private JFrame frameHandle;
+    private Flights displayList;
 
     // List of UI components which should be inactive during long operations to prevent user input
     // and signal to the user that the program is busy
@@ -133,6 +134,9 @@ public class ReservationApp {
         flightDisplayData.addColumn("Seating Type");
         flightDisplayTable.setModel(flightDisplayData);
 
+        // Set trip type
+        FlightCart.getInstance().setTripType(comboBox2.getSelectedItem().toString());
+
         System.out.println("Finished Initialization");
     }
 
@@ -152,6 +156,7 @@ public class ReservationApp {
                 // Set the busy status to true, until the table has been built or the operation is canceled
                 System.out.println("Search Button User Interaction");
                 busy(true);
+                displayList = FlightBuilder.getInstance().searchForFlights();
                 buildFlightTable(FlightBuilder.getInstance().searchForFlights());
                 busy(false);
             }
@@ -244,7 +249,7 @@ public class ReservationApp {
         addFlightToCartButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FlightCart.getInstance().addFlightToCart(FlightBuilder.getInstance().searchForFlights().get(flightDisplayTable.getSelectedRow()));
+                FlightCart.getInstance().addFlightToCart(displayList.get(flightDisplayTable.getSelectedRow()));
             }
         });
         comboBox2.addActionListener(new ActionListener() {
@@ -258,12 +263,13 @@ public class ReservationApp {
         viewFullFlightDetailsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                ServerInterface.INSTANCE.lock();
                 Flights bookedFlights = FlightCart.getInstance().getFlightCart();
                 for (Flight flight : bookedFlights) {
                     for (int i = 0; i < controller.getAcceptedInput().numberOfPassengers(); i++) {
                         ServerInterface.INSTANCE.postLegReservation(flight);
                     }
-                }
+                } ServerInterface.INSTANCE.unlock();
             }
         });
         sortTypeComboBox.addActionListener(new ActionListener() {

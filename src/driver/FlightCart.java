@@ -15,7 +15,7 @@ import flight.Flights;
 public class FlightCart {
 
     private String tripType;
-    private Flights flightCart;
+    private Flights flightCart = new Flights();
 
     // Singleton variable
     private static FlightCart single_instance = null;
