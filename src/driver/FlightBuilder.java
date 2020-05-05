@@ -6,7 +6,6 @@ import flight.Flights;
 import leg.Legs;
 import ui.UIModel;
 import ui.UIController;
-import dao.LocalFlightDatabase;
 /**
  * This class handles initialization of the UIModel, UIController, and ReservationApp viewer. It also serves as
  * an additional controller to handle search functionality.
@@ -62,7 +61,6 @@ public class FlightBuilder {
             return new Flights();
         }
     }
-
     public void bookFlight(Flight flight){
 
     }
