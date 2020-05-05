@@ -81,9 +81,7 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
     /** Method to get Local Time of First Leg Boarding Time */
     public ZonedDateTime getLocalDepartureTime() {
         if (legList.size() > 0) {
-            ZonedDateTime departureTime = legList.get(0).getBoardingTime();
-            //TODO: ZonedDateTime localDepartureTime = departureTime + legList.get(0).getBoardingAirport().getOffset()
-            return departureTime;
+            return  legList.get(0).getLocalBoardingTime();
         }
         else return null;
     }
@@ -99,9 +97,7 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
     /** Method to get Local Time of Last Leg Disembarking Time */
     public ZonedDateTime getLocalArrivalTime() {
         if (legList.size() > 0) {
-            ZonedDateTime arrivalTime = legList.get(legList.size()-1).getDisembarkingTime();
-            //TODO: ZonedDateTime localArrivalTime = arrivalTime + legList.get(legList.size()-1).getBoardingAirport().getOffset();
-            return arrivalTime;
+            return legList.get(legList.size()-1).getLocalDisembarkingTime();
         }
         else return null;
     }

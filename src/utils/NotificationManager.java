@@ -77,6 +77,7 @@ public class NotificationManager {
             busyWarning.getContentPane().add(message);
             busyWarning.getContentPane().add(button);
             busyWarning.pack();
+            busyWarning.setVisible(true);
             busyWarning.setLocationRelativeTo(null);
             button.addActionListener(evt -> {
                 busyWarning.dispose();
@@ -96,7 +97,7 @@ public class NotificationManager {
         TimerTask alertUser = new TimerTask() {
             @Override
             public void run() {
-                busy = true;
+                popupBusy();
 
             }
         };
