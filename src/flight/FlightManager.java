@@ -11,8 +11,6 @@ import utils.Saps;
 import java.time.ZonedDateTime;
 import java.util.LinkedList;
 
-import static java.lang.Thread.sleep;
-
 public class FlightManager {
     /** Queue of incomplete fights */
     private LinkedList<Flight> constructionQueue = new LinkedList<Flight>();
@@ -65,7 +63,6 @@ public class FlightManager {
             } else if (nextFlight.filterReason().equals("invalid")){
                 // Do nothing, do not requeue this flight or derivatives
             } else filteredFlights.add(nextFlight);
-            NotificationManager.getInstance().busy();
         }
     }
 
