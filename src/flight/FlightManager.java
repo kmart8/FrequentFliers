@@ -5,10 +5,13 @@ import dao.LocalFlightDatabase;
 import leg.Leg;
 import leg.Legs;
 import ui.UIModel;
+import utils.NotificationManager;
 import utils.Saps;
 
 import java.time.ZonedDateTime;
 import java.util.LinkedList;
+
+import static java.lang.Thread.sleep;
 
 public class FlightManager {
     /** Queue of incomplete fights */
@@ -62,6 +65,7 @@ public class FlightManager {
             } else if (nextFlight.filterReason().equals("invalid")){
                 // Do nothing, do not requeue this flight or derivatives
             } else filteredFlights.add(nextFlight);
+            NotificationManager.getInstance().busy();
         }
     }
 
@@ -149,12 +153,17 @@ public class FlightManager {
         }
 
         Legs potentialNewLegs = LocalFlightDatabase.getInstance().getDisembarkingLegList(disembarkingAirport,startDisembarkingWindow.toLocalDate(),false);
+        
+        Legs invalidNewLegs = new Legs();
 
         for (Leg thisLeg : potentialNewLegs) {
             if (thisLeg.disembarkingTime.isBefore(startDisembarkingWindow) || thisLeg.disembarkingTime.isAfter(endDisembarkingWindow)){
-                potentialNewLegs.remove(thisLeg);
+                invalidNewLegs.add(thisLeg);
             }
         }
+        if (invalidNewLegs.size() > 0)
+            for (Leg thisLeg : invalidNewLegs) potentialNewLegs.remove(thisLeg);
+
         return potentialNewLegs;
     }
 
