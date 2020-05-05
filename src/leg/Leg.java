@@ -111,6 +111,14 @@ public class Leg {
         return firstClassPrice;
     }
 
+    public ZonedDateTime getLocalBoardingTime(){
+        return boardingAirport.convertGMTtoLocalTime(boardingTime);
+    }
+
+    public ZonedDateTime getLocalDisembarkingTime(){
+        return disembarkingAirport.convertGMTtoLocalTime(disembarkingTime);
+    }
+
     //
     public double getRemainingSeats(String seatType){
         if (seatType == "First Class") return plane.firstClassSeats() - reservedFirstClassSeats;
