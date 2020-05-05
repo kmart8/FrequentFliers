@@ -2,6 +2,7 @@ package flight;
 
 import flight.Flight;
 
+import java.time.Duration;
 import java.time.temporal.TemporalAmount;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -24,68 +25,68 @@ public class Flights extends ArrayList<Flight> {
     /** Method to sort by cheapest Flight */
     public void sortByPrice(boolean isAscending) {
         Flights newFlights = new Flights();
-        if (this.size() > 0) {
+        while (this.size() > 0) {
             Flight cheapestFlight = this.get(0);
-            for (Flight thisFlight : this) {
-                if (thisFlight.getTotalPrice().compareTo(cheapestFlight.getTotalPrice()) < 0) {
-                    cheapestFlight = thisFlight;
+            for (int i = this.size() - 1; i >= 0; i--) {
+                if (this.get(i).getTotalPrice().compareTo(cheapestFlight.getTotalPrice()) < 0) {
+                    cheapestFlight = this.get(i);
                 }
-                this.remove(cheapestFlight);
-                newFlights.add(cheapestFlight);
             }
+            this.remove(cheapestFlight);
+            newFlights.add(cheapestFlight);
         }
         this.addAll(newFlights);
         if (!isAscending) Collections.reverse(this);
     }
 
     /** Method to sort by shortest Flight */
-    public Flights sortByTravelDuration(Flights oldFlights) {
+    public void sortByTravelDuration(boolean isAscending) {
         Flights newFlights = new Flights();
-        if (oldFlights.size() > 0) {
-            Flight shortestFlight = oldFlights.get(0);
-            for (Flight thisFlight : oldFlights) {
-                if (thisFlight.getDepartureTime().until(thisFlight.getArrivalTime(), MINUTES)
-                        < shortestFlight.getDepartureTime().until(shortestFlight.getArrivalTime(), MINUTES)){
-                    shortestFlight = thisFlight;
+        while (this.size() > 0) {
+            Flight shortestFlight = this.get(0);
+            for (int i = this.size() - 1; i >= 0; i--) {
+                if (this.get(i).getTotalTravelTime().minus(shortestFlight.getTotalTravelTime()).isNegative()){
+                    shortestFlight = this.get(i);
                 }
-                oldFlights.remove(shortestFlight);
-                newFlights.add(shortestFlight);
             }
+            this.remove(shortestFlight);
+            newFlights.add(shortestFlight);
         }
-        return newFlights;
+        this.addAll(newFlights);
+        if (!isAscending) Collections.reverse(this);
     }
 
     /** Method to sort by departure time */
-    public Flights sortByDepatureTime(Flights oldFlights) {
+    public void sortByDepatureTime(boolean isAscending) {
         Flights newFlights = new Flights();
-        if (oldFlights.size() > 0) {
-            Flight earliestFlight = oldFlights.get(0);
-            for (Flight thisFlight : oldFlights) {
-                if (thisFlight.getDepartureTime().until(earliestFlight.getArrivalTime(), MINUTES) > 0) {
-                    earliestFlight = thisFlight;
+        while (this.size() > 0) {
+            Flight earliestFlight = this.get(0);
+            for (int i = this.size() - 1; i >=0; i--) {
+                if (Duration.between(this.get(i).getDepartureTime(), earliestFlight.getDepartureTime()).isNegative()) {
+                    earliestFlight = this.get(i);
                 }
-                oldFlights.remove(earliestFlight);
-                newFlights.add(earliestFlight);
             }
+            this.remove(earliestFlight);
+            newFlights.add(earliestFlight);
         }
-        return newFlights;
+        this.addAll(newFlights);
+        if (!isAscending) Collections.reverse(this);
     }
 
     /** Method to sort by arrival time */
-    public Flights sortByArrivalTime(Flights oldFlights) {
+    public void sortByArrivalTime(boolean isAscending) {
         Flights newFlights = new Flights();
-        if (oldFlights.size() > 0) {
-            Flight earliestFlight = oldFlights.get(0);
-            for (Flight thisFlight : oldFlights) {
-                if (thisFlight.getArrivalTime().until(earliestFlight.getArrivalTime(), MINUTES) < 0) {
-                    earliestFlight = thisFlight;
+        while (this.size() > 0) {
+            Flight earliestFlight = this.get(0);
+            for (int i = this.size() - 1; i >= 0; i--) {
+                if (Duration.between(this.get(i).getArrivalTime(),earliestFlight.getArrivalTime()).isNegative()) {
+                    earliestFlight = this.get(i);
                 }
-                oldFlights.remove(earliestFlight);
-                newFlights.add(earliestFlight);
             }
+            this.remove(earliestFlight);
+            newFlights.add(earliestFlight);
         }
-        return newFlights;
+        this.addAll(newFlights);
+        if (!isAscending) Collections.reverse(this);
     }
 }
-
-
