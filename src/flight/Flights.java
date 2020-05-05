@@ -62,7 +62,8 @@ public class Flights extends ArrayList<Flight> {
         while (this.size() > 0) {
             Flight earliestFlight = this.get(0);
             for (int i = this.size() - 1; i >=0; i--) {
-                if (Duration.between(this.get(i).getDepartureTime(), earliestFlight.getDepartureTime()).isNegative()) {
+                if (this.get(i).getDepartureTime().compareTo(earliestFlight.getDepartureTime()) < 0)
+                {
                     earliestFlight = this.get(i);
                 }
             }
@@ -79,7 +80,7 @@ public class Flights extends ArrayList<Flight> {
         while (this.size() > 0) {
             Flight earliestFlight = this.get(0);
             for (int i = this.size() - 1; i >= 0; i--) {
-                if (Duration.between(this.get(i).getArrivalTime(),earliestFlight.getArrivalTime()).isNegative()) {
+                if (this.get(i).getArrivalTime().compareTo(earliestFlight.getArrivalTime()) < 0) {
                     earliestFlight = this.get(i);
                 }
             }
