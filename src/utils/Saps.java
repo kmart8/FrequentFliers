@@ -81,4 +81,8 @@ public class Saps {
 	 * Upper limit used for layover time
 	 */
 	public static final Duration MAX_LAYOVER_TIME = Duration.ofHours(4);
+	/**
+	 * The duration to wait before alerting the user that the program is busy
+	 */
+	public static final Duration BUSY_WAIT_TIME = Duration.ofSeconds(3);
 }
