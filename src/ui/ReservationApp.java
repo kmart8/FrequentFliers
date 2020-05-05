@@ -2,6 +2,7 @@ package ui;
 
 import dao.ServerInterface;
 import driver.FlightBuilder;
+import driver.FlightCart;
 import flight.Flight;
 import flight.Flights;
 import leg.Leg;
@@ -55,6 +56,7 @@ public class ReservationApp {
     private JComboBox comboBox1;
     private JFormattedTextField endTimeFormattedTextField;
     private JTabbedPane tabbedPane1;
+    private JComboBox comboBox2;
     private JTabbedPane DisplayDetails;
     private JFrame frameHandle;
 
@@ -229,10 +231,31 @@ public class ReservationApp {
                 controller.setTimeType(seatingTypeComboBox.getSelectedItem().toString());
             }
         });
+
+        // adds the selected flight to the flightCart (Flights object in FlightBuilder)
         addFlightToCartButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FlightBuilder.getInstance().searchForFlights();
+                FlightCart.getInstance().addFlightToCart(FlightBuilder.getInstance().searchForFlights().get(flightDisplayTable.getSelectedRow()));
+            }
+        });
+        comboBox2.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e){ FlightCart.getInstance().setTripType(comboBox2.getSelectedItem().toString());}
+        });
+
+        // TODO: actually "confirmReservationButton" but idk how to change the name properly
+        // Currently nested for loop (looping for all booked flights and all passengers on those flights,
+        // could improve efficiency in postLegReservation 
+        viewFullFlightDetailsButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Flights bookedFlights = FlightCart.getInstance().getFlightCart();
+                for (Flight flight : bookedFlights) {
+                    for (int i = 0; i < controller.getAcceptedInput().numberOfPassengers(); i++) {
+                        ServerInterface.INSTANCE.postLegReservation(flight);
+                    }
+                }
             }
         });
     }
@@ -364,4 +387,5 @@ private void buildFlightTable(Flights displayList){
         }
         System.out.println("Flights have been displayed");
     }
+
 }
