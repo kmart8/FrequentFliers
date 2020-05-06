@@ -158,9 +158,7 @@ public class ReservationApp {
                 System.out.println("Search Button User Interaction");
                 busy(true);
                 displayList = TripBuilder.getInstance().searchForFlights();
-                if (displayList.size() == 0)
-                    NotificationManager.getInstance().popupError("No flights found!");
-                else
+                if (displayList.size() != 0)
                     buildFlightTable();
 
                 busy(false);
@@ -259,7 +257,7 @@ public class ReservationApp {
                 if (flightDisplayTable.getSelectedRow() != -1) {
                     Trip.getInstance().addFlightToTrip(displayList.get(flightDisplayTable.getSelectedRow()));
                     for (Flight flight : Trip.getInstance().getTrip()) {
-                        legsInCart.addAll(flight.getLegList());
+                        legsInCart.addAll(flight.legList());
                     }
                     buildLegTable(legsInCart);
                     System.out.println("User added flight to cart");
@@ -269,7 +267,7 @@ public class ReservationApp {
                             if (Trip.getInstance().getTrip().size() < 1) {
                                 Trip.getInstance().addFlightToTrip(displayList.get(flightDisplayTable.getSelectedRow()));
                                 for (Flight flight : Trip.getInstance().getTrip()){
-                                    legsInCart.addAll(flight.getLegList());
+                                    legsInCart.addAll(flight.legList());
                                 }
                                 buildLegTable(legsInCart);
                                 System.out.println("User added flight to cart");
@@ -281,7 +279,7 @@ public class ReservationApp {
                             if (Trip.getInstance().getTrip().size() < 2) {
                                 Trip.getInstance().addFlightToTrip(displayList.get(flightDisplayTable.getSelectedRow()));
                                 for (Flight flight : Trip.getInstance().getTrip()){
-                                    legsInCart.addAll(flight.getLegList());
+                                    legsInCart.addAll(flight.legList());
                                 }
                                 buildLegTable(legsInCart);
                                 System.out.println("User added flight to cart");
@@ -324,7 +322,7 @@ public class ReservationApp {
                     }
                 }
                 ServerInterface.INSTANCE.unlock();
-                System.out.println("User successfully booked trip!");
+                NotificationManager.getInstance().popupSuccess("Trip booking was successful!");
             }
         });
         sortTypeComboBox.addActionListener(new ActionListener() {
