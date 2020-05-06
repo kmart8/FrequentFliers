@@ -160,7 +160,6 @@ public class ReservationApp {
                 displayList = TripBuilder.getInstance().searchForFlights();
                 if (displayList.size() != 0)
                     buildFlightTable();
-
                 busy(false);
             }
         });
@@ -212,11 +211,15 @@ public class ReservationApp {
 
         // When the reset button is pressed, reinitialize the GUI
         // This will force any disabled JComponents to re-enable
+        //TODO: change this to clear model
         resetButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 Trip.getInstance().resetTrip();
-                if (legsInCart.size() > 0) { legsInCart.clear(); }
+                legsInCart.clear();
+                buildLegTable(legsInCart);
+                displayList = new Flights();
+                buildFlightTable();
                 System.out.println("Reset User Interaction");
                 initializeUIElements();
             }
