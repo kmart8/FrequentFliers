@@ -130,7 +130,7 @@ public enum ServerInterface {
 	 *
 	 * @param boardingAirport the boarding Airport for requested legs
 	 * @param boardingDate the date of boarding for requested legs
-	 * @return collection of Legs from server or null if error.
+	 * @return [possibly empty] collection of Legs from server.
 	 */
 	public Legs getBoardingLegs(Airport boardingAirport, LocalDate boardingDate) {
 		URL url;
@@ -165,7 +165,7 @@ public enum ServerInterface {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
+			return new Legs();
 		}
 
 		xmlBoardingLegs = result.toString();
@@ -180,7 +180,7 @@ public enum ServerInterface {
 	 *
 	 * @param disembarkingAirport the disembarking Airport for requested legs
 	 * @param disembarkingDate the date of disembarking for requested legs
-	 * @return collection of Legs from server or null if error.
+	 * @return [possibly empty] collection of Legs from server.
 	 */
 	public Legs getDisembarkingLegs(Airport disembarkingAirport, LocalDate disembarkingDate) {
 		URL url;
@@ -215,7 +215,7 @@ public enum ServerInterface {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
-			return null;
+			return new Legs();
 		}
 
 		xmlDisembarkingLegs = result.toString();
