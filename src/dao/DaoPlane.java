@@ -19,42 +19,62 @@ import plane.Plane;
 import plane.Planes;
 
 /**
+ * Builds a collection of planes from planes described in XML
+ *
+ * Parses an XML string to read each of the planes and adds each valid plane
+ * to the collection. The class uses Java DOM (Document Object Model) to convert
+ * from XML to Java primitives.
+ *
  * @author Kevin Martin
- * @version 1.1 2019-01-21
- * @since 2020-04-30
+ * @version 1.0 2020-03-23
+ * @since 2020-03-23
  *
  */
 
 public class DaoPlane {
+    /**
+     *  Creates Plane objects from XML.
+     *
+     * Method iterates over the set of Plane nodes in the XML string and builds
+     * a Plane object from the XML node string and adds the Plane object instance to
+     * the Plane collection.
+     *
+     * @param xmlPlanes XML string containing set of planes
+     * @return [possibly empty] collection of Planes in the xml string
+     * @throws NullPointerException included to keep signature consistent with other addAll methods
+     *
+     * @pre the xmlAirports string adheres to the format specified by the server API
+     * @post the [possibly empty] set of Planes in the XML string are added to collection
+     */
     public static Planes addAll (String xmlPlanes) throws NullPointerException {
         Planes planes = new Planes();
 
         // Load the XML string into a DOM tree for ease of processing
-        // then iterate over all nodes adding each airport to our collection
+        // then iterate over all nodes adding each plane to our collection
         Document docPlanes = buildDomDoc (xmlPlanes);
-        NodeList nodesPlanes = docPlanes.getElementsByTagName("Airplane");
+        if (docPlanes != null) {
+            NodeList nodesPlanes = docPlanes.getElementsByTagName("Airplane");
 
-        for (int i = 0; i < nodesPlanes.getLength(); i++) {
-            Element elementPlane = (Element) nodesPlanes.item(i);
-            Plane plane = buildPlane (elementPlane);
+            for (int i = 0; i < nodesPlanes.getLength(); i++) {
+                Element elementPlane = (Element) nodesPlanes.item(i);
+                Plane plane = buildPlane(elementPlane);
 
-
-            planes.add(plane);
-
+                planes.add(plane);
+            }
         }
 
         return planes;
     }
 
     /**
-     * Creates an Airport object from a DOM node
+     * Creates a Plane object from a DOM node
      *
      * Processes a DOM Node that describes a Plane and creates a Plane object from the information
-     * @param nodePlane is a DOM Node describing an Plane
-     * @return Plane object created from the DOM Node representation of the Plane
+     * @param nodePlane is a DOM Node describing a plane
+     * @return Plane object created from the DOM Node representation of the plane
      *
      * @pre nodePlane is of format specified by CS509 server API
-     * @post plane object instantiated. Caller responsible for deallocating memory.
+     * @post Plane object instantiated. Caller responsible for deallocating memory.
      */
     static private Plane buildPlane (Node nodePlane) {
         String model;
@@ -75,9 +95,7 @@ public class DaoPlane {
         elementSeat = (Element)elementPlane.getElementsByTagName("FirstClassSeats").item(0);
         firstClassSeats = Integer.parseInt(getCharacterDataFromElement(elementSeat));
 
-        /**
-         * Instantiate an empty Plane object and initialize with data from XML node
-         */
+        //Instantiate an empty Plane object and initialize with data from XML node
         Plane plane = new Plane();
 
         plane.model(model);
@@ -97,9 +115,7 @@ public class DaoPlane {
      * @return DOM tree from parsed XML or null if exception is caught
      */
     static private Document buildDomDoc (String xmlString) {
-        /**
-         * load the xml string into a DOM document and return the Document
-         */
+        // load the xml string into a DOM document and return the Document
         try {
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -108,15 +124,7 @@ public class DaoPlane {
 
             return docBuilder.parse(inputSource);
         }
-        catch (ParserConfigurationException e) {
-            e.printStackTrace();
-            return null;
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-        catch (SAXException e) {
+        catch (ParserConfigurationException | IOException | SAXException e) {
             e.printStackTrace();
             return null;
         }

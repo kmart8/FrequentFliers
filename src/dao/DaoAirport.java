@@ -25,10 +25,9 @@ import airport.Airports;
  * to the collection. The class uses Java DOM (Document Object Model) to convert
  * from XML to Java primitives.
  *
- *
- * @author blake
+ * @author Blake Nelson
  * @version 1.1 2019-01-21
- * @since 2016-02-24
+ * @since 2016-03-23
  *
  */
 public class DaoAirport {
@@ -36,7 +35,7 @@ public class DaoAirport {
 	 *  Creates Airport objects from XML.
 	 *
 	 * Method iterates over the set of Airport nodes in the XML string and builds
-	 * an Airport object from the XML node string and add the Airport object instance to
+	 * an Airport object from the XML node string and adds the Airport object instance to
 	 * the Airports collection.
 	 * 
 	 * @param xmlAirports XML string containing set of airports 
@@ -52,29 +51,31 @@ public class DaoAirport {
 		// Load the XML string into a DOM tree for ease of processing
 		// then iterate over all nodes adding each airport to our collection
 		Document docAirports = buildDomDoc (xmlAirports);
-		NodeList nodesAirports = docAirports.getElementsByTagName("Airport");
-		
-		for (int i = 0; i < nodesAirports.getLength(); i++) {
-			Element elementAirport = (Element) nodesAirports.item(i);
-			Airport airport = buildAirport (elementAirport);
-			
-			if (airport.isValid()) {
-				airports.add(airport);
+		if (docAirports != null) {
+			NodeList nodesAirports = docAirports.getElementsByTagName("Airport");
+
+			for (int i = 0; i < nodesAirports.getLength(); i++) {
+				Element elementAirport = (Element) nodesAirports.item(i);
+				Airport airport = buildAirport(elementAirport);
+
+				if (airport.isValid()) {
+					airports.add(airport);
+				}
 			}
 		}
-		
+
 		return airports;
 	}
 
 	/**
 	 * Creates an Airport object from a DOM node
 	 * 
-	 * Processes a DOM Node that describes an Airport and creates an Airport object from the information
-	 * @param nodeAirport is a DOM Node describing an Airport
-	 * @return Airport object created from the DOM Node representation of the Airport
+	 * Processes a DOM Node that describes an airport and creates an Airport object from the information
+	 * @param nodeAirport is a DOM Node describing an airport
+	 * @return Airport object created from the DOM Node representation of the airport
 	 * 
 	 * @pre nodeAirport is of format specified by CS509 server API
-	 * @post airport object instantiated. Caller responsible for deallocating memory.
+	 * @post Airport object instantiated. Caller responsible for deallocating memory.
 	 */
 	static private Airport buildAirport (Node nodeAirport) {
 		String name;
@@ -95,9 +96,7 @@ public class DaoAirport {
 		elementLatLng = (Element)elementAirport.getElementsByTagName("Longitude").item(0);
 		longitude = Double.parseDouble(getCharacterDataFromElement(elementLatLng));
 
-		/**
-		 * Instantiate an empty Airport object and initialize with data from XML node
-		 */
+		// Instantiate an empty Airport object and initialize with data from XML node
 		Airport airport = new Airport();
 
 		airport.name(name);
@@ -126,15 +125,7 @@ public class DaoAirport {
 			
 			return docBuilder.parse(inputSource);
 		}
-		catch (ParserConfigurationException e) {
-			e.printStackTrace();
-			return null;
-		}
-		catch (IOException e) {
-			e.printStackTrace();
-			return null;
-		}
-		catch (SAXException e) {
+		catch (ParserConfigurationException | IOException | SAXException e) {
 			e.printStackTrace();
 			return null;
 		}
