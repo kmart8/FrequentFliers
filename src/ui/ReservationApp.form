@@ -251,7 +251,7 @@
           <text value="Seating Type"/>
         </properties>
       </component>
-      <component id="11727" class="javax.swing.JComboBox" binding="comboBox2" default-binding="true">
+      <component id="11727" class="javax.swing.JComboBox" binding="tripTypeComboBox">
         <constraints>
           <grid row="1" column="5" row-span="1" col-span="1" vsize-policy="0" hsize-policy="2" anchor="8" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -283,7 +283,7 @@
           </model>
         </properties>
       </component>
-      <component id="1d58b" class="javax.swing.JButton" binding="viewFullFlightDetailsButton" default-binding="true">
+      <component id="1d58b" class="javax.swing.JButton" binding="confirmReservationButton">
         <constraints>
           <grid row="3" column="7" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false"/>
         </constraints>
@@ -291,14 +291,14 @@
           <text value="Confirm Reservation"/>
         </properties>
       </component>
-      <component id="40d1" class="javax.swing.JButton" binding="addFlightToCartButton" default-binding="true">
+      <component id="40d1" class="javax.swing.JButton" binding="addFlightToTrip">
         <constraints>
           <grid row="3" column="6" row-span="1" col-span="1" vsize-policy="0" hsize-policy="3" anchor="0" fill="1" indent="0" use-parent-layout="false">
             <preferred-size width="102" height="30"/>
           </grid>
         </constraints>
         <properties>
-          <text value="Add Flight to Cart"/>
+          <text value="Add Flight to Trip"/>
         </properties>
       </component>
       <component id="8d4eb" class="javax.swing.JButton" binding="searchForFlightsButton" default-binding="true">

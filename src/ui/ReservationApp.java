@@ -2,7 +2,7 @@ package ui;
 
 import dao.ServerInterface;
 import driver.FlightBuilder;
-import driver.FlightCart;
+import driver.Trip;
 import flight.Flight;
 import flight.Flights;
 import leg.Leg;
@@ -40,8 +40,8 @@ import static java.lang.Math.floor;
 public class ReservationApp {
     // Automatically generated variables for handling Swing components in the GUI Builder
     private JComboBox<String> seatingTypeComboBox;
-    private JButton addFlightToCartButton;
-    private JButton viewFullFlightDetailsButton;
+    private JButton addFlightToTrip;
+    private JButton confirmReservationButton;
     private JButton quitButton;
     private JButton resetButton;
     private JButton searchForFlightsButton;
@@ -57,7 +57,7 @@ public class ReservationApp {
     private JComboBox TimeTypeComboBox;
     private JFormattedTextField endTimeFormattedTextField;
     private JTabbedPane tabbedPane1;
-    private JComboBox comboBox2;
+    private JComboBox tripTypeComboBox;
     private JComboBox sortTypeComboBox;
     private JComboBox sortDirectionComboBox;
     private JTabbedPane DisplayDetails;
@@ -136,7 +136,7 @@ public class ReservationApp {
         flightDisplayTable.setModel(flightDisplayData);
 
         // Set trip type
-        FlightCart.getInstance().setTripType(comboBox2.getSelectedItem().toString());
+        Trip.getInstance().setTripType(tripTypeComboBox.getSelectedItem().toString());
 
         System.out.println("Finished Initialization");
     }
@@ -213,7 +213,7 @@ public class ReservationApp {
         resetButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FlightCart.getInstance().resetFlightCart();
+                Trip.getInstance().resetTrip();
                 if (legsInCart.size() > 0) { legsInCart.clear(); }
                 System.out.println("Reset User Interaction");
                 initializeUIElements();
@@ -249,33 +249,33 @@ public class ReservationApp {
         });
 
         // adds the selected flight to the flightCart (Flights object in FlightBuilder)
-        addFlightToCartButton.addActionListener(new ActionListener() {
+        addFlightToTrip.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FlightCart.getInstance().addFlightToCart((Flight) displayList.get(flightDisplayTable.getSelectedRow()));
-                for (Flight flight : FlightCart.getInstance().getFlightCart()) {
+                Trip.getInstance().addFlightToTrip((Flight) displayList.get(flightDisplayTable.getSelectedRow()));
+                for (Flight flight : Trip.getInstance().getTrip()) {
                     legsInCart.addAll(flight.getLegList());
                 }
                 buildLegTable(legsInCart);
                 System.out.println("User added flight to cart");
             }
         });
-        comboBox2.addActionListener(new ActionListener() {
+        tripTypeComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e){
-                FlightCart.getInstance().setTripType(comboBox2.getSelectedItem().toString());
-                System.out.println("User input updated trip type");}
+                Trip.getInstance().setTripType(tripTypeComboBox.getSelectedItem().toString());
+                System.out.println("User input updated trip type"); }
         });
 
         // TODO: actually "confirmReservationButton" but idk how to change the name properly
         // Currently nested for loop (looping for all booked flights and all passengers on those flights,
         // could improve efficiency in postLegReservation 
-        viewFullFlightDetailsButton.addActionListener(new ActionListener() {
+        confirmReservationButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 System.out.println("User successfully booked trip!");
                 ServerInterface.INSTANCE.lock();
-                Flights bookedFlights = FlightCart.getInstance().getFlightCart();
+                Flights bookedFlights = Trip.getInstance().getTrip();
                 for (Flight flight : bookedFlights) {
                     for (int i = 0; i < controller.getAcceptedInput().numberOfPassengers(); i++) {
                         ServerInterface.INSTANCE.postLegReservation(flight);
@@ -322,8 +322,8 @@ public class ReservationApp {
      */
     private void buildBusyList() {
         busyList.add(seatingTypeComboBox);
-        busyList.add(addFlightToCartButton);
-        busyList.add(viewFullFlightDetailsButton);
+        busyList.add(addFlightToTrip);
+        busyList.add(confirmReservationButton);
         busyList.add(searchForFlightsButton);
         busyList.add(departureAirportFormattedTextField);
         busyList.add(arrivalAirportFormattedTextField);

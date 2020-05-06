@@ -12,17 +12,17 @@ import flight.Flights;
  *
  */
 
-public class FlightCart {
+public class Trip {
 
     private String tripType;
     private Flights flightCart = new Flights();
 
     // Singleton variable
-    private static FlightCart single_instance = null;
+    private static Trip single_instance = null;
 
-    public static FlightCart getInstance() {
+    public static Trip getInstance() {
         if (single_instance == null) {
-            single_instance = new FlightCart();
+            single_instance = new Trip();
         }
         return single_instance;
     }
@@ -31,10 +31,14 @@ public class FlightCart {
         this.tripType = tripType;
     }
 
-    public void addFlightToCart(Flight flight) {
+    public String getTripType() { return tripType; }
+
+    public void addFlightToTrip(Flight flight) {
+        flightCart.add(flight);
+        /**
         if (tripType.equals("One-Way")) {
             if (flightCart.size() < 1) {
-                this.flightCart.add(flight);
+                flightCart.add(flight);
             }
             else {
                 System.out.println("Cart is full for one-way trip");
@@ -42,15 +46,15 @@ public class FlightCart {
             // TODO: implement logic where flight 1 departure airport == flight 2 arrival airport and flight 1 arrival airport == flight 2 departure airport
         } else if (tripType.equals("Round-Trip")) {
             if (flightCart.size() < 2) {
-                this.flightCart.add(flight);
+                flightCart.add(flight);
             }
             else {
                 System.out.println("Cart is full for round-trip");
             }
-        }
+        }*/
     }
 
-    public Flights getFlightCart() {
+    public Flights getTrip() {
         if (tripType.equals("One-Way") && flightCart.size() == 1) {
             return flightCart;
         } else if (tripType.equals("Round-Trip") && flightCart.size() == 2) {
@@ -63,8 +67,8 @@ public class FlightCart {
         }
     }
 
-    public void resetFlightCart() {
-        flightCart.clear();
+    public void resetTrip() {
+        if (flightCart.size() > 0) { flightCart.clear();}
     }
 
 }
