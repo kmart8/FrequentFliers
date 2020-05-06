@@ -55,7 +55,7 @@ public class TripBuilder {
             // Start a timer for busy notifications
             int timerID = NotificationManager.getInstance().startBusyTimer();
             flightController = new FlightManager(userInput);
-            Flight firstFlight = new Flight(new Legs(), userInput.seatingType());
+            Flight firstFlight = new Flight(userInput.seatingType());
             flightController.enqueueFlight(firstFlight);
             flightController.completeQueue();
             // End the timer for busy notifications
