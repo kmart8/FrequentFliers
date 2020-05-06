@@ -40,15 +40,18 @@ public class UIController {
 
     /** Time format list for displaying/parsing dates to/from the user */
     private List<DateTimeFormatter> acceptedTimeFormats = new ArrayList<>(){{
-        // TODO: I Dont think most of these work, need to check
         add(DateTimeFormatter.ofPattern ("hh:mm:ss a"));
         add(DateTimeFormatter.ofPattern ("hh:mm a"));
         add(DateTimeFormatter.ofPattern ("h:mm:ss a"));
         add(DateTimeFormatter.ofPattern ("h:mm a"));
-        add(DateTimeFormatter.ofPattern ("HH:mm:ss "));
-        add(DateTimeFormatter.ofPattern ("HH:mm "));
-        add(DateTimeFormatter.ofPattern ("H:mm:ss "));
-        add(DateTimeFormatter.ofPattern ("H:mm "));}};
+        add(DateTimeFormatter.ofPattern ("hh a"));
+        add(DateTimeFormatter.ofPattern ("h a"));
+        add(DateTimeFormatter.ofPattern ("HH:mm:ss"));
+        add(DateTimeFormatter.ofPattern ("HH:mm"));
+        add(DateTimeFormatter.ofPattern ("H:mm:ss"));
+        add(DateTimeFormatter.ofPattern ("H:mm"));
+        add(DateTimeFormatter.ofPattern ("HH"));
+        add(DateTimeFormatter.ofPattern ("H"));}};
 
     /**
      * Initializes a new data container and viewer application
