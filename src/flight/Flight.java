@@ -29,6 +29,7 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
 
     /**
      *  Constructor initializes default values
+     *  (Currently Unused)
      */
     public Flight() {
         legList = new Legs();
@@ -80,8 +81,9 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
 
     /**
      * Method to set seating type
+     * (Currently Unused)
      *
-      * @param seatingRequested The seating type requested
+     * @param seatingRequested The seating type requested
      */
     public void setSeatingType(String seatingRequested) {
         if (Saps.SEATING_TYPES.contains(seatingRequested)) seatingType = seatingRequested;
@@ -90,7 +92,7 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
     /**
      * Method to get Departure Airport of Flight
      *
-     * @return The departure airport of flight
+     * @return [possibly null] The departure airport of flight
      */
     public Airport getDepartureAirport() {
         if (legList.size() > 0) {
@@ -99,7 +101,11 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
         else return null;
     }
 
-    /** Method to get Arrival Airport of Flight */
+    /**
+     * Method to get Arrival Airport of Flight
+     *
+     * @return [possibly null] The arrival airport of Flight
+     */
     public Airport getArrivalAirport() {
         if (legList.size() > 0) {
             return legList.get(legList.size()-1).getDisembarkingAirport();
@@ -107,7 +113,11 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
         else return null;
     }
 
-    /** Method to get Time of First Leg Boarding Time */
+    /**
+     * Method to get Time of First Leg Boarding Time
+     *
+     * @return [possibly null] The first leg boarding zonedatetime
+     */
     public ZonedDateTime getDepartureTime() {
         if (legList.size() > 0) {
             return legList.get(0).getBoardingTime();
@@ -115,7 +125,11 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
         else return null;
     }
 
-    /** Method to get Local Time of First Leg Boarding Time */
+    /**
+     * Method to get Local Time of First Leg Boarding Time
+     *
+     * @return The first leg local boarding zonedatetime
+     */
     public ZonedDateTime getLocalDepartureTime() {
         if (legList.size() > 0) {
             return  legList.get(0).getLocalBoardingTime();
@@ -123,7 +137,11 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
         else return null;
     }
 
-    /** Method to get Time of Last Leg Disembarking Time */
+    /**
+     * Method to get Time of Last Leg Disembarking Time
+     *
+     * @return The last leg disembarking zonedatetime
+     */
     public ZonedDateTime getArrivalTime() {
         if (legList.size() > 0) {
             return legList.get(legList.size()-1).getDisembarkingTime();
@@ -131,7 +149,11 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
         else return null;
     }
 
-    /** Method to get Local Time of Last Leg Disembarking Time */
+    /**
+     * Method to get Local Time of Last Leg Disembarking Time
+     *
+     * @return The last leg local disembarking zonedatetime
+     */
     public ZonedDateTime getLocalArrivalTime() {
         if (legList.size() > 0) {
             return legList.get(legList.size()-1).getLocalDisembarkingTime();
@@ -139,7 +161,11 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
         else return null;
     }
 
-    /** Method to get Total Price */
+    /**
+     * Method to get Total Price
+     *
+     * @return
+     */
     public BigDecimal getTotalPrice() {
         BigDecimal totalPrice = new BigDecimal("0");
         if (legList.size() > 0) {

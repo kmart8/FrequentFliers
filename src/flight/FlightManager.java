@@ -107,9 +107,9 @@ public class FlightManager {
 
         for (Leg thisLeg : newLegs) {
             // Create a new copy of the flight
-            Flight copyFlight = new Flight();
+            Flight copyFlight;
             try{ copyFlight = newFlight.clone();}
-            catch (CloneNotSupportedException E){}
+            catch (CloneNotSupportedException E){return;}
 
             addNewLegToFlight(thisLeg,copyFlight);
 
