@@ -86,7 +86,10 @@ public class QueryFactory {
 	/**
 	 * Return query string that can be passed to HTTP URL to post reservations for flights to the database
 	 *
+	 * @param xmlFlights XML formatted string of flight numbers and seating types
 	 * @return the String written to the HTTP POST to reserve seats on the server database
+	 *
+	 * @pre the xmlFlights string adheres to the format specified by the server API
 	 */
 	public static String postLegReservation(String xmlFlights) { return "team=" + Saps.TEAM_NAME + "&action=buyTickets&flightData=" + xmlFlights; }
 
