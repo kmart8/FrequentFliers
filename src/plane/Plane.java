@@ -44,10 +44,6 @@ public class Plane {
         mCoachSeats = Integer.MAX_VALUE;
     }
 
-    public String toString() {
-        return mManufacturer+" "+mModel+" "+mFirstClassSeats+" "+mCoachSeats;
-    }
-
     /**
      * Set the manufacturer for the plane
      *
