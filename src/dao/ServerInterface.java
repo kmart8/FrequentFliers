@@ -491,7 +491,6 @@ public enum ServerInterface {
 			transformer.transform(new DOMSource(document), new StreamResult(writer));
 
 			String xmlString = writer.getBuffer().toString();
-			System.out.println(xmlString);
 
 			return xmlString;
 		}

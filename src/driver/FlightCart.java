@@ -31,8 +31,6 @@ public class FlightCart {
         this.tripType = tripType;
     }
 
-    public String getTripType() {return tripType;}
-
     public void addFlightToCart(Flight flight) {
         if (tripType.equals("One-Way")) {
             if (flightCart.size() < 1) {
@@ -50,7 +48,6 @@ public class FlightCart {
                 System.out.println("Cart is full for round-trip");
             }
         }
-        this.flightCart.add(flight);
     }
 
     public Flights getFlightCart() {
