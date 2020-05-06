@@ -22,11 +22,11 @@ import java.util.LinkedList;
  */
 public class FlightManager {
     /** Queue of incomplete fights */
-    private LinkedList<Flight> constructionQueue = new LinkedList<Flight>();
+    private final LinkedList<Flight> constructionQueue = new LinkedList<>();
     /** List of completed fights which match the filter parameters */
-    private Flights validFlights;
+    private final Flights validFlights;
     /** List of completable fights which do not match the filter parameters */
-    private Flights filteredFlights;
+    private final Flights filteredFlights;
     /** Filter for checking the validity of completed flights */
     private UIModel flightFilter;
 
@@ -81,7 +81,10 @@ public class FlightManager {
     public void completeQueue(){
         while (!constructionQueue.isEmpty()){
             Flight nextFlight = constructionQueue.removeFirst();
+            // Populate the filter reason on the flight
             nextFlight.isMatch(flightFilter);
+
+            // Check the filter reason
             if (nextFlight.filterReason().isEmpty()){
                 enqueueFlight(nextFlight);
             } else if (nextFlight.filterReason().equals("complete")){
