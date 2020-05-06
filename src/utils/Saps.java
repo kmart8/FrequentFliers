@@ -9,11 +9,13 @@ import java.util.Arrays;
 import java.util.Hashtable;
 
 /**
- * @author blake
+ * System Adaptive Parameters (SAPS).
  * 
- * System Adaptive Parameters (SAPS)
- * 
- * Constants and values for limits, bounds and configuration of system
+ * Constants and values for limits, bounds and configuration of system.
+ *
+ * @author Chris Collins
+ * @version 1.0 2020-03-06
+ * @since 2020-03-06
  *
  */
 public class Saps {

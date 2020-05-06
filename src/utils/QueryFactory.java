@@ -6,11 +6,12 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 /**
+ * Formats arguments into query strings that can be passed to HTTP URL to interact with the server
+ *
  * @author blake
  * @version 1.2
  * @since 2016-02-24
  *
- * Formats arguments into query strings that can be passed to HTTP URL to interact with the server
  */
 public class QueryFactory {
 
