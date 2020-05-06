@@ -52,11 +52,8 @@ public class LocalFlightDatabase {
             if (!(obj instanceof BoardingLegsRequest)) return false;
             // if all fields are equal, the requests are the same
             BoardingLegsRequest rhs = (BoardingLegsRequest) obj;
-            if ((rhs.boardingAirportCode.equalsIgnoreCase(boardingAirportCode)) &&
-                    (rhs.boardingDateString.equalsIgnoreCase(boardingDateString))){
-                return true;
-            }
-            return false;
+            return (rhs.boardingAirportCode.equalsIgnoreCase(boardingAirportCode)) &&
+                    (rhs.boardingDateString.equalsIgnoreCase(boardingDateString));
         }
     }
 
@@ -79,11 +76,8 @@ public class LocalFlightDatabase {
             if (!(obj instanceof BoardingLegsRequest)) return false;
             // if all fields are equal, the requests are the same
             BoardingLegsRequest rhs = (BoardingLegsRequest) obj;
-            if ((rhs.boardingAirportCode.equalsIgnoreCase(disembarkingAirportCode)) &&
-                    (rhs.boardingDateString.equalsIgnoreCase(disembarkingDateString))){
-                return true;
-            }
-            return false;
+            return (rhs.boardingAirportCode.equalsIgnoreCase(disembarkingAirportCode)) &&
+                    (rhs.boardingDateString.equalsIgnoreCase(disembarkingDateString));
         }
     }
 
@@ -250,7 +244,7 @@ public class LocalFlightDatabase {
         return null;
     }
 
-    /** add new legs to the legList, while removing any duplicate old legs (probably should override .add in the Legs class instead)
+    /** add new legs to the legList, while removing any duplicate old legs
      *
      * @param potentialLegs [possibly empty] list of new legs to add to the leg list
      */
@@ -262,10 +256,9 @@ public class LocalFlightDatabase {
             boardingLegList.remove(leg);
             boardingLegList.add(leg);
         }
-
     }
 
-    /** add new legs to the legList, while removing any duplicate old legs (probably should override .add in the Legs class instead)
+    /** add new legs to the legList, while removing any duplicate old legs
      *
      * @param potentialLegs [possibly empty] list of new legs to add to the leg list
      */
@@ -276,6 +269,5 @@ public class LocalFlightDatabase {
             disembarkingLegList.remove(leg);
             disembarkingLegList.add(leg);
         }
-
     }
 }
