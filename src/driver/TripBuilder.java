@@ -4,9 +4,12 @@ import flight.Flight;
 import flight.FlightManager;
 import flight.Flights;
 import leg.Legs;
+import ui.ReservationApp;
 import ui.UIModel;
 import ui.UIController;
 import utils.NotificationManager;
+
+import javax.swing.*;
 
 /**
  * This class handles initialization of the UIModel, UIController, and ReservationApp viewer. It also serves as
@@ -35,13 +38,13 @@ public class TripBuilder {
         return single_instance;
     }
 
-    /** displays the GUI to the user by activating the UIController
+    /** Displays the GUI to the user by activating the UIController
      */
     public void generateGUI(){
         app = new UIController();
     }
 
-    /** searches for legs that match the departure date and airport specified by the user
+    /** Searches for legs that match the departure date and airport specified by the user
      *  (does not currently store any legs, just assignes them to display in the viewer)
      *  (will eventually be moved, and this function will actually search for flights)
      */
@@ -75,8 +78,11 @@ public class TripBuilder {
         }
 
     }
-    public void bookFlight(Flight flight){
 
+    /**
+     *
+     */
+    public void addFlightToTrip() {
     }
 
 }
