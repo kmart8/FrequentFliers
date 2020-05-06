@@ -99,13 +99,6 @@ public class Plane {
             throw new IllegalArgumentException (Integer.toString(seats));
     }
 
-    public void coachSeats (String seats) {
-        if (isValidSeats(seats))
-            mCoachSeats = Integer.parseInt(seats);
-        else
-            throw new IllegalArgumentException (seats);
-    }
-
     /**
      * Get the number of coach seats on the plane
      *
@@ -126,13 +119,6 @@ public class Plane {
             mFirstClassSeats = seats;
         else
             throw new IllegalArgumentException (Integer.toString(seats));
-    }
-
-    public void firstClassSeats (String seats) {
-        if (isValidSeats(seats))
-            mFirstClassSeats = Integer.parseInt(seats);
-        else
-            throw new IllegalArgumentException (seats);
     }
 
     /**
