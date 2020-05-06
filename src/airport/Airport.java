@@ -194,33 +194,33 @@ public class Airport implements Comparable<Airport>, Comparator<Airport> {
                 (rhs.mLatitude == mLatitude) &&
                 (rhs.mLongitude == mLongitude);
     }
-	
+
 	/**
 	 * Determine if object instance has valid attribute data
-	 * 
-	 * Verifies the name is not null and not an empty string. 
+	 *
+	 * Verifies the name is not null and not an empty string.
 	 * Verifies code is 3 characters in length.
 	 * Verifies latitude is between +90.0 north pole and -90.0 south pole.
 	 * Verifies longitude is between +180.0 east prime meridian and -180.0 west prime meridian.
-	 * 
+	 *
 	 * @return true if object passes above validation checks
-	 * 
+	 *
 	 */
 	public boolean isValid() {
-		
+
 		// If the name isn't valid, the object isn't valid
 		if ((mName == null) || (mName == ""))
 			return false;
-		
+
 		// If we don't have a 3 character code, object isn't valid
 		if ((mCode == null) || (mCode.length() != 3))
 			return false;
-		
+
 		// Verify latitude and longitude are within range
         return (!(mLatitude > Saps.MAX_LATITUDE)) && (!(mLatitude < Saps.MIN_LATITUDE)) &&
                 (!(mLongitude > Saps.MAX_LONGITUDE)) && (!(mLongitude < Saps.MIN_LONGITUDE));
     }
-	
+
 	/**
 	 * Check for invalid 3 character airport code
 	 * 
