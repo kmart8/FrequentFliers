@@ -6,7 +6,6 @@ import leg.Leg;
 import leg.Legs;
 import plane.Plane;
 import plane.Planes;
-import utils.Saps;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -25,13 +24,16 @@ import java.util.List;
  */
 
 public class LocalFlightDatabase {
-    // Storage for objects constructed by the ServerInterface
+    /** List of Plane objects obtained from the server */
     private Planes planeList = new Planes();
+    /** List of Airport objects obtained from the server */
     private Airports airportList = new Airports();
-    private Legs boardingLegList = new Legs();
-    private Legs disembarkingLegList = new Legs();
+    /** List of leg objects obtained from requests the server using boarding info */
+    private final Legs boardingLegList = new Legs();
+    /** List of leg objects obtained from requests the server using disembarking info */
+    private final Legs disembarkingLegList = new Legs();
 
-    // Create a request container and list for storing which requests for departing legs have already been made
+    /** Container for saving previous requests for legs using boarding info */
     private class BoardingLegsRequest {
         private String boardingAirportCode;
         private String boardingDateString;
@@ -39,10 +41,26 @@ public class LocalFlightDatabase {
             boardingAirportCode = boardingAirport.code();
             boardingDateString = boardingDate.toString();
         }
-    }
-    //TODO:
-    private List<BoardingLegsRequest> previousLegRequests = new ArrayList<>();
 
+        @Override
+        public boolean equals (Object obj) {
+            // every object is equal to itself
+            if (obj == this) return true;
+            // null not equal to anything
+            if (obj == null) return false;
+            // can't be equal if obj is not an instance of BoardingLegsRequest
+            if (!(obj instanceof BoardingLegsRequest)) return false;
+            // if all fields are equal, the requests are the same
+            BoardingLegsRequest rhs = (BoardingLegsRequest) obj;
+            if ((rhs.boardingAirportCode.equalsIgnoreCase(boardingAirportCode)) &&
+                    (rhs.boardingDateString.equalsIgnoreCase(boardingDateString))){
+                return true;
+            }
+            return false;
+        }
+    }
+
+    /** Container for saving previous requests for legs using disembarking info */
     private class DisembarkingLegsRequest {
         private String disembarkingAirportCode;
         private String disembarkingDateString;
@@ -50,10 +68,31 @@ public class LocalFlightDatabase {
             disembarkingAirportCode = disembarkingAirport.code();
             disembarkingDateString = disembarkingDate.toString();
         }
-    }
-    private List<DisembarkingLegsRequest> previousDisembarkingLegRequests = new ArrayList<>();
 
-    // Singleton variable
+        @Override
+        public boolean equals (Object obj) {
+            // every object is equal to itself
+            if (obj == this) return true;
+            // null not equal to anything
+            if (obj == null) return false;
+            // can't be equal if obj is not an instance of DisembarkingLegsRequest
+            if (!(obj instanceof BoardingLegsRequest)) return false;
+            // if all fields are equal, the requests are the same
+            BoardingLegsRequest rhs = (BoardingLegsRequest) obj;
+            if ((rhs.boardingAirportCode.equalsIgnoreCase(disembarkingAirportCode)) &&
+                    (rhs.boardingDateString.equalsIgnoreCase(disembarkingDateString))){
+                return true;
+            }
+            return false;
+        }
+    }
+
+    /** List of previous leg requests from the server using boarding info */
+    private final List<BoardingLegsRequest> previousLegRequests = new ArrayList<>();
+    /** List of previous leg requests from the server using disembarking info */
+    private final List<DisembarkingLegsRequest> previousDisembarkingLegRequests = new ArrayList<>();
+
+    /** Singleton variable */
     private static LocalFlightDatabase single_instance = null;
 
     /** static method to provide single point of access to the Singleton
@@ -70,7 +109,7 @@ public class LocalFlightDatabase {
     /** get the full list of airports provided by the server
      *
      * @param override if true, obtains a new list of airports from the server even if one already exists
-     * @return the list of airports (possibly empty)
+     * @return [possibly empty] the list of airports
      */
     public Airports getAirportList(boolean override){
         // If airports have not been built from the server or an override of the current airport list is requested,
@@ -83,7 +122,7 @@ public class LocalFlightDatabase {
     /** get the full list of planes provided by the server
      *
      * @param override if true, obtains a new list of planes from the server even if one already exists
-     * @return the list of planes (possibly empty)
+     * @return [possibly empty] the list of planes
      */
     public Planes getPlaneList(boolean override){
         // If planes have not been built from the server or an override of the current plane list is requested,
@@ -93,23 +132,27 @@ public class LocalFlightDatabase {
         return planeList;
     }
 
-    /** get the full list of legs currently in storage
+    /** get the full list of legs currently in storage from boarding requests
      *
-     * @return the list of legs (possibly empty)
+     * @return [possibly empty]the list of legs
      */
-    public Legs getBoardingLegList(){
-        return boardingLegList;
-    }
+    public Legs getBoardingLegList(){ return boardingLegList; }
 
+    /** get the full list of legs currently in storage from disembarking requests
+     *
+     * @return [possibly empty]the list of legs
+     */
     public Legs getDisembarkingLegList() { return disembarkingLegList;}
 
-    /** get the list of legs currently in storage with the specified departure airport and departure date
+    /** get the list of legs with the specified boarding airport and boarding date.
+     *
+     * If the legs are not already in storage, obtain them from the server database.
      *
      * @param boardingAirport returned legs must have this boarding airport
      * @param boardingDate returned legs must have this boarding date
      * @param override if true, obtains a new list of legs from the server even if the same request has been previously made
      *
-     * @return only legs that match the specified boarding airport and boarding date (possibly empty)
+     * @return [possibly empty] only legs that match the specified boarding airport and boarding date
      */
     public Legs getBoardingLegList(Airport boardingAirport, LocalDate boardingDate, boolean override){
         Legs requestedLegs = new Legs();
@@ -139,7 +182,17 @@ public class LocalFlightDatabase {
         addBoardingLegs(requestedLegs);
         return requestedLegs;
     }
-    //TODO:
+
+    /** get the list of legs with the specified disembarking airport and disembarking date.
+     *
+     * If the legs are not already in storage, obtain them from the server database.
+     *
+     * @param disembarkingAirport returned legs must have this disembarking airport
+     * @param disembarkingDate returned legs must have this disembarking date
+     * @param override if true, obtains a new list of legs from the server even if the same request has been previously made
+     *
+     * @return [possibly empty] only legs that match the specified disembarking airport and disembarking date
+     */
     public Legs getDisembarkingLegList(Airport disembarkingAirport, LocalDate disembarkingDate, boolean override){
         Legs requestedLegs = new Legs();
 
@@ -173,7 +226,7 @@ public class LocalFlightDatabase {
      *
      * @param airportString airport name or airport code (case insensitive)
      *
-     * @return the airport object which matches the specified string, or null if no matches
+     * @return [possibly null] the airport object which matches the specified string, or null if no matches
      */
     public Airport getAirportFromString(String airportString){
         for(Airport apt : getAirportList(false)){
@@ -187,7 +240,7 @@ public class LocalFlightDatabase {
      *
      * @param planeString plane model (case insensitive)
      *
-     * @return the plane object which matches the specified string, or null if no matches
+     * @return [possibly null] the plane object which matches the specified string, or null if no matches
      */
     public Plane getPlaneFromModel(String planeString){
         for(Plane plane : getPlaneList(false)){
@@ -199,26 +252,28 @@ public class LocalFlightDatabase {
 
     /** add new legs to the legList, while removing any duplicate old legs (probably should override .add in the Legs class instead)
      *
-     * @param potentialLegs list of new legs to add to the leg list (possibly empty)
+     * @param potentialLegs [possibly empty] list of new legs to add to the leg list
      */
     /// Can unique be implemented at the list side?
     private void addBoardingLegs(Legs potentialLegs){
         for(Leg leg: potentialLegs){
             // For each leg in the new list, make sure there is no old version on the current list
             //      Note: Equality is currently determined only by flight number (overriden in the Leg class, as number of reserved seats may change)
-            if(boardingLegList.contains(leg))
-                boardingLegList.remove(leg);
+            boardingLegList.remove(leg);
             boardingLegList.add(leg);
         }
 
     }
 
+    /** add new legs to the legList, while removing any duplicate old legs (probably should override .add in the Legs class instead)
+     *
+     * @param potentialLegs [possibly empty] list of new legs to add to the leg list
+     */
     private void addDisembarkingLegs(Legs potentialLegs){
         for(Leg leg: potentialLegs){
             // For each leg in the new list, make sure there is no old version on the current list
             //      Note: Equality is currently determined only by flight number (overriden in the Leg class, as number of reserved seats may change)
-            if(disembarkingLegList.contains(leg))
-                disembarkingLegList.remove(leg);
+            disembarkingLegList.remove(leg);
             disembarkingLegList.add(leg);
         }
 
