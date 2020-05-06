@@ -6,6 +6,7 @@ package utils;
 import java.time.*;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Hashtable;
 
 /**
  * @author blake
@@ -85,4 +86,61 @@ public class Saps {
 	 * The duration to wait before alerting the user that the program is busy
 	 */
 	public static final Duration BUSY_WAIT_TIME = Duration.ofSeconds(3);
+
+	public static final Hashtable<String, String> AIRPORT_TIMEZONES = new Hashtable<String, String>(){
+		{
+			put("ANC", "America/Anchorage");
+			put("ATL", "America/New_York");
+			put("AUS", "America/Chicago");
+			put("BDL", "America/New_York");
+			put("BNA", "America/Chicago");
+			put("BOS", "America/New_York");
+			put("BWI", "America/New_York");
+			put("CLE", "America/New_York");
+			put("CLT", "America/New_York");
+			put("CMH", "America/New_York");
+			put("CVG", "America/New_York");
+			put("DCA", "America/New_York");
+			put("DEN", "America/Denver");
+			put("DFW", "America/Chicago");
+			put("DTW", "America/Detroit");
+			put("EWR", "America/New_York");
+			put("FLL", "America/New_York");
+			put("HNL", "Pacific/Honolulu");
+			put("HOU", "America/Chicago");
+			put("IAD", "America/New_York");
+			put("IAH", "America/Chicago");
+			put("IND", "America/Indiana/Indianapolis");
+			put("JFK", "America/New_York");
+			put("LAS", "America/Los_Angeles");
+			put("LAX", "America/Los_Angeles");
+			put("LGA", "America/New_York");
+			put("MCI", "America/Chicago");
+			put("MCO", "America/New_York");
+			put("MDW", "America/Chicago");
+			put("MEM", "America/Chicago");
+			put("MIA", "America/New_York");
+			put("MSP", "America/Chicago");
+			put("MSY", "America/Chicago");
+			put("OAK", "America/Los_Angeles");
+			put("ONT", "America/Los_Angeles");
+			put("ORD", "America/Chicago");
+			put("PDX", "America/Los_Angeles");
+			put("PHL", "America/New_York");
+			put("PHX", "America/Phoenix");
+			put("PIT", "America/New_York");
+			put("RDU", "America/New_York");
+			put("RSW", "America/New_York");
+			put("SAN", "America/Los_Angeles");
+			put("SAT", "America/Chicago");
+			put("SEA", "America/Los_Angeles");
+			put("SFO", "America/Los_Angeles");
+			put("SJC", "America/Los_Angeles");
+			put("SLC", "America/Denver");
+			put("SMF", "America/Los_Angeles");
+			put("SNA", "America/Los_Angeles");
+			put("STL", "America/Chicago");
+			put("TPA", "America/New_York");
+		}
+	};
 }
