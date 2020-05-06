@@ -148,7 +148,6 @@ public class Airport {
 	 * Verifies longitude is between +180.0 east prime meridian and -180.0 west prime meridian.
 	 *
 	 * @return true if object passes above validation checks
-	 *
 	 */
 	public boolean isValid() {
 

@@ -30,6 +30,8 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
     /**
      *  Constructor initializes default values
      *  (Currently Unused)
+     *
+     *  @post member attributes are initialized to default values
      */
     public Flight() {
         legList = new Legs();
@@ -37,9 +39,12 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
     }
 
     /**
+     * Default Constructor
+     *
      * Constructor initializes an empty leg list and sets initial value for seating type
      *
      * @param seatingType The seating type of the flight
+     * @post member attributes are initialized
      */
     public Flight(String seatingType) {
         legList = new Legs();
@@ -128,7 +133,7 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
     /**
      * Method to get Local Time of First Leg Boarding Time
      *
-     * @return The first leg local boarding zonedatetime
+     * @return [possibly null] The first leg local boarding zonedatetime
      */
     public ZonedDateTime getLocalDepartureTime() {
         if (legList.size() > 0) {
@@ -140,7 +145,7 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
     /**
      * Method to get Time of Last Leg Disembarking Time
      *
-     * @return The last leg disembarking zonedatetime
+     * @return [possibly null] The last leg disembarking zonedatetime
      */
     public ZonedDateTime getArrivalTime() {
         if (legList.size() > 0) {
@@ -152,7 +157,7 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
     /**
      * Method to get Local Time of Last Leg Disembarking Time
      *
-     * @return The last leg local disembarking zonedatetime
+     * @return [possibly null] The last leg local disembarking zonedatetime
      */
     public ZonedDateTime getLocalArrivalTime() {
         if (legList.size() > 0) {
@@ -164,7 +169,7 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
     /**
      * Method to get Total Price
      *
-     * @return
+     * @return [possibly null] The total price of all legs in the flight
      */
     public BigDecimal getTotalPrice() {
         BigDecimal totalPrice = new BigDecimal("0");
@@ -182,14 +187,24 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
         } else return null;
     }
 
-    /** Method to get Number of Layovers */
+    /**
+     * Method to get Number of Layovers
+     *
+     * @return The number of layovers
+     */
     public int getNumberOfLayovers() {
         return Math.max(legList.size() - 1, 0);
     }
 
+    /**
+     * Method to get the total travel duration
+     *
+     * @return The travel duration
+     */
     public Duration getTotalTravelTime(){
         return Duration.between(getDepartureTime(), getArrivalTime());
     }
+
     /** Method to access the filter reason */
     public String filterReason(){ return filterReason; }
 

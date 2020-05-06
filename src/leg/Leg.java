@@ -33,7 +33,11 @@ public class Leg {
     private BigDecimal firstClassPrice;
 
     /**
+     * Default Constructor
+     *
      * The constructor for Leg Objects
+     *
+     * @post member attributes are initialized to default values
      */
     public Leg() {
         disembarkingAirport = new Airport();
