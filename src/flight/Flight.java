@@ -172,7 +172,7 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
             }
 
         for (Leg thisLeg : legList)
-            if (thisLeg.getRemainingSeats(seatingType) < uIFilter.numberOfPassengers()) {
+            if (complete && thisLeg.getRemainingSeats(seatingType) < uIFilter.numberOfPassengers()) {
                 filterReason = "seating";
                 return;
             }
