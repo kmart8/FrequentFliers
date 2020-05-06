@@ -104,7 +104,7 @@ public class Plane {
      *
      * @return The total number of coach seats
      */
-    public double coachSeats () {
+    public int coachSeats () {
         return mCoachSeats;
     }
 
@@ -126,7 +126,7 @@ public class Plane {
      *
      * @return The total number of first class seats
      */
-    public double firstClassSeats () {
+    public int firstClassSeats () {
         return mFirstClassSeats;
     }
 
