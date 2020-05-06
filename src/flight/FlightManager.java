@@ -185,7 +185,7 @@ public class FlightManager {
          // Save and then remove legs that are outside the valid time window
         Legs invalidNewLegs = new Legs();
          for (Leg thisLeg : potentialNewLegs) {
-             if (thisLeg.boardingTime.isBefore(startBoardingWindow) || thisLeg.boardingTime.isAfter(endBoardingWindow))
+             if (thisLeg.getBoardingTime().isBefore(startBoardingWindow) || thisLeg.getBoardingTime().isAfter(endBoardingWindow))
                  invalidNewLegs.add(thisLeg);
          }
          if (invalidNewLegs.size() > 0)
@@ -225,7 +225,7 @@ public class FlightManager {
         // Save and then remove legs that are outside the valid time window
         Legs invalidNewLegs = new Legs();
         for (Leg thisLeg : potentialNewLegs) {
-            if (thisLeg.disembarkingTime.isBefore(startDisembarkingWindow) || thisLeg.disembarkingTime.isAfter(endDisembarkingWindow))
+            if (thisLeg.getDisembarkingTime().isBefore(startDisembarkingWindow) || thisLeg.getDisembarkingTime().isAfter(endDisembarkingWindow))
                 invalidNewLegs.add(thisLeg);
         }
         if (invalidNewLegs.size() > 0)

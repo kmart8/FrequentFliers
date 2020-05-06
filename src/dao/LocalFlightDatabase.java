@@ -129,7 +129,7 @@ public class LocalFlightDatabase {
         else{
             for(Leg leg:boardingLegList) {
                 // Verify that the boarding airport and boarding time match the requested ones
-                if (leg.boardingAirport.equals(boardingAirport) && leg.boardingTime.toLocalDate().equals(boardingDate))
+                if (leg.getBoardingAirport().equals(boardingAirport) && leg.getBoardingTime().toLocalDate().equals(boardingDate))
                     requestedLegs.add(leg);
             }
             return requestedLegs;
@@ -158,7 +158,7 @@ public class LocalFlightDatabase {
         else{
             for(Leg leg:disembarkingLegList) {
                 // Verify that the boarding airport and boarding time match the requested ones
-                if (leg.disembarkingAirport.equals(disembarkingAirport) && leg.disembarkingTime.toLocalDate().equals(disembarkingDate))
+                if (leg.getDisembarkingAirport().equals(disembarkingAirport) && leg.getDisembarkingTime().toLocalDate().equals(disembarkingDate))
                     requestedLegs.add(leg);
             }
             return requestedLegs;

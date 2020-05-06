@@ -4,10 +4,13 @@ import airport.Airport;
 import plane.Plane;
 
 import java.math.BigDecimal;
+import java.time.Duration;
 import java.time.ZonedDateTime;
 
 /**
- * @author Kevin Martin
+ * This class initializes Leg as a class and creates its attributes and methods.
+ *
+ * @author Kevin Martin, William Keenan
  * @version 1.1 2019-01-21
  * @since 2020-04-30
  *
@@ -15,20 +18,20 @@ import java.time.ZonedDateTime;
 
 public class Leg {
 
-    // Fields
-    public Airport disembarkingAirport;
-    public Airport boardingAirport;
-    public ZonedDateTime disembarkingTime;
-    public ZonedDateTime boardingTime;
-    public int flightNumber;
-    public int reservedCoachSeats;
-    public int reservedFirstClassSeats;
-    public int legDuration;
-    public Plane plane; // the plane model
-    public BigDecimal coachPrice;
-    public BigDecimal firstClassPrice;
+    /** Creates the attributes of the Leg class*/
+    private Airport disembarkingAirport;
+    private Airport boardingAirport;
+    private ZonedDateTime disembarkingTime;
+    private ZonedDateTime boardingTime;
+    private int flightNumber;
+    private int reservedCoachSeats;
+    private int reservedFirstClassSeats;
+    private Duration legDuration;
+    private Plane plane; // the plane model
+    private BigDecimal coachPrice;
+    private BigDecimal firstClassPrice;
 
-    // Default Constructor
+    /** The constructor for Leg Objects */
     public Leg() {
         disembarkingAirport = new Airport();
         boardingAirport = new Airport();
@@ -37,102 +40,210 @@ public class Leg {
         flightNumber = Integer.MAX_VALUE;
         reservedCoachSeats = Integer.MAX_VALUE;
         reservedFirstClassSeats = Integer.MAX_VALUE;
-        legDuration = Integer.MAX_VALUE;
+        legDuration = Duration.ZERO;
         plane = new Plane();
         coachPrice = null;
         firstClassPrice =  null;
     }
-    // Constructor
-    public Leg(Airport dAirport, Airport bAirport, ZonedDateTime dTime, ZonedDateTime bTime, int fNumber, int rCoach, int rFirstClass,
-               int lDuration, Plane plane, BigDecimal cPrice, BigDecimal fCPrice) {
 
-        disembarkingAirport = dAirport;
-        boardingAirport = bAirport;
-        disembarkingTime = dTime;
-        boardingTime = bTime;
-        flightNumber = fNumber;
-        reservedCoachSeats = rCoach;
-        reservedFirstClassSeats = rFirstClass;
-        legDuration = lDuration;
-        this.plane = plane;
-        coachPrice = cPrice;
-        firstClassPrice = fCPrice;
+    /**
+     * Method for getting disembarking Airport object
+     *
+     * @return Disembarking airport object
+     */
+    public Airport getDisembarkingAirport() {
+        return disembarkingAirport;
     }
 
+    /**
+     * Method for getting boarding Airport object
+     *
+     * @return Boarding airport object
+     */
+    public Airport getBoardingAirport() {
+        return boardingAirport;
+    }
+
+    /**
+     * Method for getting the disembarking time
+     *
+     * @return Disembarking time
+     */
+    public ZonedDateTime getDisembarkingTime() {
+        return disembarkingTime;
+    }
+
+    /**
+     *  Method for getting the boarding time
+     *
+     * @return Boarding time
+     */
+    public ZonedDateTime getBoardingTime() {
+        return boardingTime;
+    }
+
+    /**
+     * Method for getting flight number
+     *
+     * @return Flight number
+     */
+    public int getFlightNumber() {
+        return flightNumber;
+    }
+
+    /**
+     * Method for getting reserved coach seats
+     *
+     * @return Number of reserved coach seats
+     */
+    public int getReservedCoachSeats() {
+        return reservedCoachSeats;
+    }
+
+    /**
+     * Method for getting reserved first class seats
+     *
+     * @return Number of reserved first class seats
+     */
+    public int getReservedFirstClassSeats() {
+        return reservedFirstClassSeats;
+    }
+
+    /**
+     *  Method for getting legDuration
+     *
+     * @return Leg duration
+     */
+    public Duration getLegDuration() {
+        return legDuration;
+    }
+
+    /**
+     * Method for getting plane object
+     *
+     * @return Plane object
+     */
+    public Plane getPlane() {
+        return plane;
+    }
+
+    /**
+     * Method for getting coach price
+     *
+     * @return Coach price
+     */
+    public BigDecimal getCoachPrice() {
+        return coachPrice;
+    }
+
+    /**
+     * Method for getting first class price
+     *
+     * @return First class price
+     */
+    public BigDecimal getFirstClassPrice() {
+        return firstClassPrice;
+    }
+
+    /**
+     * Method to return the local boarding time
+     *
+     * @return Local boarding time
+     */
+    public ZonedDateTime getLocalBoardingTime(){
+        return boardingAirport.convertGMTtoLocalTime(boardingTime);
+    }
+
+    /**
+     * Method to return the local disembarking time
+     *
+     * @return Local disembarking time
+     */
+    public ZonedDateTime getLocalDisembarkingTime(){
+        return disembarkingAirport.convertGMTtoLocalTime(disembarkingTime);
+    }
+
+    /**
+     * Method to return the number of remaining seats on a leg
+     *
+     * @param seatType Type of seating
+     * @return Remaining seats on leg
+     */
+    public double getRemainingSeats(String seatType){
+        if (seatType == "First Class") return plane.firstClassSeats() - reservedFirstClassSeats;
+        else return plane.coachSeats() - reservedCoachSeats;
+    }
+
+    /**
+     * Method to set the disembarking airport
+     *
+     * @param newDisembarkingAirport The new disembarking time
+     */
+    public void setDisembarkingAirport(Airport newDisembarkingAirport) {
+        disembarkingAirport = newDisembarkingAirport;
+    }
+
+    public void setBoardingAirport(Airport newBoardingAirport) {
+        boardingAirport = newBoardingAirport;
+    }
+
+    /**
+     * Method to set the disembarking time
+     *
+     * @param newDisembarkingTime The new disembarking time
+     */
+    public void setDisembarkingTime(ZonedDateTime newDisembarkingTime) {
+        disembarkingTime = newDisembarkingTime;
+    }
+
+    /**
+     * Method to set the boarding time
+     *
+     * @param newBoardingTime The new boarding time
+     */
+    public void setBoardingTime(ZonedDateTime newBoardingTime) {
+        boardingTime = newBoardingTime;
+    }
+
+    public void setFlightNumber(int newFlightNumber) {
+        flightNumber = newFlightNumber;
+    }
+
+    public void setReservedCoachSeats(int newReservedCoachSeats) {
+        reservedCoachSeats = newReservedCoachSeats;
+    }
+
+    public void setReservedFirstClassSeats(int newReservedFirstClassSeats) {
+        reservedFirstClassSeats = newReservedFirstClassSeats;
+    }
+
+    public void setLegDuration(Duration newLegDuration) {
+        legDuration = newLegDuration;
+    }
+
+    public void setPlane(Plane newPlane) {
+        plane = newPlane;
+    }
+
+    public void setCoachPrice(BigDecimal newCoachPrice) {
+        coachPrice = newCoachPrice;
+    }
+
+    public void setFirstClassPrice(BigDecimal newFirstClassPrice) {
+        firstClassPrice = newFirstClassPrice;
+    }
+
+    /**
+     *
+     *
+     * @return
+     */
     public String toString() {
         return disembarkingAirport.code()+' '+boardingAirport.code()+' '+disembarkingTime.toString()+' '+
                 boardingTime.toString()+' '+flightNumber+' '+reservedCoachSeats+' '+
                 reservedFirstClassSeats+' '+
                 legDuration+' '+plane.model()+' '+coachPrice+' '+firstClassPrice;
 
-    }
-    // get Methods
-    public Airport getDisembarkingAirport() {
-        return disembarkingAirport;
-    }
-
-    public Airport getBoardingAirport() {
-        return boardingAirport;
-    }
-
-    public ZonedDateTime getDisembarkingTime() {
-        return disembarkingTime;
-    }
-
-    public ZonedDateTime getBoardingTime() {
-        return boardingTime;
-    }
-
-    public int getFlightNumber() {
-        return flightNumber;
-    }
-
-    public int getReservedCoachSeats() {
-        return reservedCoachSeats;
-    }
-
-    public int getReservedFirstClassSeats() {
-        return reservedFirstClassSeats;
-    }
-
-    public float getLegDuration() {
-        return legDuration;
-    }
-
-    public Plane getPlane() {
-        return plane;
-    }
-
-    public BigDecimal getCoachPrice() {
-        return coachPrice;
-    }
-
-    public BigDecimal getFirstClassPrice() {
-        return firstClassPrice;
-    }
-
-    public ZonedDateTime getLocalBoardingTime(){
-        return boardingAirport.convertGMTtoLocalTime(boardingTime);
-    }
-
-    public ZonedDateTime getLocalDisembarkingTime(){
-        return disembarkingAirport.convertGMTtoLocalTime(disembarkingTime);
-    }
-
-    //
-    public double getRemainingSeats(String seatType){
-        if (seatType == "First Class") return plane.firstClassSeats() - reservedFirstClassSeats;
-        else return plane.coachSeats() - reservedCoachSeats;
-    }
-
-
-    // set Methods
-    public void setDisembarkingTime(ZonedDateTime newDisembarkingTime) {
-        disembarkingTime = newDisembarkingTime;
-    }
-
-    public void setBoardingTime(ZonedDateTime newBoardingTime) {
-        boardingTime = newBoardingTime;
     }
 
     /**
