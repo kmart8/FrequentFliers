@@ -8,7 +8,6 @@ import utils.Saps;
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.ZonedDateTime;
-import java.util.Comparator;
 
 /**
  * This class holds values pertaining to a single Flight.
@@ -18,7 +17,7 @@ import java.util.Comparator;
  * @since 2020-04-30
  *
  */
-public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable {
+public class Flight implements Cloneable {
 
     /** List of legs that makeup the flight */
     private Legs legList;
@@ -222,7 +221,7 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
     /**
      * Method to check if Flight is a match
      *
-     * @param uIFilter
+     * @param uIFilter The UI Filter
      */
     public void isMatch(UIModel uIFilter) {
         filterReason = "";
@@ -257,16 +256,6 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
 
         if (complete) filterReason = "complete";
 
-    }
-
-    /** Required Compare To Method */
-    public int compareTo(Flight other) {
-        return getTotalPrice().compareTo(other.getTotalPrice());
-    }
-
-    /** Required Compare Method */
-    public int compare(Flight flight1, Flight flight2){
-        return flight1.compareTo(flight2);
     }
 
     /** Required Clone Method*/
