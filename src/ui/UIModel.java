@@ -136,7 +136,7 @@ public class UIModel {
     }
 
     /**
-     * Get the type of time window the user is requesting (Arriving or Departing)
+     * Get the type of time window the user is requesting
      *
      * @return The time type as a String
      */
@@ -145,7 +145,7 @@ public class UIModel {
     }
 
     /**
-     * Set the type of time window requested by the user (Arriving or Departing)
+     * Set the type of time window requested by the user
      *
      * @param dateType  The time type as a String
      */
