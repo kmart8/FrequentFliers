@@ -16,41 +16,26 @@ import java.time.*;
  *
  */
 public class UIModel {
-    /**
-     * Type for specifying departure or arrival time window
-     */
+    /** Type for specifying departure or arrival time window */
     private String timeType;
-    /**
-     * Beginning of the time window for departure or arrival
-     */
+    /** Beginning of the time window for departure or arrival */
     private LocalTime startFlightLocalTime;
-    /**
-     * End of the time window for departure or arrival
-     */
+    /** End of the time window for departure or arrival */
     private LocalTime endFlightLocalTime;
-    /**
-     * Date for the flight
-     */
+    /** Date for the flight */
     private LocalDate flightLocalDate;
-    /**
-     * Requested departure airport
-     */
+
+    /** Requested departure airport */
     private Airport departureAirport;
-    /**
-     * Requested arrival airport
-     */
+    /** Requested arrival airport */
     private Airport arrivalAirport;
-    /**
-     * Type for specifying seating
-     */
+
+    /** Type for specifying seating */
     private String seatingType;
-    /**
-     * Requested number of passengers
-     */
+    /** Requested number of passengers */
     private int numberOfPassengers;
-    /**
-     * Maximum number of layovers
-     */
+
+    /** Maximum number of layovers */
     private int numberOfLayovers;
 
     /**

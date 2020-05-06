@@ -22,19 +22,12 @@ import java.util.List;
  *
  */
 public class UIController {
-    /**
-     * Handle to the viewer
-     */
+    /** Handle to the viewer */
     private ReservationApp ui;
-
-    /**
-     * Handle to the model
-     */
+    /** Handle to the model */
     private UIModel savedInput;
 
-    /**
-     * Date format list for displaying/parsing dates to/from the user
-     */
+    /** Date format list for displaying/parsing dates to/from the user */
     private List<DateTimeFormatter> acceptedDateFormats = new ArrayList<>(){{
         add(DateTimeFormatter.ofPattern ("MM/dd/yyyy"));
         add(DateTimeFormatter.ofPattern ("MM/d/yyyy"));
@@ -45,9 +38,7 @@ public class UIController {
         add(DateTimeFormatter.ofPattern("M/dd/yy"));
         add(DateTimeFormatter.ofPattern ("M/d/yy"));}};
 
-    /**
-     * Time format list for displaying/parsing dates to/from the user
-     */
+    /** Time format list for displaying/parsing dates to/from the user */
     private List<DateTimeFormatter> acceptedTimeFormats = new ArrayList<>(){{
         // TODO: I Dont think most of these work, need to check
         add(DateTimeFormatter.ofPattern ("hh:mm:ss a"));

@@ -18,26 +18,18 @@ import java.util.TimerTask;
  *
  */
 public class NotificationManager {
-    /**
-     * Handle to the error popup, so that only one is active at a time
-     */
+    /** Handle to the error popup, so that only one is active at a time */
     private JFrame currentError;
-    /**
-     * Handle to the busy popup, so that only one is active at a time
-     */
+    /** Handle to the busy popup, so that only one is active at a time */
     private JFrame busyWarning;
-    /**
-     * A running counter to ensure each timer has a unique key
-     */
+
+    /** A running counter to ensure each timer has a unique key */
     private int timerIDCounter;
-    /**
-     * Timers in a hashtable so that their ID can be used to find and cancel them
-     */
+
+    /** Timers in a hashtable so that their ID can be used to find and cancel them */
     private final Hashtable<Integer, Timer> busyTimers = new Hashtable<>();
 
-    /**
-     * Singleton variable
-     */
+    /** Singleton variable */
     private static utils.NotificationManager single_instance = null;
 
     /** Static method to provide single point of access to the Singleton
