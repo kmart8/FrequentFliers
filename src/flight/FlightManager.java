@@ -125,18 +125,16 @@ public class FlightManager {
      *
      * @param newLeg Leg to be added to the flight
      * @param flight Flight to be modified
-     * @return The modified flight
      * @pre The leg is a valid next addition to the flight and the flight filter is not empty
      * @post The leg has been added to the correct end of the flight
      */
-     private Flight addNewLegToFlight(Leg newLeg, Flight flight){
+     private void addNewLegToFlight(Leg newLeg, Flight flight){
          // If the time window is for departure, add the leg to the end of the copy
          if (flightFilter.timeType().equals(Saps.TIME_WINDOW_TYPES.get(0)))
              flight.addLegToEnd(newLeg);
              // If the time window is for arrival, add the leg to the beggining of the copy
          else
              flight.addLegToBeginning(newLeg);
-         return flight;
      }
 
     /**
