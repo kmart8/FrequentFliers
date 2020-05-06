@@ -174,7 +174,7 @@ public class UIController {
         if(airport == null) {
             if (savedInput.arrivalAirport() != null) {
                 savedInput.arrivalAirport(null);
-                System.out.println("Departure airport removed");
+                System.out.println("Arrival airport removed");
             }
             return;
         }

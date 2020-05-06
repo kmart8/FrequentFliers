@@ -265,6 +265,40 @@ public class ReservationApp {
                     System.out.println("User added flight to cart");
                 }
                 else NotificationManager.getInstance().popupError("No flight selected!");
+                switch (Trip.getInstance().getTripType()){
+                    case "One-Way":
+                        if (Trip.getInstance().getTrip().size() < 1) {
+                            Trip.getInstance().addFlightToTrip(displayList.get(flightDisplayTable.getSelectedRow()));
+                            for (Flight flight : Trip.getInstance().getTrip()){
+                                legsInCart.addAll(flight.getLegList());
+                            }
+                            buildLegTable(legsInCart);
+                            System.out.println("User added flight to cart");
+                        } else {
+                            System.out.println("Trip is full for One-Way trip");
+                        }
+                        break;
+                    case "Round-Trip":
+                        if (Trip.getInstance().getTrip().size() < 2) {
+                            Trip.getInstance().addFlightToTrip(displayList.get(flightDisplayTable.getSelectedRow()));
+                            for (Flight flight : Trip.getInstance().getTrip()){
+                                legsInCart.addAll(flight.getLegList());
+                            }
+                            buildLegTable(legsInCart);
+                            System.out.println("User added flight to cart");
+                            String arrival = arrivalAirportFormattedTextField.getText();
+                            controller.setArrivalAirport(null);
+                            String departure = departureAirportFormattedTextField.getText();
+                            arrivalAirportFormattedTextField.setText(departure);
+                            departureAirportFormattedTextField.setText(arrival);
+                            displayList = new Flights();
+                            buildFlightTable();
+                        } else {
+                            System.out.println("Trip is full for Round-Trip");
+                        }
+                        break;
+                }
+
             }
         });
         tripTypeComboBox.addActionListener(new ActionListener() {
