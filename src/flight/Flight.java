@@ -5,7 +5,6 @@ import leg.Leg;
 import leg.Legs;
 import ui.UIModel;
 import utils.Saps;
-
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.ZonedDateTime;
@@ -47,26 +46,52 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
         else this.seatingType = Saps.SEATING_TYPES.get(0);
     }
 
+    /**
+     * Method for setting the leg list
+     *
+     * @param legs The new leg list
+     */
     public void legList(Legs legs) { legList = legs;}
 
+    /**
+     * Method for getting the leg list
+     *
+     * @return The leg list
+     */
     public Legs legList() { return legList;}
 
-    /** Add Leg to end of array */
+    /**
+     * Method for adding Leg to end of array
+     *
+     * @param newLeg The new leg to be added
+     */
     public void addLegToEnd(Leg newLeg) {
         legList.add(newLeg);
     }
 
-    /** Add Leg to the beginning of array */
+    /**
+     * Method for adding Leg to the beginning of array
+     *
+     * @param newLeg The new leg to be added
+     */
     public void addLegToBeginning(Leg newLeg) {
         legList.add(0, newLeg);
     }
 
-    /** Method to set seating type */
+    /**
+     * Method to set seating type
+     *
+      * @param seatingRequested The seating type requested
+     */
     public void setSeatingType(String seatingRequested) {
         if (Saps.SEATING_TYPES.contains(seatingRequested)) seatingType = seatingRequested;
     }
 
-    /** Method to get Departure Airport of Flight */
+    /**
+     * Method to get Departure Airport of Flight
+     *
+     * @return The departure airport of flight
+     */
     public Airport getDepartureAirport() {
         if (legList.size() > 0) {
             return legList.get(0).getBoardingAirport();

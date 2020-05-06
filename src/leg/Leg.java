@@ -173,7 +173,7 @@ public class Leg {
      * @return Remaining seats on leg
      */
     public double getRemainingSeats(String seatType) {
-        if (seatType == "First Class") return plane.firstClassSeats() - reservedFirstClassSeats;
+        if (seatType.equals("First Class")) return plane.firstClassSeats() - reservedFirstClassSeats;
         else return plane.coachSeats() - reservedCoachSeats;
     }
 
