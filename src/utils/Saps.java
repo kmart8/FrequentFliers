@@ -62,11 +62,14 @@ public class Saps {
 	 * Lower limit used for layover validation
 	 */
 	public static final double MIN_LAYOVERS = 0;
-
 	/**
 	 * Names used for seating selection
 	 */
 	public static final ArrayList<String> SEATING_TYPES = new ArrayList<>(Arrays.asList("Coach", "First Class"));
+	/**
+	 * Names used for time window selection
+	 */
+	public static final ArrayList<String> TIME_WINDOW_TYPES = new ArrayList<>(Arrays.asList("Departure", "Arrival"));
 
 	/**
 	 * Lower limit used for date range validation
