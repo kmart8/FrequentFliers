@@ -1,6 +1,3 @@
-/**
- * 
- */
 package dao;
 
 import java.io.*;
@@ -11,6 +8,7 @@ import java.time.*;
 import airport.Airport;
 import airport.Airports;
 import flight.Flight;
+import flight.Flights;
 import leg.Leg;
 import org.w3c.dom.Attr;
 import org.w3c.dom.Document;
@@ -32,9 +30,9 @@ import javax.xml.transform.stream.StreamResult;
  * This class provides an interface to the CS509 server. It provides sample methods to perform
  * HTTP GET and HTTP POSTS
  *   
- * @author Kevin Martin
- * @version 1.0
- * @since 2020-05-01
+ * @author Blake Nelson
+ * @version 1.0 2020-03-26
+ * @since 2016-02-24
  *
  */
 public enum ServerInterface {
@@ -43,7 +41,7 @@ public enum ServerInterface {
 	/**
 	 * Return a collection of all the airports from server
 	 * 
-	 * Retrieve the list of airports available to the specified teamName via HTTPGet of the server
+	 * Retrieve the list of airports via HTTPGet of the server
 	 *
 	 * @return collection of Airports from server or null if error.
 	 */
@@ -53,30 +51,25 @@ public enum ServerInterface {
 		HttpURLConnection connection;
 		BufferedReader reader;
 		String line;
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 		
 		String xmlAirports;
 		Airports airports;
 
 		try {
-			/**
-			 * Create an HTTP connection to the server for a GET 
-			 * QueryFactory provides the parameter annotations for the HTTP GET query string
-			 */
+			// QueryFactory provides the parameter annotations for the HTTP GET query string
 			url = new URL(Saps.SERVER_URL + QueryFactory.getAirportsQuery());
+
+			// Create an HTTP connection to the server for a GET
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 			connection.setRequestProperty("User-Agent", Saps.TEAM_NAME);
 
-			/**
-			 * If response code of SUCCESS read the XML string returned
-			 * line by line to build the full return string
-			 */
+			// If response code of SUCCESS read the XML string returned
+			// line by line to build the full return string
 			int responseCode = connection.getResponseCode();
 			if (responseCode >= HttpURLConnection.HTTP_OK) {
 				InputStream inputStream = connection.getInputStream();
-				String encoding = connection.getContentEncoding();
-				encoding = (encoding == null ? "UTF-8" : encoding);
 
 				reader = new BufferedReader(new InputStreamReader(inputStream));
 				while ((line = reader.readLine()) != null) {
@@ -84,9 +77,6 @@ public enum ServerInterface {
 				}
 				reader.close();
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -95,39 +85,40 @@ public enum ServerInterface {
 		xmlAirports = result.toString();
 		airports = DaoAirport.addAll(xmlAirports);
 		return airports;
-		
 	}
 
+	/**
+	 * Return a collection of all the planes from server
+	 *
+	 * Retrieve the list of planes via HTTPGet of the server
+	 *
+	 * @return collection of Planes from server or null if error.
+	 */
 	public Planes getPlanes () {
 
 		URL url;
 		HttpURLConnection connection;
 		BufferedReader reader;
 		String line;
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 
 		String xmlPlanes;
 		Planes planes;
 
 		try {
-			/**
-			 * Create an HTTP connection to the server for a GET
-			 * QueryFactory provides the parameter annotations for the HTTP GET query string
-			 */
+			// QueryFactory provides the parameter annotations for the HTTP GET query string
 			url = new URL(Saps.SERVER_URL + QueryFactory.getPlanesQuery());
+
+			// Create an HTTP connection to the server for a GET
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 			connection.setRequestProperty("User-Agent", Saps.TEAM_NAME);
 
-			/**
-			 * If response code of SUCCESS read the XML string returned
-			 * line by line to build the full return string
-			 */
+			//If response code of SUCCESS read the XML string returned
+			// line by line to build the full return string
 			int responseCode = connection.getResponseCode();
 			if (responseCode >= HttpURLConnection.HTTP_OK) {
 				InputStream inputStream = connection.getInputStream();
-				String encoding = connection.getContentEncoding();
-				encoding = (encoding == null ? "UTF-8" : encoding);
 
 				reader = new BufferedReader(new InputStreamReader(inputStream));
 				while ((line = reader.readLine()) != null) {
@@ -135,9 +126,6 @@ public enum ServerInterface {
 				}
 				reader.close();
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -146,39 +134,41 @@ public enum ServerInterface {
 		xmlPlanes = result.toString();
 		planes = DaoPlane.addAll(xmlPlanes);
 		return planes;
-
 	}
 
+	/**
+	 * Return a collection of legs from server which board at a given airport and date
+	 *
+	 * Retrieve the list of legs via HTTPGet of the server
+	 *
+	 * @param boardingAirport the boarding Airport for requested legs
+	 * @param boardingDate the date of boarding for requested legs
+	 * @return collection of Legs from server or null if error.
+	 */
 	public Legs getBoardingLegs(Airport boardingAirport, LocalDate boardingDate) {
 		URL url;
 		HttpURLConnection connection;
 		BufferedReader reader;
 		String line;
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 
 		String xmlBoardingLegs;
 		Legs boardingLegs;
 
 		try {
-			/**
-			 * Create an HTTP connection to the server for a GET
-			 * QueryFactory provides the parameter annotations for the HTTP GET query string
-			 */
-
+			// QueryFactory provides the parameter annotations for the HTTP GET query string
 			url = new URL(Saps.SERVER_URL + QueryFactory.getBoardingLegsQuery(boardingAirport, boardingDate));
+
+			// Create an HTTP connection to the server for a GET
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 			connection.setRequestProperty("User-Agent", Saps.TEAM_NAME);
 
-			/**
-			 * If response code of SUCCESS read the XML string returned
-			 * line by line to build the full return string
-			 */
+			//If response code of SUCCESS read the XML string returned
+			//line by line to build the full return string
 			int responseCode = connection.getResponseCode();
 			if (responseCode >= HttpURLConnection.HTTP_OK) {
 				InputStream inputStream = connection.getInputStream();
-				String encoding = connection.getContentEncoding();
-				encoding = (encoding == null ? "UTF-8" : encoding);
 
 				reader = new BufferedReader(new InputStreamReader(inputStream));
 				while ((line = reader.readLine()) != null) {
@@ -186,9 +176,6 @@ public enum ServerInterface {
 				}
 				reader.close();
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -199,36 +186,39 @@ public enum ServerInterface {
 		return boardingLegs;
 	}
 
+	/**
+	 * Return a collection of legs from server which disembark at a given airport and date
+	 *
+	 * Retrieve the list of legs via HTTPGet of the server
+	 *
+	 * @param disembarkingAirport the disembarking Airport for requested legs
+	 * @param disembarkingDate the date of disembarking for requested legs
+	 * @return collection of Legs from server or null if error.
+	 */
 	public Legs getDisembarkingLegs(Airport disembarkingAirport, LocalDate disembarkingDate) {
 		URL url;
 		HttpURLConnection connection;
 		BufferedReader reader;
 		String line;
-		StringBuffer result = new StringBuffer();
+		StringBuilder result = new StringBuilder();
 
 		String xmlDisembarkingLegs;
 		Legs disembarkingLegs;
 
 		try {
-			/**
-			 * Create an HTTP connection to the server for a GET
-			 * QueryFactory provides the parameter annotations for the HTTP GET query string
-			 */
-
+			// QueryFactory provides the parameter annotations for the HTTP GET query string
 			url = new URL(Saps.SERVER_URL + QueryFactory.getDisembarkingLegsQuery(disembarkingAirport, disembarkingDate));
+
+			//Create an HTTP connection to the server for a GET
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("GET");
 			connection.setRequestProperty("User-Agent", Saps.TEAM_NAME);
 
-			/**
-			 * If response code of SUCCESS read the XML string returned
-			 * line by line to build the full return string
-			 */
+			//If response code of SUCCESS read the XML string returned
+			//line by line to build the full return string
 			int responseCode = connection.getResponseCode();
 			if (responseCode >= HttpURLConnection.HTTP_OK) {
 				InputStream inputStream = connection.getInputStream();
-				String encoding = connection.getContentEncoding();
-				encoding = (encoding == null ? "UTF-8" : encoding);
 
 				reader = new BufferedReader(new InputStreamReader(inputStream));
 				while ((line = reader.readLine()) != null) {
@@ -236,9 +226,6 @@ public enum ServerInterface {
 				}
 				reader.close();
 			}
-		} catch (IOException e) {
-			e.printStackTrace();
-			return null;
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -249,34 +236,46 @@ public enum ServerInterface {
 		return disembarkingLegs;
 	}
 
-
-	public boolean postLegReservation(Flight flight) {
+	/**
+	 * Reserves seats on the server database for a given flight.
+	 *
+	 * Retrieve the list of legs via HTTPGet of the server
+	 *
+	 * @param flights the flight on which seats should be reserved
+	 * @param numberOfPassengers the number of seats that should be reserved
+	 * @return true if the reservation was successful, false otherwise
+	 */
+	public boolean postLegReservation(Flights flights, int numberOfPassengers) {
 		URL url;
 		HttpURLConnection connection;
 
 		try {
+			//Create an HTTP connection to the server for a POST
 			url = new URL(Saps.SERVER_URL);
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("POST");
 			connection.setRequestProperty("User-Agent", Saps.TEAM_NAME);
 			connection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
 
-			String xmlFlights = buildPostXML(flight);
+			// QueryFactory provides the parameter annotations for the HTTP Post query string
+			String xmlFlights = buildPostXML(flights, numberOfPassengers);
 			String params = QueryFactory.postLegReservation(xmlFlights);
 
+			// Send the HTTP POST query
 			connection.setDoOutput(true);
 			DataOutputStream writer = new DataOutputStream(connection.getOutputStream());
 			writer.writeBytes(params);
 			writer.flush();
 			writer.close();
 
+			// Get and display the server response
 			int responseCode = connection.getResponseCode();
-			System.out.println("\nSending 'POST' to post reservation to database");
-			System.out.println(("\nResponse Code : " + responseCode));
+			System.out.println("Sending 'POST' to post reservation to database");
+			System.out.println(("Response Code : " + responseCode));
 
 			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			String line;
-			StringBuffer response = new StringBuffer();
+			StringBuilder response = new StringBuilder();
 
 			while ((line = in.readLine()) != null) {
 				response.append(line);
@@ -304,27 +303,31 @@ public enum ServerInterface {
 		HttpURLConnection connection;
 
 		try {
+			//Create an HTTP connection to the server for a POST
 			url = new URL(Saps.SERVER_URL);
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("POST");
 			connection.setRequestProperty("User-Agent", Saps.TEAM_NAME);
 			connection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
-			
+
+			// QueryFactory provides the parameter annotations for the HTTP Post query string
 			String params = QueryFactory.lock();
-			
+
+			// Send the HTTP POST query
 			connection.setDoOutput(true);
 			DataOutputStream writer = new DataOutputStream(connection.getOutputStream());
 			writer.writeBytes(params);
 			writer.flush();
 			writer.close();
-			
+
+			// Get and display the server response
 			int responseCode = connection.getResponseCode();
-			System.out.println("\nSending 'POST' to lock database");
-			System.out.println(("\nResponse Code : " + responseCode));
+			System.out.println("Sending 'POST' to lock database");
+			System.out.println(("Response Code : " + responseCode));
 			
 			BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 			String line;
-			StringBuffer response = new StringBuffer();
+			StringBuilder response = new StringBuilder();
 			
 			while ((line = in.readLine()) != null) {
 				response.append(line);
@@ -355,28 +358,30 @@ public enum ServerInterface {
 		HttpURLConnection connection;
 		
 		try {
+			//Create an HTTP connection to the server for a POST
 			url = new URL(Saps.SERVER_URL);
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("POST");
-			
+
+			// QueryFactory provides the parameter annotations for the HTTP Post query string
 			String params = QueryFactory.unlock();
-			
+
+			// Send the HTTP POST query
 			connection.setDoOutput(true);
-			connection.setDoInput(true);
-			
 			DataOutputStream writer = new DataOutputStream(connection.getOutputStream());
 			writer.writeBytes(params);
 			writer.flush();
 			writer.close();
-		    
+
+			// Get and display the server response
 			int responseCode = connection.getResponseCode();
-			System.out.println("\nSending 'POST' to unlock database");
-			System.out.println(("\nResponse Code : " + responseCode));
+			System.out.println("Sending 'POST' to unlock database");
+			System.out.println(("Response Code : " + responseCode));
 
 			if (responseCode >= HttpURLConnection.HTTP_OK) {
 				BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 				String line;
-				StringBuffer response = new StringBuffer();
+				StringBuilder response = new StringBuilder();
 
 				while ((line = in.readLine()) != null) {
 					response.append(line);
@@ -385,12 +390,7 @@ public enum ServerInterface {
 
 				System.out.println(response.toString());
 			}
-		}
-		catch (IOException ex) {
-			ex.printStackTrace();
-			return false;
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			return false;
 		}
@@ -402,28 +402,30 @@ public enum ServerInterface {
 		HttpURLConnection connection;
 
 		try {
+			//Create an HTTP connection to the server for a POST
 			url = new URL(Saps.SERVER_URL);
 			connection = (HttpURLConnection) url.openConnection();
 			connection.setRequestMethod("POST");
 
+			// QueryFactory provides the parameter annotations for the HTTP Post query string
 			String params = QueryFactory.reset();
 
+			// Send the HTTP POST query
 			connection.setDoOutput(true);
-			connection.setDoInput(true);
-
 			DataOutputStream writer = new DataOutputStream(connection.getOutputStream());
 			writer.writeBytes(params);
 			writer.flush();
 			writer.close();
 
+			// Get and display the server response
 			int responseCode = connection.getResponseCode();
-			System.out.println("\nSending 'POST' to unlock database");
+			System.out.println("Sending 'POST' to reset database");
 			System.out.println(("\nResponse Code : " + responseCode));
 
 			if (responseCode >= HttpURLConnection.HTTP_OK) {
 				BufferedReader in = new BufferedReader(new InputStreamReader(connection.getInputStream()));
 				String line;
-				StringBuffer response = new StringBuffer();
+				StringBuilder response = new StringBuilder();
 
 				while ((line = in.readLine()) != null) {
 					response.append(line);
@@ -432,27 +434,24 @@ public enum ServerInterface {
 
 				System.out.println(response.toString());
 			}
-		}
-		catch (IOException ex) {
-			ex.printStackTrace();
-			return false;
-		}
-		catch (Exception ex) {
+		} catch (Exception ex) {
 			ex.printStackTrace();
 			return false;
 		}
 		return true;
 	}
 
-	public String buildPostXML(Flight flight) {
-
+	public String buildPostXML(Flights flights, int numberOfPassengers) {
+		String xmlString = "";
 		Document document = null;
 
 		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+
 		try {
 			DocumentBuilder builder = factory.newDocumentBuilder();
 			document = builder.newDocument();
-		}catch (ParserConfigurationException parserException) {
+
+		} catch (ParserConfigurationException parserException) {
 			parserException.printStackTrace();
 		}
 
@@ -460,50 +459,48 @@ public enum ServerInterface {
 		Element root = document.createElement("Flights");
 		document.appendChild(root);
 
-		String seatingType = flight.seatingType();
-		Legs legList = flight.legList();
+		for (Flight thisFlight : flights) {
+			String seatingType = thisFlight.seatingType();
+			Legs legList = thisFlight.legList();
 
-		for (Leg leg : legList) {
-			// add child element
-			Node legNode = createLegNode(document,seatingType,leg);
-			root.appendChild(legNode);
+			for (Leg leg : legList) {
+				// add child element
+				Node legNode = createLegNode(document, seatingType, leg);
+				root.appendChild(legNode);
+				for (int i = 0; i < numberOfPassengers - 1; i++){
+					Node copy = legNode.cloneNode(false);
+					root.appendChild(copy);
+				}
+			}
+			// convert document to string
+			try {
+				// create DOMSource for source XML document
+				Source xmlSource = new DOMSource(document);
+
+				// create Transformer for transformation
+				TransformerFactory transformerFactory = TransformerFactory.newInstance();
+				Transformer transformer = transformerFactory.newTransformer();
+				transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+
+				StringWriter writer = new StringWriter();
+
+				//transform document to string
+				transformer.transform(new DOMSource(document), new StreamResult(writer));
+				xmlString = xmlString.concat(writer.getBuffer().toString());
+			}
+			// handle exception creating TransformerFactory
+			catch (TransformerFactoryConfigurationError factoryError) {
+				System.err.println("Error creating " + "TransformerFactory");
+				factoryError.printStackTrace();
+				return null;
+			}catch (TransformerException transformerError) {
+				System.err.println("Error transforming document");
+				transformerError.printStackTrace();
+				return null;
+			}
 		}
-		// convert document to string
-		try {
 
-			// create DOMSource for source XML document
-			Source xmlSource = new DOMSource(document);
-
-			// create StreamResult for transformation result
-			//Result result = new StreamResult(new FileOutputStream("post.xml"));
-
-			// create TransformerFactory
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-
-			// create Transformer for transformation
-			Transformer transformer = transformerFactory.newTransformer();
-			transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-			//transformer.setOutputProperty("indent", "yes");
-
-			StringWriter writer = new StringWriter();
-
-			//transform document to string
-			transformer.transform(new DOMSource(document), new StreamResult(writer));
-
-			String xmlString = writer.getBuffer().toString();
-
-			return xmlString;
-		}
-
-		// handle exception creating TransformerFactory
-		catch (TransformerFactoryConfigurationError factoryError) {
-			System.err.println("Error creating " + "TransformerFactory");
-			factoryError.printStackTrace();
-		}catch (TransformerException transformerError) {
-			System.err.println("Error transforming document");
-			transformerError.printStackTrace();
-		}
-		return null;
+		return xmlString;
 	}
 
 	public Node createLegNode(Document document, String seatingType, Leg leg) {
