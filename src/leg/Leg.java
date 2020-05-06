@@ -177,12 +177,17 @@ public class Leg {
     /**
      * Method to set the disembarking airport
      *
-     * @param newDisembarkingAirport The new disembarking time
+     * @param newDisembarkingAirport The new disembarking airport object
      */
     public void setDisembarkingAirport(Airport newDisembarkingAirport) {
         disembarkingAirport = newDisembarkingAirport;
     }
 
+    /**
+     * Method to set the boarding airport
+     *
+     * @param newBoardingAirport The new boarding airport object
+     */
     public void setBoardingAirport(Airport newBoardingAirport) {
         boardingAirport = newBoardingAirport;
     }
@@ -205,45 +210,67 @@ public class Leg {
         boardingTime = newBoardingTime;
     }
 
+    /**
+     * Method to set the flight number
+     *
+     * @param newFlightNumber The new flight number
+     */
     public void setFlightNumber(int newFlightNumber) {
         flightNumber = newFlightNumber;
     }
 
+    /**
+     * Method to set the number of reserved coach seats
+     *
+     * @param newReservedCoachSeats The new number of reserved coach seats
+     */
     public void setReservedCoachSeats(int newReservedCoachSeats) {
         reservedCoachSeats = newReservedCoachSeats;
     }
 
+    /**
+     * Method to set the number of reserved first class seats
+     *
+     * @param newReservedFirstClassSeats The new number of reserved first class seats
+     */
     public void setReservedFirstClassSeats(int newReservedFirstClassSeats) {
         reservedFirstClassSeats = newReservedFirstClassSeats;
     }
 
+    /**
+     * Method to set the duration of the leg
+     *
+     * @param newLegDuration The new leg duration
+     */
     public void setLegDuration(Duration newLegDuration) {
         legDuration = newLegDuration;
     }
 
+    /**
+     * Method to set the plane
+     *
+     * @param newPlane The new plane object
+     */
     public void setPlane(Plane newPlane) {
         plane = newPlane;
     }
 
+    /**
+     * Method to set the coach price
+     *
+     * @param newCoachPrice The new coach price
+     */
     public void setCoachPrice(BigDecimal newCoachPrice) {
         coachPrice = newCoachPrice;
     }
 
+    /**
+     * Method to set the first class price
+     *
+     * @param newFirstClassPrice The new first class price
+     */
     public void setFirstClassPrice(BigDecimal newFirstClassPrice) {
         firstClassPrice = newFirstClassPrice;
-    }
-
-    /**
-     *
-     *
-     * @return
-     */
-    public String toString() {
-        return disembarkingAirport.code()+' '+boardingAirport.code()+' '+disembarkingTime.toString()+' '+
-                boardingTime.toString()+' '+flightNumber+' '+reservedCoachSeats+' '+
-                reservedFirstClassSeats+' '+
-                legDuration+' '+plane.model()+' '+coachPrice+' '+firstClassPrice;
-
     }
 
     /**
