@@ -9,5 +9,7 @@
 # Visual Paradigm integrated files and folders
 /vpproject/
 /FrequentFliers.vpdm/
-# Javadocumentation
+# Javadoc documentation
 /doc/
+# Bin executables
+/bin/
