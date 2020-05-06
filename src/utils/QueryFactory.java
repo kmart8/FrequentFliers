@@ -1,11 +1,7 @@
-/**
- * 
- */
 package utils;
 
 import airport.Airport;
 
-import javax.xml.transform.Source;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
@@ -39,8 +35,8 @@ public class QueryFactory {
 	/**
 	 * Return query string that can be passed to HTTP URL to request list of legs
 	 *
-	 * @param boardingAirport is the airport
-	 * @param boardingDate    is the the flight departure date of type ZonedDateTime
+	 * @param boardingAirport is the Airport each leg must start at
+	 * @param boardingDate    is the the date the legs board, of type ZonedDateTime
 	 * @return the query String which can be appended to URL to form HTTP GET request
 	 */
 	public static String getBoardingLegsQuery(Airport boardingAirport, LocalDate boardingDate) {
@@ -52,6 +48,13 @@ public class QueryFactory {
 		return "?team=" + Saps.TEAM_NAME + "&action=list&list_type=departing&airport=" + boardingAirport.code() + "&day=" + departureDateString;
 	}
 
+	/**
+	 * Return query string that can be passed to HTTP URL to request list of legs
+	 *
+	 * @param disembarkingAirport is the Airport each leg must start at
+	 * @param disembarkingDate    is the the date the legs disembark, of type ZonedDateTime
+	 * @return the query String which can be appended to URL to form HTTP GET request
+	 */
 	public static String getDisembarkingLegsQuery(Airport disembarkingAirport, LocalDate disembarkingDate) {
 		//DateTimeFormatter
 		DateTimeFormatter dateStyle = DateTimeFormatter.ofPattern("yyyy_MM_dd");
@@ -79,7 +82,18 @@ public class QueryFactory {
 		return "team=" + Saps.TEAM_NAME + "&action=unlockDB";
 	}
 
+	/**
+	 * Return query string that can be passed to HTTP URL to post reservations for flights to the database
+	 *
+	 * @return the String written to the HTTP POST to reserve seats on the server database
+	 */
 	public static String postLegReservation(String xmlFlights) { return "team=" + Saps.TEAM_NAME + "&action=buyTickets&flightData=" + xmlFlights; }
 
+	/**
+	 * Return query string that can be passed to HTTP URL to reset the server database to undo changes
+	 * during testing/development
+	 *
+	 * @return the String written to the HTTP POST to reset the server database
+	 */
 	public static String reset() { return "?team="+ Saps.TEAM_NAME +" &action=resetDB";}
 }
