@@ -119,6 +119,10 @@ public class FlightManager {
         }
 
         Legs potentialNewLegs = LocalFlightDatabase.getInstance().getBoardingLegList(boardingAirport,startBoardingWindow.toLocalDate(),false);
+         if (startBoardingWindow.toLocalDate().compareTo(endBoardingWindow.toLocalDate()) < 0) {
+             Legs extraLegs = LocalFlightDatabase.getInstance().getBoardingLegList(boardingAirport, endBoardingWindow.toLocalDate(), false);
+             if (extraLegs.size() > 0) potentialNewLegs.addAll(extraLegs);
+         }
         Legs invalidNewLegs = new Legs();
 
          for (Leg thisLeg : potentialNewLegs) {
@@ -139,18 +143,21 @@ public class FlightManager {
      *
      * @pre the flight filter is not empty and the arrival airport of the flight filter is not empty
      */
-    private Legs getValidArrivingLegs(Flight newFlight){
+    private Legs getValidArrivingLegs(Flight newFlight) {
         Airport disembarkingAirport = flightFilter.arrivalAirport();
         ZonedDateTime startDisembarkingWindow = flightFilter.startFlightDateTime();
         ZonedDateTime endDisembarkingWindow = flightFilter.endFlightDateTime();
         if (newFlight.getDepartureAirport() != null) {
             disembarkingAirport = newFlight.getDepartureAirport();
             endDisembarkingWindow = newFlight.getDepartureTime().minus(Saps.MIN_LAYOVER_TIME);
-            startDisembarkingWindow = endDisembarkingWindow.minus(Saps.MIN_LAYOVER_TIME.minus(Saps.MIN_LAYOVER_TIME));
+            startDisembarkingWindow = endDisembarkingWindow.minus(Saps.MAX_LAYOVER_TIME.minus(Saps.MIN_LAYOVER_TIME));
         }
 
-        Legs potentialNewLegs = LocalFlightDatabase.getInstance().getDisembarkingLegList(disembarkingAirport,startDisembarkingWindow.toLocalDate(),false);
-        
+        Legs potentialNewLegs = LocalFlightDatabase.getInstance().getDisembarkingLegList(disembarkingAirport, startDisembarkingWindow.toLocalDate(), false);
+        if (startDisembarkingWindow.toLocalDate().compareTo(endDisembarkingWindow.toLocalDate()) < 0) {
+            Legs extraLegs = LocalFlightDatabase.getInstance().getDisembarkingLegList(disembarkingAirport, endDisembarkingWindow.toLocalDate(), false);
+            if (extraLegs.size() > 0) potentialNewLegs.addAll(extraLegs);
+        }
         Legs invalidNewLegs = new Legs();
 
         for (Leg thisLeg : potentialNewLegs) {
