@@ -1,6 +1,3 @@
-/**
- * 
- */
 package dao;
 
 import java.io.IOException;
@@ -21,7 +18,14 @@ import org.xml.sax.SAXException;
 import airport.Airport;
 import airport.Airports;
 
-/**
+ /**
+ * Builds a collection of airports from airports described in XML
+ *
+ * Parses an XML string to read each of the airports and adds each valid airport
+ * to the collection. The class uses Java DOM (Document Object Model) to convert
+ * from XML to Java primitives.
+ *
+ *
  * @author blake
  * @version 1.1 2019-01-21
  * @since 2016-02-24
@@ -29,12 +33,8 @@ import airport.Airports;
  */
 public class DaoAirport {
 	/**
-	 * Builds a collection of airports from airports described in XML
-	 * 
-	 * Parses an XML string to read each of the airports and adds each valid airport 
-	 * to the collection. The method uses Java DOM (Document Object Model) to convert
-	 * from XML to Java primitives. 
-	 * 
+	 *  Creates Airport objects from XML.
+	 *
 	 * Method iterates over the set of Airport nodes in the XML string and builds
 	 * an Airport object from the XML node string and add the Airport object instance to
 	 * the Airports collection.
@@ -117,9 +117,7 @@ public class DaoAirport {
 	 * @return DOM tree from parsed XML or null if exception is caught
 	 */
 	static private Document buildDomDoc (String xmlString) {
-		/**
-		 * load the xml string into a DOM document and return the Document
-		 */
+		// load the xml string into a DOM document and return the Document
 		try {
 			DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
 			DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
