@@ -3,6 +3,7 @@ package ui;
 import airport.Airport;
 import leg.Legs;
 import dao.LocalFlightDatabase;
+import utils.NotificationManager;
 import utils.Saps;
 
 import java.time.*;
@@ -12,7 +13,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * This class serves as a controller for the ReservationApp viewer. Stored values are
+ * Serves as a controller for the ReservationApp viewer. Accepted values are
  * assigned to a UIModel object which can be loaded or exported. This class parses and validates user input.
  *
  * @author Chris Collins
@@ -21,13 +22,19 @@ import java.util.List;
  *
  */
 public class UIController {
-    // Reference to the viewer
+    /**
+     * Handle to the viewer
+     */
     private ReservationApp ui;
 
-    // Reference to the model
+    /**
+     * Handle to the model
+     */
     private UIModel savedInput;
 
-    // Initialize a date format list for displaying/parsing dates to/from the user
+    /**
+     * Date format list for displaying/parsing dates to/from the user
+     */
     private List<DateTimeFormatter> acceptedDateFormats = new ArrayList<>(){{
         add(DateTimeFormatter.ofPattern ("MM/dd/yyyy"));
         add(DateTimeFormatter.ofPattern ("MM/d/yyyy"));
@@ -38,7 +45,9 @@ public class UIController {
         add(DateTimeFormatter.ofPattern("M/dd/yy"));
         add(DateTimeFormatter.ofPattern ("M/d/yy"));}};
 
-    // Initialize a date format list for displaying/parsing dates to/from the user
+    /**
+     * Time format list for displaying/parsing dates to/from the user
+     */
     private List<DateTimeFormatter> acceptedTimeFormats = new ArrayList<>(){{
         // TODO: I Dont think most of these work, need to check
         add(DateTimeFormatter.ofPattern ("hh:mm:ss a"));
@@ -50,18 +59,11 @@ public class UIController {
         add(DateTimeFormatter.ofPattern ("H:mm:ss "));
         add(DateTimeFormatter.ofPattern ("H:mm "));}};
 
-
-    // List of legs currently being displayed to the user
-    private Legs displayList;
-
     /**
-     * Constructor initializes a new data container and sets default values
+     * Initializes a new data container and viewer application
      */
     public UIController(){
         savedInput = new UIModel();
-        savedInput.numberOfLayovers(2);
-        savedInput.numberOfPassengers(1);
-
         ui = new ReservationApp(this);
     }
 
@@ -74,8 +76,8 @@ public class UIController {
     }
 
     /**
-     * Returns the UIData object used to store valid input
-     * @return valid input stored in a UIData object
+     * Returns the UIData object used to save valid input
+     * @return valid input saved in a UIData object
      */
     public UIModel getAcceptedInput(){
         return savedInput;
@@ -90,7 +92,7 @@ public class UIController {
     }
 
     /**
-     * Attempts to update the stored number of passengers according to user input
+     * Attempts to update the saved number of passengers according to user input
      * @param numberOfPassengers a String with the number of passengers
      */
     public void setNumberOfPassengers(String numberOfPassengers) {
@@ -117,7 +119,7 @@ public class UIController {
     }
 
     /**
-     * Attempts to update the stored number of layovers according to user input
+     * Attempts to update the saved number of layovers according to user input
      * @param numberOfLayovers a String with the maximum number of layovers
      */
     public void setNumberOfLayovers(String numberOfLayovers) {
@@ -136,19 +138,20 @@ public class UIController {
     }
 
     /**
-     * Returns the departure date, formatted as a string
-     * @return a string with the departure date
+     * Returns the user selection for seating type
+     * @return a string  with the saved seating type
      */
     public String getSeatingType() {
         return savedInput.seatingType();
     }
 
     /**
-     * Stores the user selection for seating type
+     * Attempts to update the saved seating type according to user input
      * @param seatingType  a string with the selected seating type
      */
     public void setSeatingType(String seatingType) {
-        savedInput.seatingType(seatingType);
+        if (Saps.SEATING_TYPES.contains(seatingType))
+            savedInput.seatingType(seatingType);
     }
 
     /**
@@ -163,7 +166,7 @@ public class UIController {
     }
 
     /**
-     * Attempts to update the stored arrival airport according to user input
+     * Attempts to update the saved arrival airport according to user input
      * @param arrivalAirport a String with the airport code or name
      */
     public void setArrivalAirport(String arrivalAirport) {
@@ -181,7 +184,7 @@ public class UIController {
 
         // If the new arrival airport is the same as the departure airport, make no changes
         if(airport.equals(savedInput.departureAirport())) {
-            System.out.println("Warning: User input of " + arrivalAirport + " cannot be the same as the arrival airport");
+            NotificationManager.getInstance().popupError( "Warning: User input of " + arrivalAirport + " cannot be the same as the arrival airport!");
             return;
         }
 
@@ -204,7 +207,7 @@ public class UIController {
     }
 
     /**
-     * Attempts to update the stored departure airport according to user input
+     * Attempts to update the saved departure airport according to user input
      * @param departureAirport a String with the airport code or name
      */
     public void setDepartureAirport(String departureAirport) {
@@ -222,7 +225,7 @@ public class UIController {
 
         // If the new departure airport is the same as the arrival airport, make no changes
         if(airport.equals(savedInput.arrivalAirport())) {
-            System.out.println("Warning: User input of " + departureAirport + " cannot be the same as the arrival airport");
+            NotificationManager.getInstance().popupError( "Warning: User input of " + departureAirport + " cannot be the same as the arrival airport");
             return;
         }
 
@@ -245,7 +248,7 @@ public class UIController {
     }
 
     /**
-     * Attempts to update the stored date according to user input
+     * Attempts to update the saved date according to user input
      * @param date a String with the formatted date
      */
     public void setFlightDate(String date) {
@@ -259,8 +262,8 @@ public class UIController {
     }
 
     /**
-     * Returns the time, formatted as a string
-     * @return a string with the start time
+     * Returns the start of the time window, formatted as a string
+     * @return a string with the start of the time window
      */
     public String getStartTime() {
         if(savedInput.startFlightLocalTime() != null)
@@ -270,8 +273,8 @@ public class UIController {
     }
 
     /**
-     * Attempts to update the stored start time according to user input
-     * @param time a String with the formatted time
+     * Attempts to update the saved start of the time window according to user input
+     * @param time a String with the formatted start of the time window
      */
     public void setStartTime(String time) {
         // Attempt to parse the input string, make no changes on failure
@@ -288,8 +291,8 @@ public class UIController {
     }
 
     /**
-     * Returns the time, formatted as a string
-     * @return a string with the end time
+     * Returns the end of the time window, formatted as a string
+     * @return a string with the end of the time window
      */
     public String getEndTime() {
         if(savedInput.endFlightLocalTime() != null)
@@ -299,8 +302,8 @@ public class UIController {
     }
 
     /**
-     * Attempts to update the stored end time according to user input
-     * @param time a String with the formatted time
+     * Attempts to update the saved end of the time window according to user input
+     * @param time a String with the formatted end of the time window
      */
     public void setEndTime(String time) {
         // Attempt to parse the input string, make no changes on failure
@@ -317,7 +320,7 @@ public class UIController {
     }
 
     /**
-     * Returns the stored time type
+     * Returns the saved time window type (Departure or Arrival)
      * @return a String indicating the time window is for departure or arrival flights
      */
     public String getTimeType() {
@@ -329,16 +332,8 @@ public class UIController {
      * @param timeType a String indicating the time window is for departure or arrival flights
      */
     public void setTimeType(String timeType) {
-        if (timeType.equals("Departure") || timeType.equals("Arrival"))
+        if (Saps.TIME_WINDOW_TYPES.contains(timeType))
             savedInput.timeType(timeType);
-    }
-
-    public void setDisplayList(Legs displayList){
-        this.displayList = displayList;
-    }
-
-    public Legs getDisplayList(){
-        return displayList;
     }
 
     /**
@@ -363,7 +358,7 @@ public class UIController {
 
         // If the parsed date was never assigned, then none of the parses succeeded and the input format was invalid
         if (parsedDate == null) {
-            System.out.println("Warning: User input of " + date + " is invalid syntax for the date, should be: MM/dd/yyyy");
+            NotificationManager.getInstance().popupError("Warning: User input of " + date + " is invalid syntax for the date, should be: MM/dd/yyyy!");
             return null;
         }
 
@@ -371,7 +366,7 @@ public class UIController {
         if (parsedDate.compareTo(Saps.EARLIEST_DATE.toLocalDate()) >= 0 && parsedDate.compareTo(Saps.LATEST_DATE.toLocalDate()) < 0){
             return parsedDate;
         } else{
-            System.out.println("Warning: User input of " + date + " is outside the valid range of 05/01/2020 through 5/31/2020");
+            NotificationManager.getInstance().popupError("Warning: User input of " + date + " is outside the valid range of 05/01/2020 through 5/31/2020!");
             return null;
         }
     }
@@ -398,7 +393,7 @@ public class UIController {
 
         // If the parsed date was never assigned, then none of the parses succeeded and the input format was invalid
         if (parsedTime == null) {
-            System.out.println("Warning: User input of " + time + " is invalid syntax for the date, should be: MM/dd/yyyy");
+            NotificationManager.getInstance().popupError("Warning: User input of " + time + " is invalid syntax for the date, should be: hh:mm:ss a");
             return null;
         } else return parsedTime;
     }
@@ -420,7 +415,7 @@ public class UIController {
 
         // If no matching airport is returned, then the user input was not a valid airport
         if(parsedAirport == null) {
-            System.out.println("Warning: User input of " + airport + " was not recognized as a valid airport, should be 3 letter airport code");
+            NotificationManager.getInstance().popupError("Warning: User input of " + airport + " was not recognized as a valid airport, should be 3 letter airport code!");
             return null;
         }
 
@@ -439,7 +434,7 @@ public class UIController {
         try {
             parsedLayovers = Integer.parseInt(layovers);
         } catch (NumberFormatException ex) {
-            System.out.println("Warning: User input of " + layovers + " is invalid syntax for the number of layovers");
+            NotificationManager.getInstance().popupError("Warning: User input of " + layovers + " is invalid syntax for the number of layovers!");
             return false;
         }
 
@@ -447,7 +442,7 @@ public class UIController {
         if (parsedLayovers >= Saps.MIN_LAYOVERS && parsedLayovers <= Saps.MAX_LAYOVERS) {
             return true;
         }else {
-            System.out.println("Warning: User input of " + layovers + " is outside the valid range of 0-2");
+            NotificationManager.getInstance().popupError("Warning: User input of " + layovers + " is outside the valid range of 0-2!");
             return false;
         }
     }
@@ -464,7 +459,7 @@ public class UIController {
         try {
             parsedLayovers = Integer.parseInt(passengers);
         } catch (NumberFormatException ex) {
-            System.out.println("Warning: User input of " + passengers + " is invalid syntax for the number of passengers");
+            NotificationManager.getInstance().popupError("Warning: User input of " + passengers + " is invalid syntax for the number of passengers!");
             return false;
         }
 
@@ -472,7 +467,7 @@ public class UIController {
         if (parsedLayovers >= Saps.MIN_PASSENGERS && parsedLayovers <= Saps.MAX_PASSENGERS) {
             return true;
         }else {
-            System.out.println("Warning: User input of " + passengers + " is outside the valid range of 1-15");
+            NotificationManager.getInstance().popupError("Warning: User input of " + passengers + " is outside the valid range of 1-15!");
             return false;
         }
     }
