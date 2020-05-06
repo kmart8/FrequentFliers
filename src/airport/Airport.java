@@ -1,21 +1,11 @@
-/**
- * 
- */
 package airport;
 
 import utils.Saps;
-
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Comparator;
-import java.util.Date;
-import java.util.Hashtable;
-import java.util.TimeZone;
-
 
 /**
  * This class holds values pertaining to a single Airport. Class member attributes
