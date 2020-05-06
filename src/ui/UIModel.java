@@ -3,8 +3,7 @@ package ui;
 import airport.Airport;
 import utils.Saps;
 
-import java.time.Duration;
-import java.time.ZonedDateTime;
+import java.time.*;
 
 /**
  * This class serves as a model for the ReservationApp viewer. It is controlled by the UIController.
@@ -18,9 +17,12 @@ public class UIModel {
     // Initialize date type for specifying departure or arrival
     private String timeType;
 
-    // Initialize empty date for departure or arrival
-    private ZonedDateTime startFlightDateTime;
-    private ZonedDateTime endFlightDateTime;
+    // Initialize empty times for departure or arrival
+    private LocalTime startFlightLocalTime;
+    private LocalTime endFlightLocalTime;
+
+    // Initialize empty date for the flight
+    private LocalDate flightLocalDate;
 
     // Initialize empty airports for departure and arrival
     private Airport departureAirport;
@@ -37,26 +39,41 @@ public class UIModel {
 
     public UIModel(){
         timeType = "Departure";
-        startFlightDateTime = Saps.EARLIEST_DATE;
-        endFlightDateTime = Saps.EARLIEST_DATE.plus(Duration.ofHours(23).plus(Duration.ofMinutes(59).plus(Duration.ofSeconds(59))));
+        flightLocalDate = Saps.EARLIEST_DATE.toLocalDate();
+        startFlightLocalTime = LocalTime.MIN;
+        endFlightLocalTime = LocalTime.MAX;
         numberOfPassengers = 1;
         numberOfLayovers = 2;
     }
 
     public ZonedDateTime startFlightDateTime() {
-        return startFlightDateTime;
-    }
-
-    public void startFlightDateTime(ZonedDateTime date) {
-        startFlightDateTime = date;
+        if (departureAirport != null)
+            return departureAirport.convertLocalDateTimetoGMT(LocalDateTime.of(flightLocalDate, startFlightLocalTime));
+        else
+            return null;
     }
 
     public ZonedDateTime endFlightDateTime() {
-        return endFlightDateTime;
+        if (arrivalAirport != null)
+            return arrivalAirport.convertLocalDateTimetoGMT(LocalDateTime.of(flightLocalDate, endFlightLocalTime));
+        else
+            return null;
     }
 
-    public void endFlightDateTime(ZonedDateTime date) {
-        endFlightDateTime = date;
+    public LocalTime startFlightLocalTime() { return startFlightLocalTime; }
+
+    public LocalTime endFlightLocalTime() { return endFlightLocalTime; }
+
+    public LocalDate flightLocalDate() { return flightLocalDate; }
+
+    public void startFlightLocalTime(LocalTime time) { startFlightLocalTime = time; }
+
+    public void endFlightLocalTime(LocalTime time) {
+        endFlightLocalTime = time;
+    }
+
+    public void flightLocalDate(LocalDate date) {
+        flightLocalDate = date;
     }
 
     public String timeType() {
