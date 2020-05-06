@@ -148,7 +148,7 @@ public class ReservationApp {
      */
     public ReservationApp(UIController controller) {
         // Store a reference to the controller
-        this.controller = controller;
+        ReservationApp.controller = controller;
         initializeUIElements();
         // When the search button is pressed
         searchForFlightsButton.addActionListener(new ActionListener() {
@@ -255,13 +255,7 @@ public class ReservationApp {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (flightDisplayTable.getSelectedRow() != -1) {
-                    Trip.getInstance().addFlightToTrip(displayList.get(flightDisplayTable.getSelectedRow()));
-                    for (Flight flight : Trip.getInstance().getTrip()) {
-                        legsInCart.addAll(flight.legList());
-                    }
-                    buildLegTable(legsInCart);
-                    System.out.println("User added flight to cart");
-
+                    legsInCart.clear();
                     switch (Trip.getInstance().getTripType()){
                         case "One-Way":
                             if (Trip.getInstance().getTrip().size() < 1) {
@@ -276,7 +270,7 @@ public class ReservationApp {
                             }
                             break;
                         case "Round-Trip":
-                            if (Trip.getInstance().getTrip().size() < 2) {
+                            if (Trip.getInstance().getTrip().size() < 1) {
                                 Trip.getInstance().addFlightToTrip(displayList.get(flightDisplayTable.getSelectedRow()));
                                 for (Flight flight : Trip.getInstance().getTrip()){
                                     legsInCart.addAll(flight.legList());
@@ -290,7 +284,22 @@ public class ReservationApp {
                                 departureAirportFormattedTextField.setText(arrival);
                                 displayList = new Flights();
                                 buildFlightTable();
-                            } else {
+                            } else if (Trip.getInstance().getTrip().size() < 2) {
+                                Flight firstFlight = Trip.getInstance().getTrip().get(0);
+                                // Testing if departure time is before arrival time, in which case an error is returned. else returning flight is booked
+                                Boolean isBefore = displayList.get(flightDisplayTable.getSelectedRow()).getDepartureTime().isBefore(firstFlight.getArrivalTime());
+                                if (isBefore) {
+                                    System.out.println("Departure time of second flight must be after arrival time of first flight.");
+                                } else {
+                                    Trip.getInstance().addFlightToTrip(displayList.get(flightDisplayTable.getSelectedRow()));
+                                    for (Flight flight : Trip.getInstance().getTrip()){
+                                        legsInCart.addAll(flight.legList());
+                                    }
+                                    buildLegTable(legsInCart);
+                                    System.out.println("User added flight to cart");
+                                }
+                            }
+                            else {
                                 System.out.println("Trip is full for Round-Trip");
                             }
                             break;
@@ -307,7 +316,6 @@ public class ReservationApp {
                 System.out.println("User input updated trip type"); }
         });
 
-        // TODO: actually "confirmReservationButton" but idk how to change the name properly
         // Currently nested for loop (looping for all booked flights and all passengers on those flights,
         // could improve efficiency in postLegReservation 
         confirmReservationButton.addActionListener(new ActionListener() {
