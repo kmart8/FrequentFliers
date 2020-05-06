@@ -63,4 +63,8 @@ public class FlightCart {
         }
     }
 
+    public void resetFlightCart() {
+        flightCart.clear();
+    }
+
 }

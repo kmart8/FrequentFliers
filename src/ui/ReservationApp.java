@@ -63,6 +63,7 @@ public class ReservationApp {
     private JTabbedPane DisplayDetails;
     private JFrame frameHandle;
     private Flights displayList;
+    private Legs legsInCart = new Legs();
 
     // List of UI components which should be inactive during long operations to prevent user input
     // and signal to the user that the program is busy
@@ -157,7 +158,7 @@ public class ReservationApp {
                 System.out.println("Search Button User Interaction");
                 busy(true);
                 displayList = FlightBuilder.getInstance().searchForFlights();
-                buildFlightTable(FlightBuilder.getInstance().searchForFlights());
+                buildFlightTable();
                 busy(false);
             }
         });
@@ -212,6 +213,8 @@ public class ReservationApp {
         resetButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                FlightCart.getInstance().resetFlightCart();
+                if (legsInCart.size() > 0) { legsInCart.clear(); }
                 System.out.println("Reset User Interaction");
                 initializeUIElements();
             }
@@ -249,12 +252,19 @@ public class ReservationApp {
         addFlightToCartButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                FlightCart.getInstance().addFlightToCart(displayList.get(flightDisplayTable.getSelectedRow()));
+                FlightCart.getInstance().addFlightToCart((Flight) displayList.get(flightDisplayTable.getSelectedRow()));
+                for (Flight flight : FlightCart.getInstance().getFlightCart()) {
+                    legsInCart.addAll(flight.getLegList());
+                }
+                buildLegTable(legsInCart);
+                System.out.println("User added flight to cart");
             }
         });
         comboBox2.addActionListener(new ActionListener() {
             @Override
-            public void actionPerformed(ActionEvent e){ FlightCart.getInstance().setTripType(comboBox2.getSelectedItem().toString());}
+            public void actionPerformed(ActionEvent e){
+                FlightCart.getInstance().setTripType(comboBox2.getSelectedItem().toString());
+                System.out.println("User input updated trip type");}
         });
 
         // TODO: actually "confirmReservationButton" but idk how to change the name properly
@@ -263,13 +273,16 @@ public class ReservationApp {
         viewFullFlightDetailsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
+                System.out.println("User successfully booked trip!");
                 ServerInterface.INSTANCE.lock();
                 Flights bookedFlights = FlightCart.getInstance().getFlightCart();
                 for (Flight flight : bookedFlights) {
                     for (int i = 0; i < controller.getAcceptedInput().numberOfPassengers(); i++) {
                         ServerInterface.INSTANCE.postLegReservation(flight);
                     }
-                } ServerInterface.INSTANCE.unlock();
+                }
+                ServerInterface.INSTANCE.unlock();
+                System.out.println("User successfully booked trip!");
             }
         });
         sortTypeComboBox.addActionListener(new ActionListener() {
@@ -335,9 +348,8 @@ public class ReservationApp {
     /**
      * Updates the table to display the current list of legs
      *
-     * @param displayList the list of legs for display
      */
-private void buildLegTable(Legs displayList){
+private void buildLegTable(Legs legsInCart){
         // Get the current model of the table and remove all previous entries
         DefaultTableModel table = (DefaultTableModel) legDisplayTable.getModel();
         table.setRowCount(0);
@@ -349,7 +361,7 @@ private void buildLegTable(Legs displayList){
         NumberFormat priceStyle = NumberFormat.getCurrencyInstance(Locale.US);
 
         // Add a new row to the table for each leg on the list
-        for (Leg leg : displayList) {
+        for (Leg leg : legsInCart) {
             // Generate correctly formatted strings from Leg attributes
             String coachPrice = priceStyle.format(leg.coachPrice);
             String firstClassPrice = priceStyle.format(leg.firstClassPrice);
@@ -376,9 +388,8 @@ private void buildLegTable(Legs displayList){
     /**
      * Updates the table to display the list of flights
      *
-     * @param displayList the list of flights for display
      */
-private void buildFlightTable(Flights displayList){
+private void buildFlightTable(){
         // Get the current model of the table and remove all previous entries
         DefaultTableModel table = (DefaultTableModel) flightDisplayTable.getModel();
         table.setRowCount(0);
