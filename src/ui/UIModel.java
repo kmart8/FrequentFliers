@@ -17,7 +17,7 @@ import java.time.*;
  */
 public class UIModel {
     /**
-     * Type for specifying departure or arrival
+     * Type for specifying departure or arrival time window
      */
     private String timeType;
     /**
