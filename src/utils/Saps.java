@@ -86,7 +86,9 @@ public class Saps {
 	 * The duration to wait before alerting the user that the program is busy
 	 */
 	public static final Duration BUSY_WAIT_TIME = Duration.ofSeconds(3);
-
+	/**
+	 * A hashtable storing the airport code Strings as the keys with their corresponding Strings for TimeZoneIDs
+	 */
 	public static final Hashtable<String, String> AIRPORT_TIMEZONES = new Hashtable<String, String>(){
 		{
 			put("ANC", "America/Anchorage");
