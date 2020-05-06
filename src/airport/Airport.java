@@ -108,13 +108,6 @@ public class Airport implements Comparable<Airport>, Comparator<Airport> {
 			throw new IllegalArgumentException (Double.toString(latitude));
 	}
 	
-	public void latitude (String latitude) {
-		if (isValidLatitude(latitude))
-			mLatitude = Double.parseDouble(latitude);
-		else
-			throw new IllegalArgumentException (latitude);
-	}
-	
 	/**
 	 * Get the latitude for the airport
 	 * 
@@ -135,13 +128,6 @@ public class Airport implements Comparable<Airport>, Comparator<Airport> {
 			mLongitude = longitude;
 		else
 			throw new IllegalArgumentException (Double.toString(longitude));
-	}
-	
-	public void longitude (String longitude) {
-		if (isValidLongitude(longitude))
-			mLongitude = Double.parseDouble(longitude);
-		else
-			throw new IllegalArgumentException (longitude);
 	}
 	
 	/**
