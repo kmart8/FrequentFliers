@@ -2,7 +2,6 @@ package leg;
 
 import airport.Airport;
 import plane.Plane;
-
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.ZonedDateTime;
@@ -18,7 +17,9 @@ import java.time.ZonedDateTime;
 
 public class Leg {
 
-    /** Creates the attributes of the Leg class*/
+    /**
+     * Creates the attributes of the Leg class
+     */
     private Airport disembarkingAirport;
     private Airport boardingAirport;
     private ZonedDateTime disembarkingTime;
@@ -31,7 +32,9 @@ public class Leg {
     private BigDecimal coachPrice;
     private BigDecimal firstClassPrice;
 
-    /** The constructor for Leg Objects */
+    /**
+     * The constructor for Leg Objects
+     */
     public Leg() {
         disembarkingAirport = new Airport();
         boardingAirport = new Airport();
@@ -43,7 +46,7 @@ public class Leg {
         legDuration = Duration.ZERO;
         plane = new Plane();
         coachPrice = null;
-        firstClassPrice =  null;
+        firstClassPrice = null;
     }
 
     /**
@@ -74,7 +77,7 @@ public class Leg {
     }
 
     /**
-     *  Method for getting the boarding time
+     * Method for getting the boarding time
      *
      * @return Boarding time
      */
@@ -110,7 +113,7 @@ public class Leg {
     }
 
     /**
-     *  Method for getting legDuration
+     * Method for getting legDuration
      *
      * @return Leg duration
      */
@@ -150,7 +153,7 @@ public class Leg {
      *
      * @return Local boarding time
      */
-    public ZonedDateTime getLocalBoardingTime(){
+    public ZonedDateTime getLocalBoardingTime() {
         return boardingAirport.convertGMTtoLocalTime(boardingTime);
     }
 
@@ -159,7 +162,7 @@ public class Leg {
      *
      * @return Local disembarking time
      */
-    public ZonedDateTime getLocalDisembarkingTime(){
+    public ZonedDateTime getLocalDisembarkingTime() {
         return disembarkingAirport.convertGMTtoLocalTime(disembarkingTime);
     }
 
@@ -169,7 +172,7 @@ public class Leg {
      * @param seatType Type of seating
      * @return Remaining seats on leg
      */
-    public double getRemainingSeats(String seatType){
+    public double getRemainingSeats(String seatType) {
         if (seatType == "First Class") return plane.firstClassSeats() - reservedFirstClassSeats;
         else return plane.coachSeats() - reservedCoachSeats;
     }
@@ -177,12 +180,17 @@ public class Leg {
     /**
      * Method to set the disembarking airport
      *
-     * @param newDisembarkingAirport The new disembarking time
+     * @param newDisembarkingAirport The new disembarking airport object
      */
     public void setDisembarkingAirport(Airport newDisembarkingAirport) {
         disembarkingAirport = newDisembarkingAirport;
     }
 
+    /**
+     * Method to set the boarding airport
+     *
+     * @param newBoardingAirport The new boarding airport object
+     */
     public void setBoardingAirport(Airport newBoardingAirport) {
         boardingAirport = newBoardingAirport;
     }
@@ -205,73 +213,66 @@ public class Leg {
         boardingTime = newBoardingTime;
     }
 
+    /**
+     * Method to set the flight number
+     *
+     * @param newFlightNumber The new flight number
+     */
     public void setFlightNumber(int newFlightNumber) {
         flightNumber = newFlightNumber;
     }
 
+    /**
+     * Method to set the number of reserved coach seats
+     *
+     * @param newReservedCoachSeats The new number of reserved coach seats
+     */
     public void setReservedCoachSeats(int newReservedCoachSeats) {
         reservedCoachSeats = newReservedCoachSeats;
     }
 
+    /**
+     * Method to set the number of reserved first class seats
+     *
+     * @param newReservedFirstClassSeats The new number of reserved first class seats
+     */
     public void setReservedFirstClassSeats(int newReservedFirstClassSeats) {
         reservedFirstClassSeats = newReservedFirstClassSeats;
     }
 
+    /**
+     * Method to set the duration of the leg
+     *
+     * @param newLegDuration The new leg duration
+     */
     public void setLegDuration(Duration newLegDuration) {
         legDuration = newLegDuration;
     }
 
+    /**
+     * Method to set the plane
+     *
+     * @param newPlane The new plane object
+     */
     public void setPlane(Plane newPlane) {
         plane = newPlane;
     }
 
+    /**
+     * Method to set the coach price
+     *
+     * @param newCoachPrice The new coach price
+     */
     public void setCoachPrice(BigDecimal newCoachPrice) {
         coachPrice = newCoachPrice;
     }
 
+    /**
+     * Method to set the first class price
+     *
+     * @param newFirstClassPrice The new first class price
+     */
     public void setFirstClassPrice(BigDecimal newFirstClassPrice) {
         firstClassPrice = newFirstClassPrice;
-    }
-
-    /**
-     *
-     *
-     * @return
-     */
-    public String toString() {
-        return disembarkingAirport.code()+' '+boardingAirport.code()+' '+disembarkingTime.toString()+' '+
-                boardingTime.toString()+' '+flightNumber+' '+reservedCoachSeats+' '+
-                reservedFirstClassSeats+' '+
-                legDuration+' '+plane.model()+' '+coachPrice+' '+firstClassPrice;
-
-    }
-
-    /**
-     * Determine if two leg objects are the same leg
-     *
-     * Compare another object to this leg and return true if the other
-     * object specifies the same leg as this object.
-     * Legs are the same if they have the same flight number.
-     *
-     * @param obj is the object to compare against this object
-     * @return true if the param is the same leg as this, else false
-     */
-    @Override
-    public boolean equals (Object obj) {
-        // every object is equal to itself
-        if (obj == this)
-            return true;
-
-        // null not equal to anything
-        if (obj == null)
-            return false;
-
-        // can't be equal if obj is not an instance of Leg
-        if (!(obj instanceof Leg))
-            return false;
-
-        // if the flight numbers are equal, the Legs are the same
-        Leg rhs = (Leg) obj;
-        return rhs.flightNumber == flightNumber;
     }
 }
