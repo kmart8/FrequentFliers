@@ -7,7 +7,9 @@ import utils.Saps;
 
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
 import java.time.ZoneId;
+import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.util.Comparator;
 import java.util.Date;
@@ -414,71 +416,18 @@ public class Airport implements Comparable<Airport>, Comparator<Airport> {
 		// input a GMT ZonedDatetime
 		// outputs a local ZonedDateTime for the respective airport object
 
-
-		// Storing time zone of all airports in a hash table
-		Hashtable<String, String> h = new Hashtable<String, String>();
-
-		h.put ("ANC","America/Anchorage");
-		h.put ("ATL", "America/New_York") ;
-		h.put ("AUS", "America/Chicago") ;
-		h.put ("BDL", "America/New_York") ;
-		h.put ("BNA", "America/Chicago") ;
-		h.put ("BOS", "America/New_York") ;
-		h.put ("BWI", "America/New_York") ;
-		h.put ("CLE", "America/New_York") ;
-		h.put ("CLT", "America/New_York") ;
-		h.put ("CMH", "America/New_York") ;
-		h.put ("CVG", "America/New_York") ;
-		h.put ("DCA", "America/New_York") ;
-		h.put ("DEN", "America/Denver") ;
-		h.put ("DFW", "America/Chicago") ;
-		h.put ("DTW", "America/Detroit") ;
-		h.put ("EWR", "America/New_York") ;
-		h.put ("FLL", "America/New_York") ;
-		h.put ("HNL", "Pacific/Honolulu") ;
-		h.put ("HOU", "America/Chicago") ;
-		h.put ("IAD", "America/New_York") ;
-		h.put ("IAH", "America/Chicago") ;
-		h.put ("IND", "America/Indiana/Indianapolis") ;
-		h.put ("JFK", "America/New_York") ;
-		h.put ("LAS", "America/Los_Angeles") ;
-		h.put ("LAX", "America/Los_Angeles") ;
-		h.put ("LGA", "America/New_York") ;
-		h.put ("MCI", "America/Chicago") ;
-		h.put ("MCO", "America/New_York") ;
-		h.put ("MDW", "America/Chicago") ;
-		h.put ("MEM", "America/Chicago") ;
-		h.put ("MIA", "America/New_York") ;
-		h.put ("MSP", "America/Chicago") ;
-		h.put ("MSY", "America/Chicago") ;
-		h.put ("OAK", "America/Los_Angeles") ;
-		h.put ("ONT", "America/Los_Angeles") ;
-		h.put ("ORD", "America/Chicago") ;
-		h.put ("PDX", "America/Los_Angeles") ;
-		h.put ("PHL", "America/New_York") ;
-		h.put ("PHX", "America/Phoenix") ;
-		h.put ("PIT", "America/New_York") ;
-		h.put ("RDU", "America/New_York") ;
-		h.put ("RSW", "America/New_York") ;
-		h.put ("SAN", "America/Los_Angeles") ;
-		h.put ("SAT", "America/Chicago") ;
-		h.put ("SEA", "America/Los_Angeles") ;
-		h.put ("SFO", "America/Los_Angeles") ;
-		h.put ("SJC", "America/Los_Angeles") ;
-		h.put ("SLC", "America/Denver") ;
-		h.put ("SMF", "America/Los_Angeles") ;
-		h.put ("SNA", "America/Los_Angeles") ;
-		h.put ("STL", "America/Chicago") ;
-		h.put ("TPA", "America/New_York") ;
-
-		String zone = h.get(mCode);
+		String zone = Saps.AIRPORT_TIMEZONES.get(mCode);
 
 		//return ZonedDateTime.of(GMTZonedDateTime.toLocalDateTime(), TimeZone.getTimeZone(zone).toZoneId());
 		// this displays the input time and the offset but doesn't explicitly show the converted time
 
 		return ZonedDateTime.ofInstant(GMTZonedDateTime.toInstant(), ZoneId.of(zone));
+	}
 
-
+	public ZonedDateTime convertLocalDateTimetoGMT(LocalDateTime dateTime) {
+		String zone = Saps.AIRPORT_TIMEZONES.get(mCode);
+		ZonedDateTime localZonedDateTime = ZonedDateTime.of(dateTime, ZoneId.of(zone));
+		return ZonedDateTime.ofInstant(localZonedDateTime.toInstant(), ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0)));
 	}
 
 }
