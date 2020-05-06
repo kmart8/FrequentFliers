@@ -321,14 +321,18 @@ public class ReservationApp {
         confirmReservationButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                System.out.println("User successfully booked trip!");
-                ServerInterface.INSTANCE.lock();
+                int timerID = NotificationManager.getInstance().startBusyTimer();
+                boolean obtainedLock = false;
+                while (!obtainedLock) {
+                    obtainedLock = ServerInterface.INSTANCE.lock();
+                    try{wait(100);} catch (Exception exc) {};
+                }
                 Flights bookedFlights = Trip.getInstance().getTrip();
-
-                ServerInterface.INSTANCE.postLegReservation(bookedFlights, controller.getAcceptedInput().numberOfPassengers());
-
+                boolean isSuccess = ServerInterface.INSTANCE.postLegReservation(bookedFlights, controller.getAcceptedInput().numberOfPassengers());
                 ServerInterface.INSTANCE.unlock();
-                NotificationManager.getInstance().popupSuccess("Trip booking was successful!");
+                if (isSuccess)
+                    NotificationManager.getInstance().popupSuccess("Trip booking was successful!");
+                NotificationManager.getInstance().stopBusyTimer(timerID);
             }
         });
         sortTypeComboBox.addActionListener(new ActionListener() {
