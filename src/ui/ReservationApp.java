@@ -310,11 +310,9 @@ public class ReservationApp {
                 System.out.println("User successfully booked trip!");
                 ServerInterface.INSTANCE.lock();
                 Flights bookedFlights = Trip.getInstance().getTrip();
-                for (Flight flight : bookedFlights) {
-                    for (int i = 0; i < controller.getAcceptedInput().numberOfPassengers(); i++) {
-                        ServerInterface.INSTANCE.postLegReservation(flight);
-                    }
-                }
+
+                ServerInterface.INSTANCE.postLegReservation(bookedFlights, controller.getAcceptedInput().numberOfPassengers());
+
                 ServerInterface.INSTANCE.unlock();
                 NotificationManager.getInstance().popupSuccess("Trip booking was successful!");
             }
