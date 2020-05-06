@@ -231,30 +231,20 @@ public class Airport {
 	 * @param longitude is the longitude to validate represented as a String
 	 * @return true if within valid range for longitude
 	 */
-	public boolean isValidLongitude (String longitude) {
-		double lon;
-		try {
-			lon = Double.parseDouble(longitude);
-		} catch (NullPointerException | NumberFormatException ex) {
-			return false;
-		}
-		return isValidLongitude (lon);
-	}
-
 	public ZonedDateTime convertGMTtoLocalTime(ZonedDateTime GMTZonedDateTime) {
-
 		// Requires that the input time is GMT, or else the calculation will not be accurate
 		// input a GMT ZonedDatetime
 		// outputs a local ZonedDateTime for the respective airport object
-
 		String zone = Saps.AIRPORT_TIMEZONES.get(mCode);
-
-		//return ZonedDateTime.of(GMTZonedDateTime.toLocalDateTime(), TimeZone.getTimeZone(zone).toZoneId());
-		// this displays the input time and the offset but doesn't explicitly show the converted time
-
 		return ZonedDateTime.ofInstant(GMTZonedDateTime.toInstant(), ZoneId.of(zone));
 	}
 
+	/**
+	 * Converts from local time to GMT
+	 *
+	 * @param dateTime The local zonedatetime
+	 * @return The GMT zonedatetime
+	 */
 	public ZonedDateTime convertLocalDateTimetoGMT(LocalDateTime dateTime) {
 		String zone = Saps.AIRPORT_TIMEZONES.get(mCode);
 		ZonedDateTime localZonedDateTime = ZonedDateTime.of(dateTime, ZoneId.of(zone));
