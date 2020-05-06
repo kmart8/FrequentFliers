@@ -117,8 +117,8 @@ public class ReservationApp {
         legDisplayData.addColumn("Arrival Time");
         legDisplayData.addColumn("Flight Number");
         legDisplayData.addColumn("Plane Model");
-        legDisplayData.addColumn("Coach Seats Reserved");
-        legDisplayData.addColumn("First Class Seats Reserved");
+        legDisplayData.addColumn("Coach Seats Remaining");
+        legDisplayData.addColumn("First Class Seats Remaining");
         legDisplayTable.setModel(legDisplayData);
 
         // Set the columns of the table
@@ -425,8 +425,8 @@ private void buildLegTable(Legs legsInCart){
             String arrivalTime = timeStyle.format(leg.getLocalDisembarkingTime());
             String flightNumber = Integer.toString(leg.getFlightNumber());
             String plane = leg.getPlane().model();
-            String coachSeatsReserved = Integer.toString(leg.getReservedCoachSeats());
-            String firstClassSeatsReserved = Integer.toString(leg.getReservedFirstClassSeats());
+            String coachSeatsReserved = Integer.toString(leg.getRemainingSeats(Saps.SEATING_TYPES.get(0)));
+            String firstClassSeatsReserved = Integer.toString(leg.getRemainingSeats(Saps.SEATING_TYPES.get(1)));
             String flightTime = flightTimeStyle.format(LocalTime.MIN.plus(leg.getLegDuration()));
 
             // Add these strings as a new row in the table (ORDER MATTERS)

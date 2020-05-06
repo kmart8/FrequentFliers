@@ -13,6 +13,18 @@ import java.util.LinkedList;
 /**
  * Constructs and filters flights, caching the ones that are valid according to user input.
  *
+ * Implements a queue which contains fights still under construction. To initialize the queue, an empty flight is
+ * enqueued. The queue can then be completed, which removes flights one at a time and validates them against the flight
+ * filter. If the flight is complete, it is cached. If the fight is invalid it is destroyed. If the flight is
+ * incomplete, candidate legs for extending the flight to one more airport are vetted and copies of the flight
+ * are added back onto the queue with reasonable legs added.
+ *
+ * If the user has specified a departure time window, the flights are built starting from the departure airport and
+ * departure time window. New legs are added to the end of the flight with the goal of eventually reaching the
+ * arrival airport. If the user has specified an arrival time window, the flights are built starting from the
+ * arrival airport and arrival time window. New legs are added to the beginning of the flight with the goal of
+ * eventually reaching the departure airport.
+ *
  * Also stores a list of potentially completable flights so that the user can be notified of alternatives.
  *
  * @author Chris Collins
@@ -98,17 +110,18 @@ public class FlightManager {
     /**
      * Adds copies of a flight back to the construction queue with an additional leg.
      *
-     * @pre The flight filter is not empty
+     * @param oldFlight A flight which needs additional legs     *
+     * @pre The flight is copyable
      * @post Any newly generated copies are added to the construction queue
      */
-     public void enqueueFlight(Flight newFlight){
+     public void enqueueFlight(Flight oldFlight){
          // Get the next possible set of legs for the flight
-         Legs newLegs = getValidLegs(newFlight);
+         Legs newLegs = getValidNextLegs(oldFlight);
 
         for (Leg thisLeg : newLegs) {
             // Create a new copy of the flight
             Flight copyFlight;
-            try{ copyFlight = newFlight.clone();}
+            try{ copyFlight = oldFlight.clone();}
             catch (CloneNotSupportedException E){return;}
 
             addNewLegToFlight(thisLeg,copyFlight);
@@ -146,7 +159,7 @@ public class FlightManager {
      * @return Legs that have the correct boarding or disembarking airport and the correct boarding or disembarking time
      * @pre The flight filter is not empty
      */
-     private Legs getValidLegs(Flight flight){
+     private Legs getValidNextLegs(Flight flight){
          // If the time window is for departure, get legs based on boarding airport and boarding data
          if (flightFilter.timeType().equals(Saps.TIME_WINDOW_TYPES.get(0)))
              return getValidBoardingLegs(flight);
@@ -159,18 +172,19 @@ public class FlightManager {
      * Determines the next boarding airport and boarding dates, then gets all legs that match these parameters from the
      * LocalFlightDatabase. Also determines the time window for boarding and returns only legs inside this window.
      *
+     * @param oldFlight A flight which has not yet connected to its destination
      * @pre the flight filter is not empty
      */
-     private Legs getValidBoardingLegs(Flight newFlight){
+     private Legs getValidBoardingLegs(Flight oldFlight){
          // Use the flight filter airport and time window by default
         Airport boardingAirport = flightFilter.departureAirport();
         ZonedDateTime startBoardingWindow = flightFilter.startFlightDateTime();
         ZonedDateTime endBoardingWindow = flightFilter.endFlightDateTime();
 
         // If there are already legs on the flight, use airport and time window based on the last leg of the flight
-        if (newFlight.getArrivalAirport() != null) {
-            boardingAirport = newFlight.getArrivalAirport();
-            startBoardingWindow = newFlight.getArrivalTime().plus(Saps.MIN_LAYOVER_TIME);
+        if (oldFlight.getArrivalAirport() != null) {
+            boardingAirport = oldFlight.getArrivalAirport();
+            startBoardingWindow = oldFlight.getArrivalTime().plus(Saps.MIN_LAYOVER_TIME);
             endBoardingWindow = startBoardingWindow.plus(Saps.MAX_LAYOVER_TIME.minus(Saps.MIN_LAYOVER_TIME));
         }
 
@@ -199,18 +213,19 @@ public class FlightManager {
      * from the LocalFlightDatabase. Also determines the time window for previous arrivals and returns only legs inside
      * this window.
      *
+     * @param oldFlight A flight which has not yet connected to its origin
      * @pre the flight filter is not empty
      */
-    private Legs getValidArrivingLegs(Flight newFlight) {
+    private Legs getValidArrivingLegs(Flight oldFlight) {
         // Use the flight filter airport and time window by default
         Airport disembarkingAirport = flightFilter.arrivalAirport();
         ZonedDateTime startDisembarkingWindow = flightFilter.startFlightDateTime();
         ZonedDateTime endDisembarkingWindow = flightFilter.endFlightDateTime();
 
         // If there are already legs on the flight, use airport and time window based on the first leg of the flight
-        if (newFlight.getDepartureAirport() != null) {
-            disembarkingAirport = newFlight.getDepartureAirport();
-            endDisembarkingWindow = newFlight.getDepartureTime().minus(Saps.MIN_LAYOVER_TIME);
+        if (oldFlight.getDepartureAirport() != null) {
+            disembarkingAirport = oldFlight.getDepartureAirport();
+            endDisembarkingWindow = oldFlight.getDepartureTime().minus(Saps.MIN_LAYOVER_TIME);
             startDisembarkingWindow = endDisembarkingWindow.minus(Saps.MAX_LAYOVER_TIME.minus(Saps.MIN_LAYOVER_TIME));
         }
 
