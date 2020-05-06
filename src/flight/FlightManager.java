@@ -67,7 +67,7 @@ public class FlightManager {
      */
     public boolean isOtherSeatingPossible(){
         for (Flight thisFlight: filteredFlights) {
-            if (thisFlight.filterReason().equals("seating"))
+            if (thisFlight.getFilterReason().equals("seating"))
                 return true;
         }
         return false;
@@ -97,11 +97,11 @@ public class FlightManager {
             nextFlight.isMatch(flightFilter);
 
             // Check the filter reason
-            if (nextFlight.filterReason().isEmpty()){
+            if (nextFlight.getFilterReason().isEmpty()){
                 enqueueFlight(nextFlight);
-            } else if (nextFlight.filterReason().equals("complete")){
+            } else if (nextFlight.getFilterReason().equals("complete")){
                 validFlights.add(nextFlight);
-            } else if (nextFlight.filterReason().equals("invalid")){
+            } else if (nextFlight.getFilterReason().equals("invalid")){
                 // Do nothing, do not requeue this flight or derivatives
             } else filteredFlights.add(nextFlight);
         }
@@ -120,9 +120,9 @@ public class FlightManager {
 
         for (Leg thisLeg : newLegs) {
             // Create a new copy of the flight
-            Flight copyFlight = new Flight();
+            Flight copyFlight;
             try{ copyFlight = oldFlight.clone();}
-            catch (CloneNotSupportedException E){}
+            catch (CloneNotSupportedException E){return;}
 
             addNewLegToFlight(thisLeg,copyFlight);
 

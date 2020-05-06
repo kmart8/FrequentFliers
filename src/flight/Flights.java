@@ -10,19 +10,21 @@ import java.util.Collections;
 import static java.time.temporal.ChronoUnit.MINUTES;
 
 /**
- * This class aggregates a number of Flight. The aggregate is implemented as an ArrayList.
- * Flights can be added to the aggregate using the ArrayList interface. Objects can
- * be removed from the collection using the ArrayList interface.
+ * This class extends ArrayList. It is an aggregate of Flight objects.
  *
- * @author blake
- * @version 1.0
- * @since 2016-02-24
+ * @author William Keenan
+ * @version 1.0 2020-05-03
+ * @since 2020-05-03
  *
  */
 public class Flights extends ArrayList<Flight> {
     private static final long serialVersionUID = 1L;
 
-    /** Method to sort by cheapest Flight */
+    /**
+     * Method to sort by cheapest Flight
+     *
+     * @param isAscending Boolean to determine sorting order
+     */
     public void sortByPrice(boolean isAscending) {
         Flights newFlights = new Flights();
         while (this.size() > 0) {
@@ -39,7 +41,11 @@ public class Flights extends ArrayList<Flight> {
         if (!isAscending) Collections.reverse(this);
     }
 
-    /** Method to sort by shortest Flight */
+    /**
+     * Method to sort by shortest Flight
+     *
+     * @param isAscending Boolean to determine sorting order
+     */
     public void sortByTravelDuration(boolean isAscending) {
         Flights newFlights = new Flights();
         while (this.size() > 0) {
@@ -56,7 +62,11 @@ public class Flights extends ArrayList<Flight> {
         if (!isAscending) Collections.reverse(this);
     }
 
-    /** Method to sort by departure time */
+    /**
+     * Method to sort by departure time
+     *
+     * @param isAscending Boolean to determine sorting order
+     */
     public void sortByDepatureTime(boolean isAscending) {
         Flights newFlights = new Flights();
         while (this.size() > 0) {
@@ -74,7 +84,11 @@ public class Flights extends ArrayList<Flight> {
         if (!isAscending) Collections.reverse(this);
     }
 
-    /** Method to sort by arrival time */
+    /**
+     * Method to sort by arrival time
+     *
+     * @param isAscending Boolean to determine sorting order
+     */
     public void sortByArrivalTime(boolean isAscending) {
         Flights newFlights = new Flights();
         while (this.size() > 0) {

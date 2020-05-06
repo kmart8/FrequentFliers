@@ -148,7 +148,6 @@ public class Airport {
 	 * Verifies longitude is between +180.0 east prime meridian and -180.0 west prime meridian.
 	 *
 	 * @return true if object passes above validation checks
-	 *
 	 */
 	public boolean isValid() {
 
@@ -226,10 +225,10 @@ public class Airport {
 	}
 	
 	/**
-	 * Check if longitude is valid
+	 * Converts from GMT time to local time
 	 * 
-	 * @param longitude is the longitude to validate represented as a String
-	 * @return true if within valid range for longitude
+	 * @param GMTZonedDateTime The local zonedatetime
+	 * @return The local zonedatetime
 	 */
 	public ZonedDateTime convertGMTtoLocalTime(ZonedDateTime GMTZonedDateTime) {
 		// Requires that the input time is GMT, or else the calculation will not be accurate

@@ -33,7 +33,11 @@ public class Leg {
     private BigDecimal firstClassPrice;
 
     /**
+     * Default Constructor
+     *
      * The constructor for Leg Objects
+     *
+     * @post member attributes are initialized to default values
      */
     public Leg() {
         disembarkingAirport = new Airport();
@@ -173,7 +177,7 @@ public class Leg {
      * @return Remaining seats on leg
      */
     public int getRemainingSeats(String seatType) {
-        if (seatType == "First Class") return plane.firstClassSeats() - reservedFirstClassSeats;
+        if (seatType.equals("First Class")) return plane.firstClassSeats() - reservedFirstClassSeats;
         else return plane.coachSeats() - reservedCoachSeats;
     }
 

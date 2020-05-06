@@ -479,7 +479,7 @@ private void buildFlightTable(){
             String arrivalTime = timeStyle.format(flight.getLocalArrivalTime());
             String duration = flightTimeStyle.format(LocalTime.MIN.plus(flight.getTotalTravelTime()));
             String layovers = Integer.toString(flight.getNumberOfLayovers());
-            String seating = flight.seatingType();
+            String seating = flight.getSeatingType();
 
             // Add these strings as a new row in the table (ORDER MATTERS)
             table.addRow(new Object[] {price, departureAirport, departureDate, departureTime,arrivalAirport,
