@@ -18,7 +18,9 @@ import java.time.ZonedDateTime;
 
 public class Leg {
 
-    /** Creates the attributes of the Leg class*/
+    /**
+     * Creates the attributes of the Leg class
+     */
     private Airport disembarkingAirport;
     private Airport boardingAirport;
     private ZonedDateTime disembarkingTime;
@@ -31,7 +33,9 @@ public class Leg {
     private BigDecimal coachPrice;
     private BigDecimal firstClassPrice;
 
-    /** The constructor for Leg Objects */
+    /**
+     * The constructor for Leg Objects
+     */
     public Leg() {
         disembarkingAirport = new Airport();
         boardingAirport = new Airport();
@@ -43,7 +47,7 @@ public class Leg {
         legDuration = Duration.ZERO;
         plane = new Plane();
         coachPrice = null;
-        firstClassPrice =  null;
+        firstClassPrice = null;
     }
 
     /**
@@ -74,7 +78,7 @@ public class Leg {
     }
 
     /**
-     *  Method for getting the boarding time
+     * Method for getting the boarding time
      *
      * @return Boarding time
      */
@@ -110,7 +114,7 @@ public class Leg {
     }
 
     /**
-     *  Method for getting legDuration
+     * Method for getting legDuration
      *
      * @return Leg duration
      */
@@ -150,7 +154,7 @@ public class Leg {
      *
      * @return Local boarding time
      */
-    public ZonedDateTime getLocalBoardingTime(){
+    public ZonedDateTime getLocalBoardingTime() {
         return boardingAirport.convertGMTtoLocalTime(boardingTime);
     }
 
@@ -159,7 +163,7 @@ public class Leg {
      *
      * @return Local disembarking time
      */
-    public ZonedDateTime getLocalDisembarkingTime(){
+    public ZonedDateTime getLocalDisembarkingTime() {
         return disembarkingAirport.convertGMTtoLocalTime(disembarkingTime);
     }
 
@@ -169,7 +173,7 @@ public class Leg {
      * @param seatType Type of seating
      * @return Remaining seats on leg
      */
-    public double getRemainingSeats(String seatType){
+    public double getRemainingSeats(String seatType) {
         if (seatType == "First Class") return plane.firstClassSeats() - reservedFirstClassSeats;
         else return plane.coachSeats() - reservedCoachSeats;
     }
@@ -271,34 +275,5 @@ public class Leg {
      */
     public void setFirstClassPrice(BigDecimal newFirstClassPrice) {
         firstClassPrice = newFirstClassPrice;
-    }
-
-    /**
-     * Determine if two leg objects are the same leg
-     *
-     * Compare another object to this leg and return true if the other
-     * object specifies the same leg as this object.
-     * Legs are the same if they have the same flight number.
-     *
-     * @param obj is the object to compare against this object
-     * @return true if the param is the same leg as this, else false
-     */
-    @Override
-    public boolean equals (Object obj) {
-        // every object is equal to itself
-        if (obj == this)
-            return true;
-
-        // null not equal to anything
-        if (obj == null)
-            return false;
-
-        // can't be equal if obj is not an instance of Leg
-        if (!(obj instanceof Leg))
-            return false;
-
-        // if the flight numbers are equal, the Legs are the same
-        Leg rhs = (Leg) obj;
-        return rhs.flightNumber == flightNumber;
     }
 }
