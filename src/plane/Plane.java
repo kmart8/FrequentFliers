@@ -1,8 +1,9 @@
 package plane;
 
 /**
- * This class holds values pertaining to a single Plane. Class member attributes
- * are the same as defined by the CS509 server API and store values after conversion from
+ * This class holds values pertaining to a single Plane.
+ *
+ * Class member attributes are the same as defined by the CS509 server API and store values after conversion from
  * XML received from the server to Java primitives. Attributes are accessed via getter and 
  * setter methods.
  *
@@ -12,11 +13,7 @@ package plane;
  *
  */
 public class Plane {
-
-    /**
-     * Plane attributes as defined by the CS509 server interface XML
-     */
-    /** Plane Manufacturer */
+        /** Plane Manufacturer */
     private String mManufacturer;
 
     /** Plane Model */
@@ -29,7 +26,7 @@ public class Plane {
     private int mCoachSeats;
 
     /**
-     * Default constructor
+     * Default constructor.
      *
      * Constructor without params. Requires object fields to be explicitly
      * set using setter methods
@@ -45,7 +42,7 @@ public class Plane {
     }
 
     /**
-     * Set the manufacturer for the plane
+     * Set the manufacturer for the plane.
      *
      * @param manufacturer The manufacturer name
      * @throws IllegalArgumentException if manufacturer is invalid
@@ -58,7 +55,7 @@ public class Plane {
     }
 
     /**
-     * get the manufacturer name
+     * get the manufacturer name.
      *
      * @return Plane manufacturer
      */
@@ -67,7 +64,7 @@ public class Plane {
     }
 
     /**
-     * Set the model for the plane
+     * Set the model for the plane.
      *
      * @param model The plane model
      * @throws IllegalArgumentException if model is invalid
@@ -80,14 +77,14 @@ public class Plane {
     }
 
     /**
-     * get the model
+     * get the model.
      *
      * @return Plane model
      */
     public String model () { return mModel; }
 
     /**
-     * Set the number of coach seats for the plane
+     * Set the number of coach seats for the plane.
      *
      * @param seats The number of coach seats
      * @throws IllegalArgumentException if number of seats invalid
@@ -100,7 +97,7 @@ public class Plane {
     }
 
     /**
-     * Get the number of coach seats on the plane
+     * Get the number of coach seats on the plane.
      *
      * @return The total number of coach seats
      */
@@ -109,7 +106,7 @@ public class Plane {
     }
 
     /**
-     * Set the number of first class seats for the plane
+     * Set the number of first class seats for the plane.
      *
      * @param seats The number of first class seats
      * @throws IllegalArgumentException if number of seats invalid
@@ -122,7 +119,7 @@ public class Plane {
     }
 
     /**
-     * Get the number of first class seats on the plane
+     * Get the number of first class seats on the plane.
      *
      * @return The total number of first class seats
      */
@@ -153,7 +150,7 @@ public class Plane {
     }
 
     /**
-     * Check if number of seats is valid
+     * Check if number of seats is valid.
      *
      * @param seats is the number of seats to validate
      * @return true if number of seats is positive

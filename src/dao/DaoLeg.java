@@ -51,7 +51,7 @@ public class DaoLeg {
      * @throws NullPointerException included to keep signature consistent with other addAll methods
      *
      * @pre the xmlAirports string adheres to the format specified by the server API
-     * @post the [possibly empty] set of Planes in the XML string are added to collection
+     * @post the [possibly empty] set of Legs in the XML string are added to collection
      */
     public static Legs addAll (String xmlLegs) throws NullPointerException {
         Legs legs = new Legs();
@@ -74,7 +74,7 @@ public class DaoLeg {
     }
 
     /**
-     * Creates a Leg object from a DOM node
+     * Creates a Leg object from a DOM node.
      *
      * Processes a DOM Node that describes a leg and creates a Leg object from the information
      * @param nodeLeg is a DOM Node describing a leg
@@ -157,7 +157,7 @@ public class DaoLeg {
     }
 
     /**
-     * Builds a DOM tree from an XML string
+     * Builds a DOM tree from an XML string.
      *
      * Parses the XML file and returns a DOM tree that can be processed
      *
@@ -181,7 +181,7 @@ public class DaoLeg {
     }
 
     /**
-     * Retrieve character data from an element if it exists
+     * Retrieve character data from an element if it exists.
      *
      * @param e is the DOM Element to retrieve character data from
      * @return the character data as String [possibly empty String]

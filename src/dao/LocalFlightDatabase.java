@@ -128,13 +128,13 @@ public class LocalFlightDatabase {
 
     /** get the full list of legs currently in storage from boarding requests
      *
-     * @return [possibly empty]the list of legs
+     * @return [possibly empty] the list of legs
      */
     public Legs getBoardingLegList(){ return boardingLegList; }
 
     /** get the full list of legs currently in storage from disembarking requests
      *
-     * @return [possibly empty]the list of legs
+     * @return [possibly empty] the list of legs
      */
     public Legs getDisembarkingLegList() { return disembarkingLegList;}
 

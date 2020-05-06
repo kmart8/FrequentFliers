@@ -68,7 +68,7 @@ public class DaoAirport {
 	}
 
 	/**
-	 * Creates an Airport object from a DOM node
+	 * Creates an Airport object from a DOM node.
 	 * 
 	 * Processes a DOM Node that describes an airport and creates an Airport object from the information
 	 * @param nodeAirport is a DOM Node describing an airport
@@ -108,7 +108,7 @@ public class DaoAirport {
 	}
 
 	/**
-	 * Builds a DOM tree from an XML string
+	 * Builds a DOM tree from an XML string.
 	 * 
 	 * Parses the XML file and returns a DOM tree that can be processed
 	 * 
@@ -132,7 +132,7 @@ public class DaoAirport {
 	}
 	
 	/**
-	 * Retrieve character data from an element if it exists
+	 * Retrieve character data from an element if it exists.
 	 * 
 	 * @param e is the DOM Element to retrieve character data from
 	 * @return the character data as String [possibly empty String]
