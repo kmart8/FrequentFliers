@@ -62,7 +62,7 @@ public class ReservationApp {
     private JComboBox sortDirectionComboBox;
     private JTabbedPane DisplayDetails;
     private JFrame frameHandle;
-    private Flights displayList;
+    private Flights displayList = new Flights();
     private Legs legsInCart = new Legs();
 
     // List of UI components which should be inactive during long operations to prevent user input
@@ -158,7 +158,11 @@ public class ReservationApp {
                 System.out.println("Search Button User Interaction");
                 busy(true);
                 displayList = FlightBuilder.getInstance().searchForFlights();
-                buildFlightTable();
+                if (displayList.size() == 0)
+                    NotificationManager.getInstance().popupError("No flights found!");
+                else
+                    buildFlightTable();
+
                 busy(false);
             }
         });
@@ -289,6 +293,7 @@ public class ReservationApp {
             @Override
             public void actionPerformed(ActionEvent e) {
                 sortType = sortTypeComboBox.getSelectedItem().toString();
+                buildFlightTable();
             }
         });
         sortDirectionComboBox.addActionListener(new ActionListener() {
@@ -296,6 +301,7 @@ public class ReservationApp {
             public void actionPerformed(ActionEvent e) {
                 String sortDirection = sortDirectionComboBox.getSelectedItem().toString();
                 isAscending = sortDirection.equals("Ascending");
+                buildFlightTable();
             }
         });
     }
@@ -400,9 +406,7 @@ private void buildFlightTable(){
         DateTimeFormatter flightTimeStyle = DateTimeFormatter.ofPattern("HH:mm");
         NumberFormat priceStyle = NumberFormat.getCurrencyInstance(Locale.US);
 
-        if (displayList.size() ==0)
-                NotificationManager.getInstance().popupError("No flights found!");
-        else
+        if (displayList.size() !=0)
             switch (sortType) {
                 case "Duration":
                     displayList.sortByTravelDuration(isAscending);
