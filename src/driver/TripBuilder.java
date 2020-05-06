@@ -60,6 +60,12 @@ public class TripBuilder {
             flightController.completeQueue();
             // End the timer for busy notifications
             NotificationManager.getInstance().stopBusyTimer(timerID);
+            if (flightController.validFlights().size() == 0)
+                if (flightController.isOtherSeatingPossible())
+                    NotificationManager.getInstance().popupError("Flights only available for alternate seating!");
+                else
+                    NotificationManager.getInstance().popupError("No available flights found!");
+
             return flightController.validFlights();
             // Get legs which match the user input criteria, this will most likely be implemented for flights in later versions (not legs)
             //app.setDisplayList(LocalFlightDatabase.getInstance().getLegList(userInput.departureAirport(), userInput.startFlightDateTime().toLocalDate(), false));
