@@ -7,24 +7,11 @@ import java.time.*;
 
 import airport.Airport;
 import airport.Airports;
-import flight.Flight;
 import flight.Flights;
-import leg.Leg;
-import org.w3c.dom.Attr;
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-import org.w3c.dom.Node;
 import plane.Planes;
 import leg.Legs;
 import utils.QueryFactory;
 import utils.Saps;
-
-import javax.xml.parsers.DocumentBuilder;
-import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.parsers.ParserConfigurationException;
-import javax.xml.transform.*;
-import javax.xml.transform.dom.DOMSource;
-import javax.xml.transform.stream.StreamResult;
 
 /**
  * This class provides an interface to the CS509 server. It provides sample methods to perform
@@ -257,8 +244,9 @@ public enum ServerInterface {
 			connection.setRequestProperty("User-Agent", Saps.TEAM_NAME);
 			connection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
 
+			// ConvertToXML provides the flights parameter for the HTTP Post query string
+			String xmlFlights = ConvertToXML.buildPostXML(flights, numberOfPassengers);
 			// QueryFactory provides the parameter annotations for the HTTP Post query string
-			String xmlFlights = buildPostXML(flights, numberOfPassengers);
 			String params = QueryFactory.postLegReservation(xmlFlights);
 
 			// Send the HTTP POST query
@@ -397,6 +385,15 @@ public enum ServerInterface {
 		return true;
 	}
 
+	/**
+	 * Reset the database to its original state, removing reservations added during testing
+	 *
+	 * The server interface to reset the server interface uses HTTP POST protocol
+	 *
+	 * @post database is in its original state
+	 *
+	 * @return true if the server was successfully reset, false otherwise
+	 * */
 	public boolean reset () {
 		URL url;
 		HttpURLConnection connection;
@@ -439,86 +436,5 @@ public enum ServerInterface {
 			return false;
 		}
 		return true;
-	}
-
-	public String buildPostXML(Flights flights, int numberOfPassengers) {
-		String xmlString = "";
-		Document document = null;
-
-		DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-
-		try {
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			document = builder.newDocument();
-
-		} catch (ParserConfigurationException parserException) {
-			parserException.printStackTrace();
-		}
-
-		assert document != null;
-		Element root = document.createElement("Flights");
-		document.appendChild(root);
-
-		for (Flight thisFlight : flights) {
-			String seatingType = thisFlight.seatingType();
-			Legs legList = thisFlight.legList();
-
-			for (Leg leg : legList) {
-				// add child element
-				Node legNode = createLegNode(document, seatingType, leg);
-				root.appendChild(legNode);
-				for (int i = 0; i < numberOfPassengers - 1; i++){
-					Node copy = legNode.cloneNode(false);
-					root.appendChild(copy);
-				}
-			}
-			// convert document to string
-			try {
-				// create DOMSource for source XML document
-				Source xmlSource = new DOMSource(document);
-
-				// create Transformer for transformation
-				TransformerFactory transformerFactory = TransformerFactory.newInstance();
-				Transformer transformer = transformerFactory.newTransformer();
-				transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
-
-				StringWriter writer = new StringWriter();
-
-				//transform document to string
-				transformer.transform(new DOMSource(document), new StreamResult(writer));
-				xmlString = xmlString.concat(writer.getBuffer().toString());
-			}
-			// handle exception creating TransformerFactory
-			catch (TransformerFactoryConfigurationError factoryError) {
-				System.err.println("Error creating " + "TransformerFactory");
-				factoryError.printStackTrace();
-				return null;
-			}catch (TransformerException transformerError) {
-				System.err.println("Error transforming document");
-				transformerError.printStackTrace();
-				return null;
-			}
-		}
-
-		return xmlString;
-	}
-
-	public Node createLegNode(Document document, String seatingType, Leg leg) {
-
-		// create leg node
-		Element legNode = document.createElement("Flight");
-
-		// create attribute
-		Attr flightNumberAttribute = document.createAttribute("number");
-		Attr seatingAttribute = document.createAttribute("seating");
-		flightNumberAttribute.setValue(Integer.toString(leg.getFlightNumber()));
-		seatingAttribute.setValue(seatingType);
-
-
-		// append attribute to leg node
-		legNode.setAttributeNode(flightNumberAttribute);
-		legNode.setAttributeNode(seatingAttribute);
-
-		return legNode;
 	}
 }
