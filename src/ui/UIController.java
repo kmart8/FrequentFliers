@@ -315,11 +315,11 @@ public class UIController {
      * @return a valid ZonedDateTime, or null if the String could not be parsed or the date is outside the valid range
      */
     private LocalDate validateDate(String date){
-        LocalDate parsedDate = null;
         // If the string is empty, then set the date to null
         if (date == null || date.equals(""))
             return null;
 
+        LocalDate parsedDate = null;
         // Try to parse the date string according to accepted input formats for date values
         for(DateTimeFormatter formatter : acceptedDateFormats){
             try {
@@ -350,11 +350,11 @@ public class UIController {
      * @return a valid LocalTime, or null if the String could not be parsed
      */
     private LocalTime validateTime(String time){
-        LocalTime parsedTime = null;
         // If the string is empty, then set the date to null
         if (time == null || time.equals(""))
             return null;
 
+        LocalTime parsedTime = null;
         // Try to parse the time string according to accepted input formats for date values
         for(DateTimeFormatter formatter : acceptedTimeFormats){
             try {
@@ -377,13 +377,12 @@ public class UIController {
      * @return a valid Airport, or null if the String did not match any known airports
      */
     private Airport validateAirport(String airport){
-        Airport parsedAirport = null;
         // If the string is empty, then set the airport to null
         if (airport == null || airport.equals(""))
             return null;
 
         // Try to match the provided string with possible airports
-        parsedAirport = LocalFlightDatabase.getInstance().getAirportFromString(airport);
+        Airport parsedAirport = LocalFlightDatabase.getInstance().getAirportFromString(airport);
 
         // If no matching airport is returned, then the user input was not a valid airport
         if(parsedAirport == null) {
