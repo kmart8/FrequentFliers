@@ -405,19 +405,19 @@ private void buildLegTable(Legs legsInCart){
         // Add a new row to the table for each leg on the list
         for (Leg leg : legsInCart) {
             // Generate correctly formatted strings from Leg attributes
-            String coachPrice = priceStyle.format(leg.coachPrice);
-            String firstClassPrice = priceStyle.format(leg.firstClassPrice);
-            String departureAirport = leg.boardingAirport.code();
+            String coachPrice = priceStyle.format(leg.getCoachPrice());
+            String firstClassPrice = priceStyle.format(leg.getFirstClassPrice());
+            String departureAirport = leg.getBoardingAirport().code();
             String departureDate = dateStyle.format(leg.getLocalBoardingTime());
             String departureTime = timeStyle.format(leg.getLocalBoardingTime());
-            String arrivalAirport = leg.disembarkingAirport.code();
+            String arrivalAirport = leg.getDisembarkingAirport().code();
             String arrivalDate = dateStyle.format(leg.getDisembarkingTime());
             String arrivalTime = timeStyle.format(leg.getLocalDisembarkingTime());
-            String flightNumber = Integer.toString(leg.flightNumber);
-            String plane = leg.plane.model();
-            String coachSeatsReserved = Integer.toString(leg.reservedCoachSeats);
-            String firstClassSeatsReserved = Integer.toString(leg.reservedFirstClassSeats);
-            String flightTime = flightTimeStyle.format(LocalTime.of((int) floor((double)leg.legDuration /60.0), leg.legDuration % 60));
+            String flightNumber = Integer.toString(leg.getFlightNumber());
+            String plane = leg.getPlane().model();
+            String coachSeatsReserved = Integer.toString(leg.getReservedCoachSeats());
+            String firstClassSeatsReserved = Integer.toString(leg.getReservedFirstClassSeats());
+            String flightTime = flightTimeStyle.format(LocalTime.MIN.plus(leg.getLegDuration()));
 
             // Add these strings as a new row in the table (ORDER MATTERS)
             table.addRow(new Object[] {coachPrice, firstClassPrice, flightTime, departureAirport,departureDate,
