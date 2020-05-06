@@ -10,7 +10,7 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 
 /**
- * This class holds values pertaining to a single Flight.
+ * This class initializes Flight as a class and creates its attributes and methods.
  *
  * @author William Keenan
  * @version 1.0 2020-04-30
@@ -28,7 +28,6 @@ public class Flight implements Cloneable {
 
     /**
      *  Constructor initializes default values
-     *  (Currently Unused)
      *
      *  @post member attributes are initialized to default values
      */
@@ -85,7 +84,6 @@ public class Flight implements Cloneable {
 
     /**
      * Method to set seating type
-     * (Currently Unused)
      *
      * @param seatingRequested The seating type requested
      */
@@ -258,7 +256,12 @@ public class Flight implements Cloneable {
 
     }
 
-    /** Required Clone Method*/
+    /**
+     * Required Clone Method
+     *
+     * @return Copy of Flight
+     * @throws CloneNotSupportedException If clone is not supported
+     */
     public Flight clone() throws CloneNotSupportedException{
         Flight copy = (Flight)super.clone();
         copy.legList(legList.clone());
