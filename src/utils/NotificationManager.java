@@ -100,11 +100,11 @@ public class NotificationManager {
         successNotification = new JFrame();
         JButton button = new JButton("OK");
         JLabel message = new JLabel(m_successMessage);
-        JLabel errorIcon = new JLabel(UIManager.getIcon("OptionPane.INFORMATION_MESSAGE"));
+        JLabel infoIcon = new JLabel(UIManager.getIcon("OptionPane.INFORMATION_MESSAGE"));
 
         // Add components to the window
         successNotification.getContentPane().setLayout(new FlowLayout());
-        successNotification.getContentPane().add(errorIcon);
+        successNotification.getContentPane().add(infoIcon);
         successNotification.getContentPane().add(message);
         successNotification.getContentPane().add(button);
 
