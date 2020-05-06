@@ -256,12 +256,15 @@ public class ReservationApp {
         addFlightToTrip.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                Trip.getInstance().addFlightToTrip((Flight) displayList.get(flightDisplayTable.getSelectedRow()));
-                for (Flight flight : Trip.getInstance().getTrip()) {
-                    legsInCart.addAll(flight.getLegList());
+                if (flightDisplayTable.getSelectedRow() != -1) {
+                    Trip.getInstance().addFlightToTrip(displayList.get(flightDisplayTable.getSelectedRow()));
+                    for (Flight flight : Trip.getInstance().getTrip()) {
+                        legsInCart.addAll(flight.getLegList());
+                    }
+                    buildLegTable(legsInCart);
+                    System.out.println("User added flight to cart");
                 }
-                buildLegTable(legsInCart);
-                System.out.println("User added flight to cart");
+                else NotificationManager.getInstance().popupError("No flight selected!");
             }
         });
         tripTypeComboBox.addActionListener(new ActionListener() {
