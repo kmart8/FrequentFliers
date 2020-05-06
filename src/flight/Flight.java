@@ -205,13 +205,25 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
         return Duration.between(getDepartureTime(), getArrivalTime());
     }
 
-    /** Method to access the filter reason */
-    public String filterReason(){ return filterReason; }
+    /**
+     * Method to get the filter reason
+     *
+     * @return The filter reason
+     */
+    public String getFilterReason(){ return filterReason; }
 
-    /** Method to access the seating type */
+    /**
+     * Method to get the seating type
+     *
+     * @return The seating type
+     */
     public String seatingType(){ return seatingType; }
 
-    /** Method to check if Flight is a match */
+    /**
+     * Method to check if Flight is a match
+     *
+     * @param uIFilter
+     */
     public void isMatch(UIModel uIFilter) {
         filterReason = "";
         boolean full = false;
