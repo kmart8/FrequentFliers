@@ -19,7 +19,7 @@ import plane.Plane;
 import plane.Planes;
 
 /**
- * Builds a collection of planes from planes described in XML
+ * Builds a collection of planes from planes described in XML.
  *
  * Parses an XML string to read each of the planes and adds each valid plane
  * to the collection. The class uses Java DOM (Document Object Model) to convert

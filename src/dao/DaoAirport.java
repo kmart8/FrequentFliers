@@ -19,7 +19,7 @@ import airport.Airport;
 import airport.Airports;
 
  /**
- * Builds a collection of airports from airports described in XML
+ * Builds a collection of airports from airports described in XML.
  *
  * Parses an XML string to read each of the airports and adds each valid airport
  * to the collection. The class uses Java DOM (Document Object Model) to convert

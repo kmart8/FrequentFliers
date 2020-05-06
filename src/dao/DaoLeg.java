@@ -27,7 +27,7 @@ import leg.Legs;
 import plane.Plane;
 
 /**
- * Builds a collection of legs from legs described in XML
+ * Builds a collection of legs from legs described in XML.
  *
  * Parses an XML string to read each of the legs and adds each valid leg
  * to the collection. The class uses Java DOM (Document Object Model) to convert
