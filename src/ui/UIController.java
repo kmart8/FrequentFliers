@@ -21,13 +21,11 @@ import java.util.List;
  *
  */
 public class UIController {
-    /** Handle to the viewer */
-    private ReservationApp ui;
     /** Handle to the model */
-    private UIModel savedInput;
+    private final UIModel savedInput;
 
     /** Date format list for displaying/parsing dates to/from the user */
-    private List<DateTimeFormatter> acceptedDateFormats = new ArrayList<>(){{
+    private final List<DateTimeFormatter> acceptedDateFormats = new ArrayList<>(){{
         add(DateTimeFormatter.ofPattern ("MM/dd/yyyy"));
         add(DateTimeFormatter.ofPattern ("MM/d/yyyy"));
         add(DateTimeFormatter.ofPattern("M/dd/yyyy"));
@@ -38,7 +36,7 @@ public class UIController {
         add(DateTimeFormatter.ofPattern ("M/d/yy"));}};
 
     /** Time format list for displaying/parsing dates to/from the user */
-    private List<DateTimeFormatter> acceptedTimeFormats = new ArrayList<>(){{
+    private final List<DateTimeFormatter> acceptedTimeFormats = new ArrayList<>(){{
         add(DateTimeFormatter.ofPattern ("hh:mm:ss a"));
         add(DateTimeFormatter.ofPattern ("hh:mm a"));
         add(DateTimeFormatter.ofPattern ("h:mm:ss a"));
@@ -55,34 +53,25 @@ public class UIController {
     /**
      * Initializes a new data container and viewer application
      */
-    public UIController(){
-        savedInput = new UIModel();
-        ui = new ReservationApp(this);
-    }
+    public UIController(){ savedInput = new UIModel(); }
 
     /**
      * Constructor loads a data container to set the initial state of the UIModel
      * @param loadedData UIData to load into the UIModel
      */
-    public UIController(UIModel loadedData){
-        savedInput = loadedData;
-    }
+    public UIController(UIModel loadedData){ savedInput = loadedData; }
 
     /**
      * Returns the UIData object used to save valid input
      * @return valid input saved in a UIData object
      */
-    public UIModel getAcceptedInput(){
-        return savedInput;
-    }
+    public UIModel getAcceptedInput(){ return savedInput; }
 
     /**
      * Returns the number of passengers as a string
      * @return a String with the number of passengers
      */
-    public String getNumberOfPassengers() {
-        return Integer.toString(savedInput.numberOfPassengers());
-    }
+    public String getNumberOfPassengers() { return Integer.toString(savedInput.numberOfPassengers()); }
 
     /**
      * Attempts to update the saved number of passengers according to user input
@@ -94,9 +83,7 @@ public class UIController {
             int passengers = Integer.parseInt(numberOfPassengers);
 
             // If the number of passengers has not changed, make no changes and do not announce updates
-            if (passengers == savedInput.numberOfPassengers())
-                return;
-            else {
+            if (passengers != savedInput.numberOfPassengers()){
                 savedInput.numberOfPassengers(passengers);
                 System.out.println("User input updated the number of passengers to " + numberOfPassengers);
             }
@@ -107,9 +94,7 @@ public class UIController {
      * Returns the number of layovers as a string
      * @return a String with the number of layovers
      */
-    public String getNumberOfLayovers() {
-        return Integer.toString(savedInput.numberOfLayovers());
-    }
+    public String getNumberOfLayovers() { return Integer.toString(savedInput.numberOfLayovers()); }
 
     /**
      * Attempts to update the saved number of layovers according to user input
@@ -121,9 +106,7 @@ public class UIController {
             int layovers = Integer.parseInt(numberOfLayovers);
 
             // If the number of layovers has not changed, make no changes and do not announce updates
-            if (layovers == savedInput.numberOfLayovers())
-                return;
-            else {
+            if (layovers != savedInput.numberOfLayovers()){
                 savedInput.numberOfLayovers(layovers);
                 System.out.println("User input updated the number of layovers to " + numberOfLayovers);
             }
@@ -134,9 +117,7 @@ public class UIController {
      * Returns the user selection for seating type
      * @return a string  with the saved seating type
      */
-    public String getSeatingType() {
-        return savedInput.seatingType();
-    }
+    public String getSeatingType() { return savedInput.seatingType(); }
 
     /**
      * Attempts to update the saved seating type according to user input
@@ -316,9 +297,7 @@ public class UIController {
      * Returns the saved time window type (Departure or Arrival)
      * @return a String indicating the time window is for departure or arrival flights
      */
-    public String getTimeType() {
-        return savedInput.timeType();
-    }
+    public String getTimeType() { return savedInput.timeType(); }
 
     /**
      * Attempts to update the stored time type according to user input
