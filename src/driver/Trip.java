@@ -15,7 +15,7 @@ import flight.Flights;
 public class Trip {
 
     private String tripType;
-    private Flights flightCart = new Flights();
+    private Flights trip = new Flights();
 
     // Singleton variable
     private static Trip single_instance = null;
@@ -34,41 +34,13 @@ public class Trip {
     public String getTripType() { return tripType; }
 
     public void addFlightToTrip(Flight flight) {
-        flightCart.add(flight);
-        /**
-        if (tripType.equals("One-Way")) {
-            if (flightCart.size() < 1) {
-                flightCart.add(flight);
-            }
-            else {
-                System.out.println("Cart is full for one-way trip");
-            }
-            // TODO: implement logic where flight 1 departure airport == flight 2 arrival airport and flight 1 arrival airport == flight 2 departure airport
-        } else if (tripType.equals("Round-Trip")) {
-            if (flightCart.size() < 2) {
-                flightCart.add(flight);
-            }
-            else {
-                System.out.println("Cart is full for round-trip");
-            }
-        }*/
+        trip.add(flight);
     }
 
-    public Flights getTrip() {
-        if (tripType.equals("One-Way") && flightCart.size() == 1) {
-            return flightCart;
-        } else if (tripType.equals("Round-Trip") && flightCart.size() == 2) {
-            return flightCart;
-
-            // TODO: improve this error handling
-        } else {
-            System.out.println("WARNING: Flight cart empty");
-            return flightCart;
-        }
-    }
+    public Flights getTrip() {return trip; }
 
     public void resetTrip() {
-        if (flightCart.size() > 0) { flightCart.clear();}
+        if (trip.size() > 0) { trip.clear();}
     }
 
 }
