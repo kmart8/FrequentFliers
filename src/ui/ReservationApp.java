@@ -148,7 +148,7 @@ public class ReservationApp {
      */
     public ReservationApp(UIController controller) {
         // Store a reference to the controller
-        this.controller = controller;
+        ReservationApp.controller = controller;
         initializeUIElements();
         // When the search button is pressed
         searchForFlightsButton.addActionListener(new ActionListener() {
@@ -255,13 +255,7 @@ public class ReservationApp {
             @Override
             public void actionPerformed(ActionEvent e) {
                 if (flightDisplayTable.getSelectedRow() != -1) {
-                    Trip.getInstance().addFlightToTrip(displayList.get(flightDisplayTable.getSelectedRow()));
-                    for (Flight flight : Trip.getInstance().getTrip()) {
-                        legsInCart.addAll(flight.legList());
-                    }
-                    buildLegTable(legsInCart);
-                    System.out.println("User added flight to cart");
-
+                    legsInCart.clear();
                     switch (Trip.getInstance().getTripType()){
                         case "One-Way":
                             if (Trip.getInstance().getTrip().size() < 1) {
