@@ -17,20 +17,20 @@ import utils.NotificationManager;
  * @since 2020-03-06
  *
  */
-public class FlightBuilder {
+public class TripBuilder {
     private UIController app;
     private FlightManager flightController;
 
     // Singleton variable
-    private static FlightBuilder single_instance = null;
+    private static TripBuilder single_instance = null;
 
     /** static method to provide single point of access to the Singleton
      *
-     * @return the active FlightBuilder, or a new one if one is not created
+     * @return the active TripBuilder, or a new one if one is not created
      */
-    public static FlightBuilder getInstance() {
+    public static TripBuilder getInstance() {
         if (single_instance == null) {
-            single_instance = new FlightBuilder();
+            single_instance = new TripBuilder();
         }
         return single_instance;
     }

@@ -3,18 +3,7 @@
  */
 package driver;
 
-import dao.ServerInterface;
-import airport.Airports;
-import airport.Airport;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.time.ZoneId;
-import java.time.ZonedDateTime;
-import java.util.Collections;
-import java.util.Date;
-
-import java.util.Hashtable;
-import java.util.TimeZone;
 
 /**
  * @author Kevin Martin
@@ -58,7 +47,7 @@ public class Driver {
 			System.out.println(leg.toString());
 		}
 		 */
-		FlightBuilder.getInstance().generateGUI();
+		TripBuilder.getInstance().generateGUI();
 
 		// GMT TO LOCAL TIME CONVERSION TEST //
 		// arbitrary GMT time input
