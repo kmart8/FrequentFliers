@@ -1,7 +1,6 @@
 package ui;
 
 import airport.Airport;
-import leg.Legs;
 import dao.LocalFlightDatabase;
 import utils.NotificationManager;
 import utils.Saps;
