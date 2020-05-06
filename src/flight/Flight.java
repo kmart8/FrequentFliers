@@ -217,7 +217,7 @@ public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable
      *
      * @return The seating type
      */
-    public String seatingType(){ return seatingType; }
+    public String getSeatingType(){ return seatingType; }
 
     /**
      * Method to check if Flight is a match

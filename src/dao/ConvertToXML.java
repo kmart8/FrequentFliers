@@ -39,7 +39,7 @@ public class ConvertToXML {
         document.appendChild(root);
 
         for (Flight thisFlight : flights) {
-            String seatingType = thisFlight.seatingType();
+            String seatingType = thisFlight.getSeatingType();
             Legs legList = thisFlight.legList();
 
             for (Leg leg : legList) {
