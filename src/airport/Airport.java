@@ -5,7 +5,6 @@ import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.util.Comparator;
 
 /**
  * This class holds values pertaining to a single Airport. Class member attributes
@@ -18,7 +17,7 @@ import java.util.Comparator;
  * @since 2020-04-30
  * 
  */
-public class Airport implements Comparable<Airport>, Comparator<Airport> {
+public class Airport {
 	
 	/**
 	 * Airport attributes as defined by the CS509 server interface XML
@@ -139,30 +138,6 @@ public class Airport implements Comparable<Airport>, Comparator<Airport> {
 		return mLongitude;
 	}
 
-	/**
-	 * Compare two airports based on 3 character code
-	 * 
-	 * This implementation delegates to the case insensitive version of string compareTo
-	 * @return results of String.compareToIgnoreCase
-	 */
-	public int compareTo(Airport other) {
-		return this.mCode.compareToIgnoreCase(other.mCode);
-	}
-	
-	/**
-	 * Compare two airports alphabetically for sorting, ordering
-	 * 
-	 * Delegates to airport1.compareTo for ordering by 3 character code
-	 * 
-	 * @param airport1 the first airport for comparison
-	 * @param airport2 the second / other airport for comparison
-	 * @return -1 if airport1  less than airport2, +1 if airport1 greater than airport2, zero ==
-	 */
-	public int compare(Airport airport1, Airport airport2) {
-		return airport1.compareTo(airport2);
-	}
-	
-	
 	/**
 	 * Determine if two airport objects are the same airport
 	 * 
