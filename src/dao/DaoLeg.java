@@ -27,27 +27,47 @@ import leg.Legs;
 import plane.Plane;
 
 /**
+ * Builds a collection of legs from legs described in XML
+ *
+ * Parses an XML string to read each of the legs and adds each valid leg
+ * to the collection. The class uses Java DOM (Document Object Model) to convert
+ * from XML to Java primitives.
+ *
  * @author Kevin Martin
- * @version 1.1 2019-01-21
- * @since 2020-04-30
+ * @version 1.0 2019-01-21
+ * @since 2020-03-23
  *
  */
 public class DaoLeg {
+    /**
+     *  Creates Leg objects from XML.
+     *
+     * Method iterates over the set of Leg nodes in the XML string and builds
+     * a Leg object from the XML node string and adds the Leg object instance to
+     * the Leg collection.
+     *
+     * @param xmlLegs XML string containing set of legs
+     * @return [possibly empty] collection of Legs in the xml string
+     * @throws NullPointerException included to keep signature consistent with other addAll methods
+     *
+     * @pre the xmlAirports string adheres to the format specified by the server API
+     * @post the [possibly empty] set of Planes in the XML string are added to collection
+     */
     public static Legs addAll (String xmlLegs) throws NullPointerException {
         Legs legs = new Legs();
 
         // Load the XML string into a DOM tree for ease of processing
         // then iterate over all nodes adding each Leg to our collection
-        Document docLegs = buildDomDoc (xmlLegs);
-        NodeList nodesLegs = docLegs.getElementsByTagName("Flight");
+        Document docLegs = buildDomDoc(xmlLegs);
+        if (docLegs != null){
+            NodeList nodesLegs = docLegs.getElementsByTagName("Flight");
 
-        for (int i = 0; i < nodesLegs.getLength(); i++) {
-            Element elementLeg = (Element) nodesLegs.item(i);
-            Leg leg = buildLeg (elementLeg);
+            for (int i = 0; i < nodesLegs.getLength(); i++) {
+                Element elementLeg = (Element) nodesLegs.item(i);
+                Leg leg = buildLeg(elementLeg);
 
-
-            legs.add(leg);
-
+                legs.add(leg);
+            }
         }
 
         return legs;
@@ -56,12 +76,12 @@ public class DaoLeg {
     /**
      * Creates a Leg object from a DOM node
      *
-     * Processes a DOM Node that describes a Leg and creates a Leg object from the information
-     * @param nodeLeg is a DOM Node describing an Plane
-     * @return Plane object created from the DOM Node representation of the Plane
+     * Processes a DOM Node that describes a leg and creates a Leg object from the information
+     * @param nodeLeg is a DOM Node describing a leg
+     * @return Leg object created from the DOM Node representation of the leg
      *
-     * @pre nodePlane is of format specified by CS509 server API
-     * @post plane object instantiated. Caller responsible for deallocating memory.
+     * @pre nodeLeg is of format specified by CS509 server API
+     * @post Leg object instantiated. Caller responsible for deallocating memory.
      */
     static private Leg buildLeg (Node nodeLeg) {
         DateTimeFormatter serverDateTimeStyle = DateTimeFormatter.ofPattern("yyyy MMM dd HH:mm zzz");
@@ -75,57 +95,50 @@ public class DaoLeg {
         int reservedCoachSeats;
         int reservedFirstClassSeats;
         Duration legDuration;
-        Plane plane; // the plane model
+        Plane plane;
         BigDecimal coachPrice;
         BigDecimal firstClassPrice;
-        String flightTime;
 
-        // The plane element has attributes of model and manufacturer
+        // The leg element has attributes of plane model, flight time, and flight number
         Element elementLeg = (Element) nodeLeg;
         plane = LocalFlightDatabase.getInstance().getPlaneFromModel(elementLeg.getAttributeNode("Airplane").getValue());
         legDuration = Duration.ofMinutes(Integer.parseInt(elementLeg.getAttributeNode("FlightTime").getValue()));
         flightNumber = Integer.parseInt(elementLeg.getAttributeNode("Number").getValue());
 
-        // The # of first class seats and # of coach seats are child elements
+        // The arrival element has child elements code and time
         Element elementDisembarking = (Element)elementLeg.getElementsByTagName("Arrival").item(0);
-
         Element elementDisembarkingAirportCode = (Element)elementDisembarking.getElementsByTagName("Code").item(0);
         Element elementDisembarkingTime = (Element)elementDisembarking.getElementsByTagName("Time").item(0);
-
         disembarkingAirport = LocalFlightDatabase.getInstance().getAirportFromString(getCharacterDataFromElement(elementDisembarkingAirportCode));
         disembarkingTime = ZonedDateTime.of(LocalDateTime.parse(getCharacterDataFromElement(elementDisembarkingTime), serverDateTimeStyle), gmt);
 
+        // The departure element has child elements code and time
         Element elementBoarding = (Element)elementLeg.getElementsByTagName("Departure").item(0);
-
         Element elementBoardingAirportCode = (Element)elementBoarding.getElementsByTagName("Code").item(0);
         Element elementBoardingTime = (Element)elementBoarding.getElementsByTagName("Time").item(0);
-
         boardingAirport = LocalFlightDatabase.getInstance().getAirportFromString(getCharacterDataFromElement(elementBoardingAirportCode));
         boardingTime = ZonedDateTime.of(LocalDateTime.parse(getCharacterDataFromElement(elementBoardingTime), serverDateTimeStyle), gmt);
 
+        // The seating element has child elements coach and first class
         Element elementSeating = (Element)elementLeg.getElementsByTagName("Seating").item(0);
-
         Element elementCoach = (Element)elementSeating.getElementsByTagName("Coach").item(0);
+        Element elementFirstClass = (Element)elementSeating.getElementsByTagName("FirstClass").item(0);
+        reservedCoachSeats = Integer.parseInt(getCharacterDataFromElement(elementCoach));
+        reservedFirstClassSeats = Integer.parseInt(getCharacterDataFromElement(elementFirstClass));
+
+        // The coach element has attribute price
         try{
             coachPrice = new BigDecimal(serverPriceStyle.parse(elementCoach.getAttributeNode("Price").getValue()).toString());
         }
-        catch(ParseException pe){
-            coachPrice = new BigDecimal(0);
-        }
-        reservedCoachSeats = Integer.parseInt(getCharacterDataFromElement(elementCoach));
+        catch(ParseException pe){ coachPrice = new BigDecimal(0); }
 
-        Element elementFirstClass = (Element)elementSeating.getElementsByTagName("FirstClass").item(0);
+        // The first class element has attribute price
         try{
             firstClassPrice = new BigDecimal(serverPriceStyle.parse(elementFirstClass.getAttributeNode("Price").getValue()).toString());
         }
-        catch(ParseException pe){
-            firstClassPrice = new BigDecimal(0);
-        }
-        reservedFirstClassSeats = Integer.parseInt(getCharacterDataFromElement(elementFirstClass));
+        catch(ParseException pe){ firstClassPrice = new BigDecimal(0); }
 
-        /**
-         * Instantiate an empty Plane object and initialize with data from XML node
-         */
+        // Instantiate an empty Plane object and initialize with data from XML node
         Leg leg = new Leg();
 
         leg.setDisembarkingAirport(disembarkingAirport);
@@ -152,9 +165,7 @@ public class DaoLeg {
      * @return DOM tree from parsed XML or null if exception is caught
      */
     static private Document buildDomDoc (String xmlString) {
-        /**
-         * load the xml string into a DOM document and return the Document
-         */
+        // load the xml string into a DOM document and return the Document
         try {
             DocumentBuilderFactory docBuilderFactory = DocumentBuilderFactory.newInstance();
             DocumentBuilder docBuilder = docBuilderFactory.newDocumentBuilder();
@@ -163,15 +174,7 @@ public class DaoLeg {
 
             return docBuilder.parse(inputSource);
         }
-        catch (ParserConfigurationException e) {
-            e.printStackTrace();
-            return null;
-        }
-        catch (IOException e) {
-            e.printStackTrace();
-            return null;
-        }
-        catch (SAXException e) {
+        catch (ParserConfigurationException | SAXException | IOException e) {
             e.printStackTrace();
             return null;
         }
