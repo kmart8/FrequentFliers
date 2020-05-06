@@ -162,23 +162,6 @@ public class Plane {
         // Verify seats is within valid range
         return seats >= 0;
     }
-
-    /**
-     * Check if number of seats is valid
-     *
-     * @param seats is the number of seats represented as a String
-     * @return true if number of seats is positive
-     */
-    public boolean isValidSeats (String seats) {
-        int parsedSeats;
-        try {
-            parsedSeats = Integer.parseInt(seats);
-        } catch (NullPointerException | NumberFormatException ex) {
-            return false;
-        }
-        return isValidSeats (parsedSeats);
-    }
 }
 
 
-//}
