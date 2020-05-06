@@ -74,7 +74,7 @@ public class DaoLeg {
         int flightNumber;
         int reservedCoachSeats;
         int reservedFirstClassSeats;
-        int legDuration;
+        Duration legDuration;
         Plane plane; // the plane model
         BigDecimal coachPrice;
         BigDecimal firstClassPrice;
@@ -83,7 +83,7 @@ public class DaoLeg {
         // The plane element has attributes of model and manufacturer
         Element elementLeg = (Element) nodeLeg;
         plane = LocalFlightDatabase.getInstance().getPlaneFromModel(elementLeg.getAttributeNode("Airplane").getValue());
-        legDuration = Integer.parseInt(elementLeg.getAttributeNode("FlightTime").getValue());
+        legDuration = Duration.ofMinutes(Integer.parseInt(elementLeg.getAttributeNode("FlightTime").getValue()));
         flightNumber = Integer.parseInt(elementLeg.getAttributeNode("Number").getValue());
 
         // The # of first class seats and # of coach seats are child elements
@@ -128,17 +128,17 @@ public class DaoLeg {
          */
         Leg leg = new Leg();
 
-        leg.disembarkingAirport = disembarkingAirport;
-        leg.boardingAirport = boardingAirport;
-        leg.disembarkingTime = disembarkingTime;
-        leg.boardingTime = boardingTime;
-        leg.flightNumber = flightNumber;
-        leg.plane = plane;
-        leg.legDuration = legDuration;
-        leg.coachPrice = coachPrice;
-        leg.firstClassPrice = firstClassPrice;
-        leg.reservedCoachSeats = reservedCoachSeats;
-        leg.reservedFirstClassSeats = reservedFirstClassSeats;
+        leg.setDisembarkingAirport(disembarkingAirport);
+        leg.setBoardingAirport(boardingAirport);
+        leg.setDisembarkingTime(disembarkingTime);
+        leg.setBoardingTime(boardingTime);
+        leg.setFlightNumber(flightNumber);
+        leg.setPlane(plane);
+        leg.setLegDuration(legDuration);
+        leg.setCoachPrice(coachPrice);
+        leg.setFirstClassPrice(firstClassPrice);
+        leg.setReservedCoachSeats(reservedCoachSeats);
+        leg.setReservedFirstClassSeats(reservedFirstClassSeats);
 
         return leg;
     }
