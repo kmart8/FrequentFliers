@@ -53,7 +53,10 @@ public class UIController {
     /**
      * Initializes a new data container and viewer application
      */
-    public UIController(){ savedInput = new UIModel(); }
+    public UIController(){
+        savedInput = new UIModel();
+        new ReservationApp(this);
+    }
 
     /**
      * Constructor loads a data container to set the initial state of the UIModel
