@@ -2,7 +2,6 @@ package leg;
 
 import airport.Airport;
 import plane.Plane;
-
 import java.math.BigDecimal;
 import java.time.Duration;
 import java.time.ZonedDateTime;
