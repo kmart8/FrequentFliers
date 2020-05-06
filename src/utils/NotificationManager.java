@@ -22,6 +22,8 @@ public class NotificationManager {
     private JFrame currentError;
     /** Handle to the busy popup, so that only one is active at a time */
     private JFrame busyWarning;
+    /** Handle to the success popup, so that only one is active at a time */
+    private JFrame successNotification;
 
     /** A running counter to ensure each timer has a unique key */
     private int timerIDCounter;
@@ -78,6 +80,43 @@ public class NotificationManager {
         button.addActionListener(evt -> {
             currentError.dispose();
             currentError = null;
+        });
+    }
+
+    /** Create an success popup window in the center of the screen with a custom message
+     *
+     * @param m_successMessage the custom success message String
+     * @pre The main thread should be finished with all tasks
+     * @post An success message popup GUI will be displayed in the center of the screen
+     */
+    public void popupSuccess(String m_successMessage){
+        // Remove the old notification if it is still open
+        if (successNotification != null) {
+            successNotification.dispose();
+            successNotification = null;
+        }
+
+        // Create the components
+        successNotification = new JFrame();
+        JButton button = new JButton("OK");
+        JLabel message = new JLabel(m_successMessage);
+        JLabel errorIcon = new JLabel(UIManager.getIcon("OptionPane.INFORMATION_MESSAGE"));
+
+        // Add components to the window
+        successNotification.getContentPane().setLayout(new FlowLayout());
+        successNotification.getContentPane().add(errorIcon);
+        successNotification.getContentPane().add(message);
+        successNotification.getContentPane().add(button);
+
+        // Display the popup
+        successNotification.pack();
+        successNotification.setLocationRelativeTo(null); // Puts the popup in the center of the screen
+        successNotification.setVisible(true);
+
+        // Set the OK button to close the popup
+        button.addActionListener(evt -> {
+            successNotification.dispose();
+            successNotification = null;
         });
     }
 
