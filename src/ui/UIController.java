@@ -239,7 +239,7 @@ public class UIController {
      */
     public String getFlightDate() {
         if(savedInput.startFlightDateTime() != null)
-            return acceptedDateFormats.get(0).format(savedInput.startFlightDateTime());
+            return acceptedDateFormats.get(0).format(savedInput.flightLocalDate());
         else
             return "";
     }
@@ -254,10 +254,7 @@ public class UIController {
 
         // If the date was already null, make no changes
         if(newDate != null) {
-            LocalDateTime newStart = LocalDateTime.of(newDate, savedInput.startFlightDateTime().toLocalTime());
-            LocalDateTime newEnd = LocalDateTime.of(newDate, savedInput.endFlightDateTime().toLocalTime());
-            savedInput.startFlightDateTime(ZonedDateTime.of(newStart,ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0))));
-            savedInput.endFlightDateTime(ZonedDateTime.of(newEnd,ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0))));
+            savedInput.flightLocalDate(newDate);
         }
     }
 
@@ -266,8 +263,8 @@ public class UIController {
      * @return a string with the start time
      */
     public String getStartTime() {
-        if(savedInput.startFlightDateTime() != null)
-            return acceptedTimeFormats.get(0).format(savedInput.startFlightDateTime());
+        if(savedInput.startFlightLocalTime() != null)
+            return acceptedTimeFormats.get(0).format(savedInput.startFlightLocalTime());
         else
             return "";
     }
@@ -280,13 +277,12 @@ public class UIController {
         // Attempt to parse the input string, make no changes on failure
         LocalTime newTime = validateTime(time);
 
-        // If the date was already null, make no changes
+        // If the time is null, make no changes
         if(newTime != null) {
-            LocalDateTime newStart = LocalDateTime.of(savedInput.startFlightDateTime().toLocalDate(), newTime);
-            if (newStart.isAfter(savedInput.endFlightDateTime().toLocalDateTime())){
+            if (newTime.isAfter(savedInput.endFlightLocalTime())){
                 System.out.println("Warning: User input of " + time + " is after the end of the time window");
             }else {
-                savedInput.startFlightDateTime(ZonedDateTime.of(newStart, ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0))));
+                savedInput.startFlightLocalTime(newTime);
             }
         }
     }
@@ -296,8 +292,8 @@ public class UIController {
      * @return a string with the end time
      */
     public String getEndTime() {
-        if(savedInput.endFlightDateTime() != null)
-            return acceptedTimeFormats.get(0).format(savedInput.endFlightDateTime());
+        if(savedInput.endFlightLocalTime() != null)
+            return acceptedTimeFormats.get(0).format(savedInput.endFlightLocalTime());
         else
             return "";
     }
@@ -310,13 +306,12 @@ public class UIController {
         // Attempt to parse the input string, make no changes on failure
         LocalTime newTime = validateTime(time);
 
-        // If the date was already null, make no changes
+        // If the time is null, make no changes
         if(newTime != null) {
-            LocalDateTime newEnd = LocalDateTime.of(savedInput.endFlightDateTime().toLocalDate(), newTime);
-            if (newEnd.isBefore(savedInput.startFlightDateTime().toLocalDateTime())){
+            if (newTime.isBefore(savedInput.startFlightLocalTime())){
                 System.out.println("Warning: User input of " + time + " is before the beginning of the time window");
             }else {
-                savedInput.endFlightDateTime(ZonedDateTime.of(newEnd, ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0))));
+                savedInput.endFlightLocalTime(newTime);
             }
         }
     }
