@@ -244,8 +244,8 @@ public enum ServerInterface {
 			connection.setRequestProperty("User-Agent", Saps.TEAM_NAME);
 			connection.setRequestProperty("Accept-Language", "en-US,en;q=0.5");
 
-			// ConvertToXML provides the flights parameter for the HTTP Post query string
-			String xmlFlights = ConvertToXML.buildPostXML(flights, numberOfPassengers);
+			// ConvertFlightsToXML provides the flights parameter for the HTTP Post query string
+			String xmlFlights = ConvertFlightsToXML.buildPostXML(flights, numberOfPassengers);
 			// QueryFactory provides the parameter annotations for the HTTP Post query string
 			String params = QueryFactory.postLegReservation(xmlFlights);
 

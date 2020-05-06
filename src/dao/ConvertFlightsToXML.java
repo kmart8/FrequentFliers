@@ -19,7 +19,7 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import java.io.StringWriter;
 
-public class ConvertToXML {
+public class ConvertFlightsToXML {
 
     public static String buildPostXML(Flights flights, int numberOfPassengers) {
         Document document = null;
