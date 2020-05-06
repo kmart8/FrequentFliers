@@ -461,7 +461,7 @@ public enum ServerInterface {
 		document.appendChild(root);
 
 		String seatingType = flight.seatingType();
-		Legs legList = flight.getLegList();
+		Legs legList = flight.legList();
 
 		for (Leg leg : legList) {
 			// add child element

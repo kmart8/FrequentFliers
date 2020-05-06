@@ -11,33 +11,45 @@ import java.time.Duration;
 import java.time.ZonedDateTime;
 import java.util.Comparator;
 
+/**
+ * This class holds values pertaining to a single Flight.
+ *
+ * @author William Keenan
+ * @version 1.0 2020-04-30
+ * @since 2020-04-30
+ *
+ */
 public class Flight implements Comparable<Flight>, Comparator<Flight>, Cloneable {
 
-    /** Fields of Flight Class */
+    /** List of legs that makeup the flight */
     private Legs legList;
+    /** The seating type for the flight */
     private String seatingType;
+    /** The validity of the flight as compared to a UIModel */
     private String filterReason;
 
-    /** Empty Constructor for Flight Object */
+    /**
+     *  Constructor initializes default values
+     */
     public Flight() {
         legList = new Legs();
-        seatingType = "Coach";
+        seatingType = Saps.SEATING_TYPES.get(0);
     }
 
-    /** Constructor for Flight Object */
-    public Flight(Legs lList, String seatingType) {
-        legList = lList;
+    /**
+     * Constructor initializes an empty leg list and sets initial value for seating type
+     *
+     * @param seatingType The seating type of the flight
+     */
+    public Flight(String seatingType) {
+        legList = new Legs();
         if (Saps.SEATING_TYPES.contains(seatingType)) this.seatingType = seatingType;
-        else this.seatingType = "Coach";
+        else this.seatingType = Saps.SEATING_TYPES.get(0);
     }
 
     public void legList(Legs legs) { legList = legs;}
 
-    // TODO: Having legList and getLegList might be messy, but i need a way to get the list of legs on a flight for the post query
-
-    public Legs getLegList() {
-        return legList;
-    }
+    public Legs legList() { return legList;}
 
     /** Add Leg to end of array */
     public void addLegToEnd(Leg newLeg) {
