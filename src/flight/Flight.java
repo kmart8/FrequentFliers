@@ -1,6 +1,7 @@
 package flight;
 
 import airport.Airport;
+import dao.LocalFlightDatabase;
 import leg.Leg;
 import leg.Legs;
 import ui.UIModel;
@@ -13,7 +14,7 @@ import java.time.ZonedDateTime;
  * This class initializes Flight as a class and creates its attributes and methods.
  *
  * @author William Keenan
- * @version 1.0 2020-04-30
+ * @version 1.0 2020-05-06
  * @since 2020-04-30
  *
  */
@@ -254,6 +255,14 @@ public class Flight implements Cloneable {
 
         if (complete) filterReason = "complete";
 
+    }
+
+    public void refreshLegs(){
+        Legs updatedLegs = new Legs();
+        for(Leg thisLeg : legList){
+            updatedLegs.add(LocalFlightDatabase.getInstance().getRefreshedLeg(thisLeg));
+        }
+        legList = updatedLegs;
     }
 
     /**

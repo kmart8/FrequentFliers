@@ -11,8 +11,8 @@ import java.util.ArrayList;
  * be removed from the collection using the ArrayList interface.
  * 
  * @author Kevin Martin
- * @version 1.0
- * @since 2020-04-30
+ * @version 1.0 2020-03-23
+ * @since 2020-03-23
  *
  */
 public class Airports extends ArrayList<Airport> {

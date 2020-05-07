@@ -10,8 +10,8 @@ import java.time.ZonedDateTime;
  * This class initializes Leg as a class and creates its attributes and methods.
  *
  * @author Kevin Martin, William Keenan
- * @version 1.1 2019-01-21
- * @since 2020-04-30
+ * @version 1.1 2020-05-06
+ * @since 2020-03-23
  *
  */
 
@@ -278,5 +278,28 @@ public class Leg {
      */
     public void setFirstClassPrice(BigDecimal newFirstClassPrice) {
         firstClassPrice = newFirstClassPrice;
+    }
+
+    /**
+     * Determine if two leg objects are the same Leg
+     *
+     * Compare another object to this Leg and return true if the other
+     * object specifies the same Leg as this object.
+     *
+     * @param obj is the object to compare against this object
+     * @return true if the param is the same Leg as this, else false
+     */
+    @Override
+    public boolean equals (Object obj) {
+        // every object is equal to itself
+        if (obj == this) return true;
+        // null not equal to anything
+        if (obj == null) return false;
+        // can't be equal if obj is not an instance of Leg
+        if (!(obj instanceof Leg)) return false;
+
+        // if the flight numbers are equal, the legs are the same
+        Leg rhs = (Leg) obj;
+        return rhs.flightNumber == flightNumber;
     }
 }

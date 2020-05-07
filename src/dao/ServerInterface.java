@@ -14,8 +14,8 @@ import utils.QueryFactory;
 import utils.Saps;
 
 /**
- * This class provides an interface to the CS509 server. It provides sample methods to perform
- * HTTP GET and HTTP POSTS
+ * This class provides an interface to the CS509 server.
+ * It provides methods to perform HTTP GET and HTTP POSTS
  *   
  * @author Blake Nelson
  * @version 1.0 2020-03-26
@@ -26,7 +26,7 @@ public enum ServerInterface {
 	INSTANCE;
 
 	/**
-	 * Return a collection of all the airports from server
+	 * Return a collection of all the airports from server.
 	 * 
 	 * Retrieve the list of airports via HTTPGet of the server
 	 *
@@ -75,7 +75,7 @@ public enum ServerInterface {
 	}
 
 	/**
-	 * Return a collection of all the planes from server
+	 * Return a collection of all the planes from server.
 	 *
 	 * Retrieve the list of planes via HTTPGet of the server
 	 *
@@ -124,7 +124,7 @@ public enum ServerInterface {
 	}
 
 	/**
-	 * Return a collection of legs from server which board at a given airport and date
+	 * Return a collection of legs from server which board at a given airport and date.
 	 *
 	 * Retrieve the list of legs via HTTPGet of the server
 	 *
@@ -174,7 +174,7 @@ public enum ServerInterface {
 	}
 
 	/**
-	 * Return a collection of legs from server which disembark at a given airport and date
+	 * Return a collection of legs from server which disembark at a given airport and date.
 	 *
 	 * Retrieve the list of legs via HTTPGet of the server
 	 *
@@ -224,12 +224,12 @@ public enum ServerInterface {
 	}
 
 	/**
-	 * Reserves seats on the server database for a given flight.
+	 * Reserves seats on the server database for given flights.
 	 *
 	 * Retrieve the list of legs via HTTPGet of the server
 	 *
-	 * @param flights the flight on which seats should be reserved
-	 * @param numberOfPassengers the number of seats that should be reserved
+	 * @param flights the flights on which seats should be reserved
+	 * @param numberOfPassengers the number of seats that should be reserved on each leg
 	 * @return true if the reservation was successful, false otherwise
 	 */
 	public boolean postLegReservation(Flights flights, int numberOfPassengers) {
@@ -280,7 +280,9 @@ public enum ServerInterface {
 
 	}
 	/**
-	 * Lock the database for updating by the specified team. The operation will fail if the lock is held by another team.
+	 * Lock the database for updating by the specified team.
+	 *
+	 * The operation will fail if the lock is held by another team.
 	 * 
 	 * @post database locked
 	 *
@@ -332,7 +334,9 @@ public enum ServerInterface {
 	}
 
 	/**
-	 * Unlock the database previous locked by specified team. The operation will succeed if the server lock is held by the specified
+	 * Unlock the database previous locked by specified team.
+	 *
+	 * The operation will succeed if the server lock is held by the specified
 	 * team or if the server is not currently locked. If the lock is held be another team, the operation will fail.
 	 * 
 	 * The server interface to unlock the server interface uses HTTP POST protocol
@@ -386,7 +390,7 @@ public enum ServerInterface {
 	}
 
 	/**
-	 * Reset the database to its original state, removing reservations added during testing
+	 * Reset the database to its original state, removing reservations added during testing.
 	 *
 	 * The server interface to reset the server interface uses HTTP POST protocol
 	 *

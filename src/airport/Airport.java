@@ -13,8 +13,8 @@ import java.time.ZonedDateTime;
  * setter methods.
  * 
  * @author Kevin Martin
- * @version 1.0 2020-04-30
- * @since 2020-04-30
+ * @version 1.0 2020-05-06
+ * @since 2020-03-23
  * 
  */
 public class Airport {
@@ -138,6 +138,34 @@ public class Airport {
 		return mLongitude;
 	}
 
+	/**
+	 * Determine if two airport objects are the same airport
+	 *
+	 * Compare another object to this airport and return true if the other
+	 * object specifies the same airport as this object. String comparisons are
+	 * case insensitive BOS is same as bos
+	 *
+	 * @param obj is the object to compare against this object
+	 * @return true if the param is the same airport as this, else false
+	 */
+	@Override
+	public boolean equals (Object obj) {
+		// every object is equal to itself
+		if (obj == this) return true;
+
+		// null not equal to anything
+		if (obj == null) return false;
+
+		// can't be equal if obj is not an instance of Airport
+		if (!(obj instanceof Airport)) return false;
+
+		// if all fields are equal, the Airports are the same
+		Airport rhs = (Airport) obj;
+		return (rhs.mName.equalsIgnoreCase(mName)) &&
+				(rhs.mCode.equalsIgnoreCase(mCode)) &&
+				(rhs.mLatitude == mLatitude) &&
+				(rhs.mLongitude == mLongitude);
+	}
 
 	/**
 	 * Determine if object instance has valid attribute data

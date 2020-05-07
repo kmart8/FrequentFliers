@@ -66,7 +66,7 @@ public class UIController {
 
     /**
      * Returns the UIData object used to save valid input
-     * @return valid input saved in a UIData object
+     * @return valid input saved in a UIModel object
      */
     public UIModel getAcceptedInput(){ return savedInput; }
 
@@ -94,13 +94,13 @@ public class UIController {
     }
 
     /**
-     * Returns the number of layovers as a string
-     * @return a String with the number of layovers
+     * Returns the maximum number of layovers as a string
+     * @return a String with the maximum number of layovers
      */
     public String getNumberOfLayovers() { return Integer.toString(savedInput.numberOfLayovers()); }
 
     /**
-     * Attempts to update the saved number of layovers according to user input
+     * Attempts to update the saved maximum number of layovers according to user input
      * @param numberOfLayovers a String with the maximum number of layovers
      */
     public void setNumberOfLayovers(String numberOfLayovers) {
@@ -127,8 +127,10 @@ public class UIController {
      * @param seatingType  a string with the selected seating type
      */
     public void setSeatingType(String seatingType) {
-        if (Saps.SEATING_TYPES.contains(seatingType))
+        if (Saps.SEATING_TYPES.contains(seatingType)) {
             savedInput.seatingType(seatingType);
+            System.out.println("User input updated the seating type to " + seatingType);
+        }
     }
 
     /**
@@ -214,27 +216,25 @@ public class UIController {
     }
 
     /**
-     * Returns the date, formatted as a string
-     * @return a string with the arrival date
+     * Returns the flight date, formatted as a string
+     * @return a string with the flight date
      */
     public String getFlightDate() {
-        if(savedInput.startFlightDateTime() != null)
-            return acceptedDateFormats.get(0).format(savedInput.flightLocalDate());
-        else
-            return "";
+        return acceptedDateFormats.get(0).format(savedInput.flightLocalDate());
     }
 
     /**
-     * Attempts to update the saved date according to user input
+     * Attempts to update the saved flight date according to user input
      * @param date a String with the formatted date
      */
     public void setFlightDate(String date) {
         // Attempt to parse the input string, make no changes on failure
         LocalDate newDate = validateDate(date);
 
-        // If the date was already null, make no changes
-        if(newDate != null) {
+        // If the date is null or equal to the current value, make no changes
+        if(newDate != null && newDate.compareTo(savedInput.flightLocalDate()) != 0){
             savedInput.flightLocalDate(newDate);
+            System.out.println("User input updated the flight date to " + newDate.toString());
         }
     }
 
@@ -259,10 +259,14 @@ public class UIController {
 
         // If the time is null, make no changes
         if(newTime != null) {
+            // If the time is after the end of the window, make no changes and alert the user
             if (newTime.isAfter(savedInput.endFlightLocalTime())){
-                System.out.println("Warning: User input of " + time + " is after the end of the time window");
-            }else {
+                NotificationManager.getInstance().popupError("Warning: User input of " + time + " is after the end of the time window");
+            }
+            // If the time is equal to the stored value, also make no changes
+            else if (newTime.compareTo(savedInput.startFlightLocalTime()) != 0) {
                 savedInput.startFlightLocalTime(newTime);
+                System.out.println("User input updated the start time to " + newTime.toString());
             }
         }
     }
@@ -288,10 +292,14 @@ public class UIController {
 
         // If the time is null, make no changes
         if(newTime != null) {
+            // If the time is before the beginning of the window, make no changes and alert the user
             if (newTime.isBefore(savedInput.startFlightLocalTime())){
-                System.out.println("Warning: User input of " + time + " is before the beginning of the time window");
-            }else {
+                NotificationManager.getInstance().popupError("Warning: User input of " + time + " is before the beginning of the time window");
+            }
+            // If the time is equal to the stored value, also make no changes
+            else if (newTime.compareTo(savedInput.endFlightLocalTime()) != 0){
                 savedInput.endFlightLocalTime(newTime);
+                System.out.println("User input updated the end time to " + newTime.toString());
             }
         }
     }
@@ -307,8 +315,10 @@ public class UIController {
      * @param timeType a String indicating the time window is for departure or arrival flights
      */
     public void setTimeType(String timeType) {
-        if (Saps.TIME_WINDOW_TYPES.contains(timeType))
+        if (Saps.TIME_WINDOW_TYPES.contains(timeType)) {
             savedInput.timeType(timeType);
+            System.out.println("User input updated the time type to " + timeType);
+        }
     }
 
     /**
@@ -397,7 +407,7 @@ public class UIController {
     }
 
     /**
-     * Attempts to parse and validate an number of layovers from a String
+     * Attempts to parse and validate a number of layovers from a String
      * @param layovers a String containing the maximum number of layovers
      *
      * @return false if the String could not be parsed as an Integer or the number of layovers is outside the valid range, otherwise return true
@@ -422,7 +432,7 @@ public class UIController {
     }
 
     /**
-     * Attempts to parse and validate an number of passengers from a String
+     * Attempts to parse and validate a number of passengers from a String
      * @param passengers a String containing the maximum number of passengers
      *
      * @return false if the String could not be parsed as an Integer or the number of passengers is outside the valid range, otherwise return true

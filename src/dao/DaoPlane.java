@@ -19,7 +19,7 @@ import plane.Plane;
 import plane.Planes;
 
 /**
- * Builds a collection of planes from planes described in XML
+ * Builds a collection of planes from planes described in XML.
  *
  * Parses an XML string to read each of the planes and adds each valid plane
  * to the collection. The class uses Java DOM (Document Object Model) to convert
@@ -43,7 +43,7 @@ public class DaoPlane {
      * @return [possibly empty] collection of Planes in the xml string
      * @throws NullPointerException included to keep signature consistent with other addAll methods
      *
-     * @pre the xmlAirports string adheres to the format specified by the server API
+     * @pre the xmlPlanes string adheres to the format specified by the server API
      * @post the [possibly empty] set of Planes in the XML string are added to collection
      */
     public static Planes addAll (String xmlPlanes) throws NullPointerException {
@@ -67,9 +67,10 @@ public class DaoPlane {
     }
 
     /**
-     * Creates a Plane object from a DOM node
+     * Creates a Plane object from a DOM node.
      *
      * Processes a DOM Node that describes a Plane and creates a Plane object from the information
+     *
      * @param nodePlane is a DOM Node describing a plane
      * @return Plane object created from the DOM Node representation of the plane
      *
@@ -107,7 +108,7 @@ public class DaoPlane {
     }
 
     /**
-     * Builds a DOM tree from an XML string
+     * Builds a DOM tree from an XML string.
      *
      * Parses the XML file and returns a DOM tree that can be processed
      *
@@ -131,7 +132,7 @@ public class DaoPlane {
     }
 
     /**
-     * Retrieve character data from an element if it exists
+     * Retrieve character data from an element if it exists.
      *
      * @param e is the DOM Element to retrieve character data from
      * @return the character data as String [possibly empty String]
