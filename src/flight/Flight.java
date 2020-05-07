@@ -13,7 +13,7 @@ import java.time.ZonedDateTime;
  * This class initializes Flight as a class and creates its attributes and methods.
  *
  * @author William Keenan
- * @version 1.0 2020-04-30
+ * @version 1.0 2020-05-06
  * @since 2020-04-30
  *
  */
