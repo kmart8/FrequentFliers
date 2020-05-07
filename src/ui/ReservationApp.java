@@ -109,6 +109,7 @@ public class ReservationApp {
 
         // User may only interact with the trip combobox at the very beginning
         tripTypeComboBox.setEnabled(true);
+        numberOfPassengersFormattedTextField.setEnabled(true);
 
         // Set the default seating types
         String[] temp = Arrays.copyOf(Saps.SEATING_TYPES.toArray(), Saps.SEATING_TYPES.toArray().length, String[].class);
@@ -200,21 +201,25 @@ public class ReservationApp {
         confirmReservationButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (Trip.getInstance().isFull() && !Trip.getInstance().isBooked()) {
-                    // Wait until the lock can be obtained
-                    int timerID = NotificationManager.getInstance().startBusyTimer();
-                    Trip.getInstance().bookTrip(controller.getAcceptedInput().numberOfPassengers());
+                if (Trip.getInstance().isFull())
+                {
+                    if (!Trip.getInstance().isBooked()) {
+                        // Wait until the lock can be obtained
+                        int timerID = NotificationManager.getInstance().startBusyTimer();
+                        Trip.getInstance().bookTrip(controller.getAcceptedInput().numberOfPassengers());
 
-                    // Notify the user of success or failure
-                    if (Trip.getInstance().isBooked()) {
-                        NotificationManager.getInstance().popupSuccess("Trip booking was successful!");
-                        // Update the table to display the new number of remaining seats on the legs
-                        Trip.getInstance().refreshTrip();
-                        legsInCart = Trip.getInstance().getLegs();
-                        buildLegTable();
+                        // Notify the user of success or failure
+                        if (Trip.getInstance().isBooked()) {
+                            NotificationManager.getInstance().popupSuccess("Trip booking was successful!");
+                            // Update the table to display the new number of remaining seats on the legs
+                            Trip.getInstance().refreshTrip();
+                            legsInCart = Trip.getInstance().getLegs();
+                            buildLegTable();
+                        } else
+                            NotificationManager.getInstance().popupError("Error making reservation, no reservations created!");
+                        NotificationManager.getInstance().stopBusyTimer(timerID);
                     } else
-                        NotificationManager.getInstance().popupError("Error making reservation, no reservations created!");
-                    NotificationManager.getInstance().stopBusyTimer(timerID);
+                        NotificationManager.getInstance().popupError("Trip is already booked!");
                 } else
                     NotificationManager.getInstance().popupError("Error making reservation, not enough flights selected!");
             }
@@ -225,6 +230,7 @@ public class ReservationApp {
             @Override
             public void actionPerformed(ActionEvent e) {
                 tripTypeComboBox.setEnabled(false);
+                numberOfPassengersFormattedTextField.setEnabled(false);
                 isPreSearchState(false);
                 // clear the flight table
                 displayList = new Flights();
@@ -387,7 +393,6 @@ public class ReservationApp {
         midSearchEnabledList.add(dateFormattedTextField);
         midSearchEnabledList.add(startTimeFormattedTextField);
         midSearchEnabledList.add(maximumLayoversFormattedTextField);
-        midSearchEnabledList.add(numberOfPassengersFormattedTextField);
         midSearchEnabledList.add(timeTypeComboBox);
         midSearchEnabledList.add(endTimeFormattedTextField);
     }
