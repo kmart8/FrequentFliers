@@ -64,21 +64,22 @@ public class ReservationApp {
     private Flights displayList = new Flights();
     private Legs legsInCart = new Legs();
 
-    /** List of UI components which should be inactive during flight search to prevent user input
-     */
+    /** List of UI components which should be active during flight search to enable user input */
     private List<JComponent> midSearchEnabledList = new ArrayList<>();
+    /** List of UI components which should be active during before the flight search to enable user input */
     private List<JComponent> preSearchEnabledList = new ArrayList<>();
 
-    // Model that stores the current state of user input and validates new input
+    /** Controller that parses and validates user input, and saves it in a model */
     private static UIController controller;
 
-    // Create a table model to modify and store the data of the display tables
+    /** Table model to modify and store the data of flights */
     private static DefaultTableModel flightDisplayData = new DefaultTableModel();
+    /** Table model to modify and store the data of legs */
     private static DefaultTableModel legDisplayData = new DefaultTableModel();
 
-    // Currently selected sort method
+    /** Selected sort method */
     private static String sortType = "Price";
-    // Currently selected sort direction, true if ascending and false if descending
+    /** Selected sort direction, true if ascending and false if descending */
     private static boolean isAscending = true;
 
     /**
@@ -98,15 +99,16 @@ public class ReservationApp {
         // Create the JFrame and JComponents
         initializeWindow();
 
-        // Create the list of JComponents that should be disabled while the app is in pre search state
+        // Create the list of JComponents that should be enabled/disabled during state transitions
         buildMidSearchEnabledList();
         buildPreSearchEnabledList();
         isPreSearchState(true);
+
+        // User may only interact with the trip combobox at the very beginning
         tripTypeComboBox.setEnabled(true);
 
-
-        String[] temp = Arrays.copyOf(Saps.SEATING_TYPES.toArray(), Saps.SEATING_TYPES.toArray().length, String[].class);
         // Set the default seating types
+        String[] temp = Arrays.copyOf(Saps.SEATING_TYPES.toArray(), Saps.SEATING_TYPES.toArray().length, String[].class);
         seatingTypeComboBox.setModel(new DefaultComboBoxModel<String>(temp));
 
         // Set the columns of the leg table
@@ -140,7 +142,7 @@ public class ReservationApp {
         flightDisplayData.addColumn("Seating Type");
         flightDisplayTable.setModel(flightDisplayData);
 
-        // Set trip type
+        // Initialize trip type
         Trip.getInstance().setTripType(tripTypeComboBox.getSelectedItem().toString());
 
         System.out.println("Finished Initialization");
@@ -159,15 +161,160 @@ public class ReservationApp {
         searchForFlightsButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                // Set the busy status to true, until the table has been built or the operation is canceled
                 System.out.println("Search Button User Interaction");
                 displayList = TripBuilder.getInstance().searchForFlights();
                 if (displayList.size() != 0) {
                     buildFlightTable();
+                    // After the user has initiated search, disable all the search fields
                     isPreSearchState(true);
                 }
             }
         });
+
+        // When the reset button is pressed, reinitialize the GUI
+        //TODO: change this to clear model
+        startOverButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                Trip.getInstance().resetTrip();
+                legsInCart.clear();
+                buildLegTable(legsInCart);
+                displayList = new Flights();
+                buildFlightTable();
+                System.out.println("Reset User Interaction");
+                initializeUIElements();
+            }
+        });
+
+        // When the quit button is pressed, exit the program
+        quitButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                System.exit(0);
+            }
+        });
+
+        // When confirm reservation button is pressed, reserve seats on the server for each leg in the trip
+        confirmReservationButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                // Wait until the lock can be obtained
+                int timerID = NotificationManager.getInstance().startBusyTimer();
+                boolean obtainedLock = false;
+                while (!obtainedLock) {
+                    obtainedLock = ServerInterface.INSTANCE.lock();
+                    try{wait(100);} catch (Exception exc) {};
+                }
+
+                // Make sure that remaining seats on the selected flights have no changed since selection
+                Flights bookedFlights = Trip.getInstance().getTrip();
+                for(Flight thisFlight : bookedFlights) {
+                    thisFlight.refreshLegs();
+                    thisFlight.isMatch(controller.getAcceptedInput());
+                    if (!thisFlight.getFilterReason().equals("complete")){
+                        NotificationManager.getInstance().popupError("One of the selected flights is no longer available, please create a new trip!");
+                        ServerInterface.INSTANCE.unlock();
+                        return;
+                    }
+                }
+
+                // Attempt to reserve seats
+                boolean isSuccess = ServerInterface.INSTANCE.postLegReservation(bookedFlights, controller.getAcceptedInput().numberOfPassengers());
+                ServerInterface.INSTANCE.unlock();
+                // Notify the user of success or failure
+                if (isSuccess) {
+                    NotificationManager.getInstance().popupSuccess("Trip booking was successful!");
+                    // Update the table to display the new number of remaining seats on the legs
+                    Legs finalLegs = new Legs();
+                    for (Flight thisFlight : bookedFlights) {
+                        thisFlight.refreshLegs();
+                        finalLegs.addAll(thisFlight.legList());
+                    }
+                    buildLegTable(finalLegs);
+                }
+                else
+                    NotificationManager.getInstance().popupError("Error making reservation, no reservations created!");
+                NotificationManager.getInstance().stopBusyTimer(timerID);
+            }
+        });
+
+        // When new search is pressed activate the mid search state, and disable user input for trip type
+        newSearchButton.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                tripTypeComboBox.setEnabled(false);
+                isPreSearchState(false);
+                // clear the flight table
+                displayList = new Flights();
+                buildFlightTable();
+            }
+        });
+
+        // adds the selected flight to the flightCart (Flights object in TripBuilder)
+    addFlightToTrip.addActionListener(new ActionListener() {
+              @Override
+              public void actionPerformed(ActionEvent e) {
+                  if (flightDisplayTable.getSelectedRow() != -1) {
+                      switch (Trip.getInstance().getTripType()) {
+                          case "One-Way":
+                              if (Trip.getInstance().getTrip().size() < 1) {
+                                  Trip.getInstance().addFlightToTrip(displayList.get(flightDisplayTable.getSelectedRow()));
+                                  legsInCart.clear();
+                                  for (Flight flight : Trip.getInstance().getTrip()) {
+                                      legsInCart.addAll(flight.legList());
+                                  }
+                                  buildLegTable(legsInCart);
+                                  NotificationManager.getInstance().popupSuccess("Flight was successfully added to cart!");
+                                  isPreSearchState(true);
+                                  tabbedPane1.setSelectedIndex(1);
+                              } else {
+                                  NotificationManager.getInstance().popupError("One-way trip is full, no new flights can be added!");
+                              }
+                              break;
+                          case "Round-Trip":
+                              if (Trip.getInstance().getTrip().size() < 1) {
+                                  legsInCart.clear();
+                                  Trip.getInstance().addFlightToTrip(displayList.get(flightDisplayTable.getSelectedRow()));
+                                  for (Flight flight : Trip.getInstance().getTrip()) {
+                                      legsInCart.addAll(flight.legList());
+                                  }
+                                  buildLegTable(legsInCart);
+                                  System.out.println("User added flight to cart");
+                                  String arrival = arrivalAirportFormattedTextField.getText();
+                                  controller.setArrivalAirport(null);
+                                  String departure = departureAirportFormattedTextField.getText();
+                                  arrivalAirportFormattedTextField.setText(departure);
+                                  departureAirportFormattedTextField.setText(arrival);
+                                  displayList = new Flights();
+                                  buildFlightTable();
+                                  isPreSearchState(false);
+                              } else if (Trip.getInstance().getTrip().size() < 2) {
+                                  legsInCart.clear();
+                                  Flight firstFlight = Trip.getInstance().getTrip().get(0);
+                                  // Testing if departure time is before arrival time, in which case an error is returned. else returning flight is booked
+                                  Boolean isBefore = displayList.get(flightDisplayTable.getSelectedRow()).getDepartureTime().isBefore(firstFlight.getArrivalTime());
+                                  if (isBefore) {
+                                      NotificationManager.getInstance().popupError("Departure time of second flight must be after arrival time of first flight.");
+                                  } else {
+                                      Trip.getInstance().addFlightToTrip(displayList.get(flightDisplayTable.getSelectedRow()));
+                                      for (Flight flight : Trip.getInstance().getTrip()) {
+                                          legsInCart.addAll(flight.legList());
+                                      }
+                                      buildLegTable(legsInCart);
+                                      NotificationManager.getInstance().popupSuccess("Flight was successfully added to cart!");
+                                      isPreSearchState(true);
+                                      tabbedPane1.setSelectedIndex(1);
+                                  }
+                              } else {
+                                  NotificationManager.getInstance().popupError("Round-trip is full, no new flights can be added!");
+                              }
+                              break;
+                      }
+
+                  } else NotificationManager.getInstance().popupError("No flight selected!");
+
+              }
+          });
 
         // When any text field is changed, attempt to overwrite the value in the model.
         // Then, get the validated value stored in the model to update the display of the component.
@@ -213,42 +360,19 @@ public class ReservationApp {
                 maximumLayoversFormattedTextField.setText(controller.getNumberOfLayovers());
             }
         });
-
-        // When the reset button is pressed, reinitialize the GUI
-        // This will force any disabled JComponents to re-enable
-        //TODO: change this to clear model
-        startOverButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                Trip.getInstance().resetTrip();
-                legsInCart.clear();
-                buildLegTable(legsInCart);
-                displayList = new Flights();
-                buildFlightTable();
-                System.out.println("Reset User Interaction");
-                initializeUIElements();
-            }
-        });
-
-        // When the quit button is pressed, exit the program
-        quitButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                System.exit(0);
-            }
-        });
-
-        seatingTypeComboBox.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                controller.setSeatingType(seatingTypeComboBox.getSelectedItem().toString());
-            }
-        });
         endTimeFormattedTextField.addPropertyChangeListener(new PropertyChangeListener() {
             @Override
             public void propertyChange(PropertyChangeEvent evt) {
                 controller.setEndTime(endTimeFormattedTextField.getText());
                 endTimeFormattedTextField.setText(controller.getEndTime());
+            }
+        });
+
+        // When any combobox is changed, overwrite the value in the model
+        seatingTypeComboBox.addActionListener(new ActionListener() {
+            @Override
+            public void actionPerformed(ActionEvent e) {
+                controller.setSeatingType(seatingTypeComboBox.getSelectedItem().toString());
             }
         });
         timeTypeComboBox.addActionListener(new ActionListener() {
@@ -257,104 +381,17 @@ public class ReservationApp {
                 controller.setTimeType(timeTypeComboBox.getSelectedItem().toString());
             }
         });
-
-        // adds the selected flight to the flightCart (Flights object in TripBuilder)
-        addFlightToTrip.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                if (flightDisplayTable.getSelectedRow() != -1) {
-                    switch (Trip.getInstance().getTripType()){
-                        case "One-Way":
-                            if (Trip.getInstance().getTrip().size() < 1) {
-                                Trip.getInstance().addFlightToTrip(displayList.get(flightDisplayTable.getSelectedRow()));
-                                legsInCart.clear();
-                                for (Flight flight : Trip.getInstance().getTrip()){
-                                    legsInCart.addAll(flight.legList());
-                                }
-                                buildLegTable(legsInCart);
-                                NotificationManager.getInstance().popupSuccess("Flight was successfully added to cart!");
-                                isPreSearchState(true);
-                                tabbedPane1.setSelectedIndex(1);
-                            } else {
-                                NotificationManager.getInstance().popupError("One-way trip is full, no new flights can be added!");
-                            }
-                            break;
-                        case "Round-Trip":
-                            if (Trip.getInstance().getTrip().size() < 1) {
-                                legsInCart.clear();
-                                Trip.getInstance().addFlightToTrip(displayList.get(flightDisplayTable.getSelectedRow()));
-                                for (Flight flight : Trip.getInstance().getTrip()){
-                                    legsInCart.addAll(flight.legList());
-                                }
-                                buildLegTable(legsInCart);
-                                System.out.println("User added flight to cart");
-                                String arrival = arrivalAirportFormattedTextField.getText();
-                                controller.setArrivalAirport(null);
-                                String departure = departureAirportFormattedTextField.getText();
-                                arrivalAirportFormattedTextField.setText(departure);
-                                departureAirportFormattedTextField.setText(arrival);
-                                displayList = new Flights();
-                                buildFlightTable();
-                                isPreSearchState(false);
-                            } else if (Trip.getInstance().getTrip().size() < 2) {
-                                legsInCart.clear();
-                                Flight firstFlight = Trip.getInstance().getTrip().get(0);
-                                // Testing if departure time is before arrival time, in which case an error is returned. else returning flight is booked
-                                Boolean isBefore = displayList.get(flightDisplayTable.getSelectedRow()).getDepartureTime().isBefore(firstFlight.getArrivalTime());
-                                if (isBefore) {
-                                    NotificationManager.getInstance().popupError("Departure time of second flight must be after arrival time of first flight.");
-                                } else {
-                                    Trip.getInstance().addFlightToTrip(displayList.get(flightDisplayTable.getSelectedRow()));
-                                    for (Flight flight : Trip.getInstance().getTrip()){
-                                        legsInCart.addAll(flight.legList());
-                                    }
-                                    buildLegTable(legsInCart);
-                                    NotificationManager.getInstance().popupSuccess("Flight was successfully added to cart!");
-                                    isPreSearchState(true);
-                                    tabbedPane1.setSelectedIndex(1);
-                                }
-                            }
-                            else {
-                                NotificationManager.getInstance().popupError("Round-trip is full, no new flights can be added!");
-                            }
-                            break;
-                    }
-
-                }
-                else NotificationManager.getInstance().popupError("No flight selected!");
-
-            }
-        });
         tripTypeComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e){
                 Trip.getInstance().setTripType(tripTypeComboBox.getSelectedItem().toString());
-                System.out.println("User input updated trip type"); }
-        });
-
-        // Currently nested for loop (looping for all booked flights and all passengers on those flights,
-        // could improve efficiency in postLegReservation 
-        confirmReservationButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                int timerID = NotificationManager.getInstance().startBusyTimer();
-                boolean obtainedLock = false;
-                while (!obtainedLock) {
-                    obtainedLock = ServerInterface.INSTANCE.lock();
-                    try{wait(100);} catch (Exception exc) {};
-                }
-                Flights bookedFlights = Trip.getInstance().getTrip();
-                boolean isSuccess = ServerInterface.INSTANCE.postLegReservation(bookedFlights, controller.getAcceptedInput().numberOfPassengers());
-                ServerInterface.INSTANCE.unlock();
-                if (isSuccess)
-                    NotificationManager.getInstance().popupSuccess("Trip booking was successful!");
-                NotificationManager.getInstance().stopBusyTimer(timerID);
             }
         });
         sortTypeComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 sortType = sortTypeComboBox.getSelectedItem().toString();
+                // Resort the flight table
                 buildFlightTable();
             }
         });
@@ -362,16 +399,8 @@ public class ReservationApp {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String sortDirection = sortDirectionComboBox.getSelectedItem().toString();
+                // Resort the flight table
                 isAscending = sortDirection.equals("Ascending");
-                buildFlightTable();
-            }
-        });
-        newSearchButton.addActionListener(new ActionListener() {
-            @Override
-            public void actionPerformed(ActionEvent e) {
-                tripTypeComboBox.setEnabled(false);
-                isPreSearchState(false);
-                displayList = new Flights();
                 buildFlightTable();
             }
         });
