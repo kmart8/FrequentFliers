@@ -264,7 +264,7 @@ public class ReservationApp {
                               }
                           }
                       } else {
-                          NotificationManager.getInstance().popupError("One-way trip is full, no new flights can be added!");
+                          NotificationManager.getInstance().popupError("Trip is full, no new flights can be added!");
                       }
                   } else NotificationManager.getInstance().popupError("No flight selected!");
               }
