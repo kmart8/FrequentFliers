@@ -218,10 +218,7 @@ public class UIController {
      * @return a string with the arrival date
      */
     public String getFlightDate() {
-        if(savedInput.startFlightDateTime() != null)
-            return acceptedDateFormats.get(0).format(savedInput.flightLocalDate());
-        else
-            return "";
+        return acceptedDateFormats.get(0).format(savedInput.flightLocalDate());
     }
 
     /**
