@@ -19,10 +19,16 @@ import java.util.ArrayList;
  */
 
 public class Trip {
-
+    /** the trip type */
     private String tripType;
+
+    /** the trip attribute */
     private Flights trip = new Flights();
+
+    /** the flight details */
     private ArrayList<UIModel> flightsDetails = new ArrayList<>();
+
+    /** boolean see if flight is booked */
     private boolean isBooked = false;
 
     // Singleton variable
@@ -56,6 +62,11 @@ public class Trip {
      */
     public String getTripType() { return tripType; }
 
+    /**
+     * Method to get the isBooked boolean
+     *
+     * @return isBooked
+     */
     public boolean isBooked() { return isBooked; }
 
     /**
@@ -93,6 +104,11 @@ public class Trip {
         return legsOnTrip;
     }
 
+    /**
+     * Method to check if the trip is full
+     *
+     * @return True trip is full, False if trip is not
+     */
     public boolean isFull(){
         switch (tripType) {
             case "One-Way":
@@ -103,6 +119,10 @@ public class Trip {
         return true;
     }
 
+    /**
+     * Method to refresh the current trip
+     *
+     */
     public void refreshTrip(){
         for (int i = 0; i < trip.size(); i++) {
             trip.get(i).refreshLegs();
@@ -110,6 +130,11 @@ public class Trip {
         }
     }
 
+    /**
+     * Method to check if trip is valid
+     *
+     * @return true if valid, false if not
+     */
     public boolean isTripValid(){
         refreshTrip();
         if (isFull())
@@ -129,6 +154,11 @@ public class Trip {
         isBooked = false;
     }
 
+    /**
+     * Method to book the current trip
+     *
+     * @param numberOfPassengers number of passengers on the trip
+     */
     public void bookTrip(int numberOfPassengers){
         boolean obtainedLock = false;
         while (!obtainedLock) {
