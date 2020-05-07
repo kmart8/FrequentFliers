@@ -6,7 +6,7 @@ package plane;
 import java.util.ArrayList;
 
 /**
- * This class aggregates a number of Planes. The aggregate is implemented as an ArrayList.
+ * This class aggregates a number of Plane. The aggregate is implemented as an ArrayList.
  * Planes can be added to the aggregate using the ArrayList interface. Objects can
  * be removed from the collection using the ArrayList interface.
  *
