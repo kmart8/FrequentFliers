@@ -169,6 +169,7 @@ public class Trip {
         if (!isTripValid()) {
             NotificationManager.getInstance().popupError("One of the selected flights is no longer available, please create a new trip!");
             ServerInterface.INSTANCE.unlock();
+            return;
         }
 
         // Attempt to reserve seats
