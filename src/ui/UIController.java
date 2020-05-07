@@ -127,8 +127,10 @@ public class UIController {
      * @param seatingType  a string with the selected seating type
      */
     public void setSeatingType(String seatingType) {
-        if (Saps.SEATING_TYPES.contains(seatingType))
+        if (Saps.SEATING_TYPES.contains(seatingType)) {
             savedInput.seatingType(seatingType);
+            System.out.println("User input updated the seating type to " + seatingType);
+        }
     }
 
     /**
@@ -229,9 +231,10 @@ public class UIController {
         // Attempt to parse the input string, make no changes on failure
         LocalDate newDate = validateDate(date);
 
-        // If the date was already null, make no changes
-        if(newDate != null) {
+        // If the date is null or equal to the current value, make no changes
+        if(newDate != null && newDate.compareTo(savedInput.flightLocalDate()) != 0){
             savedInput.flightLocalDate(newDate);
+            System.out.println("User input updated the flight date to " + newDate.toString());
         }
     }
 
@@ -256,10 +259,14 @@ public class UIController {
 
         // If the time is null, make no changes
         if(newTime != null) {
+            // If the time is after the end of the window, make no changes and alert the user
             if (newTime.isAfter(savedInput.endFlightLocalTime())){
-                System.out.println("Warning: User input of " + time + " is after the end of the time window");
-            }else {
+                NotificationManager.getInstance().popupError("Warning: User input of " + time + " is after the end of the time window");
+            }
+            // If the time is equal to the stored value, also make no changes
+            else if (newTime.compareTo(savedInput.startFlightLocalTime()) != 0) {
                 savedInput.startFlightLocalTime(newTime);
+                System.out.println("User input updated the start time to " + newTime.toString());
             }
         }
     }
@@ -285,10 +292,14 @@ public class UIController {
 
         // If the time is null, make no changes
         if(newTime != null) {
+            // If the time is before the beginning of the window, make no changes and alert the user
             if (newTime.isBefore(savedInput.startFlightLocalTime())){
-                System.out.println("Warning: User input of " + time + " is before the beginning of the time window");
-            }else {
+                NotificationManager.getInstance().popupError("Warning: User input of " + time + " is before the beginning of the time window");
+            }
+            // If the time is equal to the stored value, also make no changes
+            else if (newTime.compareTo(savedInput.endFlightLocalTime()) != 0){
                 savedInput.endFlightLocalTime(newTime);
+                System.out.println("User input updated the end time to " + newTime.toString());
             }
         }
     }
@@ -304,8 +315,10 @@ public class UIController {
      * @param timeType a String indicating the time window is for departure or arrival flights
      */
     public void setTimeType(String timeType) {
-        if (Saps.TIME_WINDOW_TYPES.contains(timeType))
+        if (Saps.TIME_WINDOW_TYPES.contains(timeType)) {
             savedInput.timeType(timeType);
+            System.out.println("User input updated the time type to " + timeType);
+        }
     }
 
     /**
