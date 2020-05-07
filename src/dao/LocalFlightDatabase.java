@@ -126,17 +126,22 @@ public class LocalFlightDatabase {
         return planeList;
     }
 
-    /** get the full list of legs currently in storage from boarding requests
+    /** Get an updated version of the leg from the server.
      *
-     * @return [possibly empty] the list of legs
-     */
-    public Legs getBoardingLegList(){ return boardingLegList; }
-
-    /** get the full list of legs currently in storage from disembarking requests
+     * This will occur regardless if there is already a saved version of the leg cached.
      *
-     * @return [possibly empty] the list of legs
+     * @param oldLeg The leg that needs to be updated with the latest database info
+     *
+     * @return [possibly null] the updated version of the leg, or null if the server cannot find a match
      */
-    public Legs getDisembarkingLegList() { return disembarkingLegList;}
+    public Leg getRefreshedLeg(Leg oldLeg){
+        getBoardingLegList(oldLeg.getBoardingAirport(), oldLeg.getBoardingTime().toLocalDate(), true);
+        int newLegIndex = boardingLegList.indexOf(oldLeg);
+        if (newLegIndex != -1)
+            return boardingLegList.get(newLegIndex);
+        else
+            return null;
+    }
 
     /** get the list of legs with the specified boarding airport and boarding date.
      *
