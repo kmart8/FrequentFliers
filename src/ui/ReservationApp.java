@@ -205,38 +205,48 @@ public class ReservationApp {
                 boolean obtainedLock = false;
                 while (!obtainedLock) {
                     obtainedLock = ServerInterface.INSTANCE.lock();
-                    try{wait(100);} catch (Exception exc) {};
+                    try {
+                        wait(100);
+                    } catch (Exception exc) {
+                    }
+                    ;
                 }
 
                 // Make sure that remaining seats on the selected flights have no changed since selection
                 Flights bookedFlights = Trip.getInstance().getTrip();
-                for(Flight thisFlight : bookedFlights) {
+                for (Flight thisFlight : bookedFlights) {
                     thisFlight.refreshLegs();
                     thisFlight.isMatch(controller.getAcceptedInput());
-                    if (!thisFlight.getFilterReason().equals("complete")){
+                    if (!thisFlight.getFilterReason().equals("complete")) {
                         NotificationManager.getInstance().popupError("One of the selected flights is no longer available, please create a new trip!");
                         ServerInterface.INSTANCE.unlock();
                         return;
                     }
                 }
 
-                // Attempt to reserve seats
-                boolean isSuccess = ServerInterface.INSTANCE.postLegReservation(bookedFlights, controller.getAcceptedInput().numberOfPassengers());
-                ServerInterface.INSTANCE.unlock();
-                // Notify the user of success or failure
-                if (isSuccess) {
-                    NotificationManager.getInstance().popupSuccess("Trip booking was successful!");
-                    // Update the table to display the new number of remaining seats on the legs
-                    Legs finalLegs = new Legs();
-                    for (Flight thisFlight : bookedFlights) {
-                        thisFlight.refreshLegs();
-                        finalLegs.addAll(thisFlight.legList());
-                    }
-                    buildLegTable(finalLegs);
-                }
-                else
-                    NotificationManager.getInstance().popupError("Error making reservation, no reservations created!");
-                NotificationManager.getInstance().stopBusyTimer(timerID);
+                switch (bookedFlights.size()) {
+                    case 0:
+                        NotificationManager.getInstance().popupError("No flights added, please add flights to your trip to make a reservation");
+                        break;
+
+                    default:
+                        // Attempt to reserve seats
+                        boolean isSuccess = ServerInterface.INSTANCE.postLegReservation(bookedFlights, controller.getAcceptedInput().numberOfPassengers());
+                        ServerInterface.INSTANCE.unlock();
+                        // Notify the user of success or failure
+                        if (isSuccess) {
+                            NotificationManager.getInstance().popupSuccess("Trip booking was successful!");
+                            // Update the table to display the new number of remaining seats on the legs
+                            Legs finalLegs = new Legs();
+                            for (Flight thisFlight : bookedFlights) {
+                                thisFlight.refreshLegs();
+                                finalLegs.addAll(thisFlight.legList());
+                            }
+                            buildLegTable(finalLegs);
+                        } else
+                            NotificationManager.getInstance().popupError("Error making reservation, no reservations created!");
+
+                } NotificationManager.getInstance().stopBusyTimer(timerID);
             }
         });
 
