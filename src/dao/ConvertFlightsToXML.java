@@ -78,7 +78,6 @@ public class ConvertFlightsToXML {
             // Attempt to convert the document to XML
             String xmlString = convertDOMToXML(document);
             if (xmlString == null) {
-                NotificationManager.getInstance().popupError("Error making reservation, no reservations created!");
                 return "";
             }
             return xmlString;
