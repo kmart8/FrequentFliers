@@ -7,6 +7,7 @@ import flight.Flight;
 import flight.Flights;
 import leg.Leg;
 import leg.Legs;
+import us.dustinj.timezonemap.TimeZoneMap;
 import utils.NotificationManager;
 import utils.Saps;
 
@@ -174,7 +175,6 @@ public class ReservationApp {
         });
 
         // When the reset button is pressed, reinitialize the GUI
-        //TODO: change this to clear model
         startOverButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
@@ -251,20 +251,15 @@ public class ReservationApp {
                 buildFlightTable();
             }
         });
-
-        // adds the selected flight to the flightCart (Flights object in TripBuilder)
-    addFlightToTrip.addActionListener(new ActionListener() {
+        
+        addFlightToTrip.addActionListener(new ActionListener() {
               @Override
               public void actionPerformed(ActionEvent e) {
                   if (flightDisplayTable.getSelectedRow() != -1) {
                       switch (Trip.getInstance().getTripType()) {
                           case "One-Way":
                               if (Trip.getInstance().getTrip().size() < 1) {
-                                  Trip.getInstance().addFlightToTrip(displayList.get(flightDisplayTable.getSelectedRow()));
-                                  legsInCart.clear();
-                                  for (Flight flight : Trip.getInstance().getTrip()) {
-                                      legsInCart.addAll(flight.legList());
-                                  }
+                                  legsInCart = TripBuilder.getInstance().addLegsToTrip(displayList,flightDisplayTable,legsInCart);
                                   buildLegTable(legsInCart);
                                   NotificationManager.getInstance().popupSuccess("Flight was successfully added to cart!");
                                   isPreSearchState(true);
@@ -275,11 +270,7 @@ public class ReservationApp {
                               break;
                           case "Round-Trip":
                               if (Trip.getInstance().getTrip().size() < 1) {
-                                  legsInCart.clear();
-                                  Trip.getInstance().addFlightToTrip(displayList.get(flightDisplayTable.getSelectedRow()));
-                                  for (Flight flight : Trip.getInstance().getTrip()) {
-                                      legsInCart.addAll(flight.legList());
-                                  }
+                                  legsInCart = TripBuilder.getInstance().addLegsToTrip(displayList,flightDisplayTable,legsInCart);
                                   buildLegTable(legsInCart);
                                   System.out.println("User added flight to cart");
                                   String arrival = arrivalAirportFormattedTextField.getText();
