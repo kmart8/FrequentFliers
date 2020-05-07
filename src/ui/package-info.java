@@ -1,7 +1,7 @@
 /**
  * Classes which handle user interaction.
  *
- * Includes the viewer for displaying and accepting user input, the contoller for parsing and validating the input,
+ * Includes the viewer for displaying and accepting user input, the controller for parsing and validating the input,
  * and the model for saving the input
  *
  * @author Chris Collins

@@ -3,8 +3,10 @@ package leg;
 import java.util.ArrayList;
 
 /**
+ * This class extends ArrayList and is an aggregate of Leg objects.
+ *
  * @author Kevin Martin
- * @version 1.1 2019-01-21
+ * @version 1.1 2020-04-30
  * @since 2020-04-30
  *
  */

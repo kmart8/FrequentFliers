@@ -4,7 +4,7 @@
  * Handles the Leg and Legs classes.
  *
  * @author Kevin Martin, William Keenan
- * @version 1.1 2019-01-21
+ * @version 1.1 2020-04-30
  * @since 2020-04-30
  *
  */
