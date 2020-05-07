@@ -10,10 +10,10 @@ import java.util.Collections;
 import static java.time.temporal.ChronoUnit.MINUTES;
 
 /**
- * This class extends ArrayList. It is an aggregate of Flight objects.
+ * This class extends ArrayList and is an aggregate of Flight objects.
  *
  * @author William Keenan
- * @version 1.0 2020-05-03
+ * @version 1.0 2020-05-06
  * @since 2020-05-03
  *
  */

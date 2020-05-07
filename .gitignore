@@ -13,3 +13,5 @@
 /doc/
 # Bin executables
 /bin/
+# Out executables
+/out/

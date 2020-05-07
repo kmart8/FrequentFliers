@@ -1,5 +1,7 @@
 package plane;
 
+import airport.Airport;
+
 /**
  * This class holds values pertaining to a single Plane.
  *
@@ -159,6 +161,30 @@ public class Plane {
         // Verify seats is within valid range
         return seats >= 0;
     }
+
+    /**
+     * Determine if two plane objects are the same plane
+     *
+     * @param obj is the plane to compare against this plane
+     * @return true if the planes are the same and false if not
+     */
+    @Override
+    public boolean equals (Object obj) {
+        // every object is equal to itself
+        if (obj == this) return true;
+
+        // null not equal to anything
+        if (obj == null) return false;
+
+        // can't be equal if obj is not an instance of Plane
+        if (!(obj instanceof Plane)) return false;
+
+        // if all fields are equal, the Planes are the same
+        Plane rhs = (Plane) obj;
+        return (rhs.mManufacturer.equalsIgnoreCase(mManufacturer)) &&
+                (rhs.mModel.equalsIgnoreCase(mModel));
+    }
+
 }
 
 
