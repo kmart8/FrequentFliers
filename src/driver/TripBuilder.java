@@ -27,7 +27,8 @@ public class TripBuilder {
     // Singleton variable
     private static TripBuilder single_instance = null;
 
-    /** static method to provide single point of access to the Singleton
+    /**
+     * static method to provide single point of access to the Singleton
      *
      * @return the active TripBuilder, or a new one if one is not created
      */
@@ -38,17 +39,19 @@ public class TripBuilder {
         return single_instance;
     }
 
-    /** Displays the GUI to the user by activating the UIController
+    /**
+     * Displays the GUI to the user by activating the UIController
      */
-    public void generateGUI(){
+    public void generateGUI() {
         app = new UIController();
     }
 
-    /** Searches for legs that match the departure date and airport specified by the user
-     *  (does not currently store any legs, just assignes them to display in the viewer)
-     *  (will eventually be moved, and this function will actually search for flights)
+    /**
+     * Searches for legs that match the departure date and airport specified by the user
+     * (does not currently store any legs, just assignes them to display in the viewer)
+     * (will eventually be moved, and this function will actually search for flights)
      */
-    public Flights searchForFlights(){
+    public Flights searchForFlights() {
         // Get the contents of the model
         UIModel userInput = app.getAcceptedInput();
 
@@ -80,9 +83,22 @@ public class TripBuilder {
     }
 
     /**
+     * Method for adding legs to the customers current trip
      *
+     * @param displayList the list of flight objects currently displayed
+     * @param flightDisplayTable select attributes as strings from the flight objects displayed to the user
+     * @param legsInCart current legs in cart
+     * @return new legs in cart
      */
-    public void addFlightToTrip() {
+    public Legs addLegsToTrip(Flights displayList, JTable flightDisplayTable, Legs legsInCart) {
+
+        Trip.getInstance().addFlightToTrip(displayList.get(flightDisplayTable.getSelectedRow()));
+        legsInCart.clear();
+        for (Flight flight : Trip.getInstance().getTrip()) {
+            legsInCart.addAll(flight.legList());
+        }
+        return legsInCart;
+
     }
 
 }
