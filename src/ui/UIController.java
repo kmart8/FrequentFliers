@@ -66,7 +66,7 @@ public class UIController {
 
     /**
      * Returns the UIData object used to save valid input
-     * @return valid input saved in a UIData object
+     * @return valid input saved in a UIModel object
      */
     public UIModel getAcceptedInput(){ return savedInput; }
 
@@ -94,13 +94,13 @@ public class UIController {
     }
 
     /**
-     * Returns the number of layovers as a string
-     * @return a String with the number of layovers
+     * Returns the maximum number of layovers as a string
+     * @return a String with the maximum number of layovers
      */
     public String getNumberOfLayovers() { return Integer.toString(savedInput.numberOfLayovers()); }
 
     /**
-     * Attempts to update the saved number of layovers according to user input
+     * Attempts to update the saved maximum number of layovers according to user input
      * @param numberOfLayovers a String with the maximum number of layovers
      */
     public void setNumberOfLayovers(String numberOfLayovers) {
@@ -216,15 +216,15 @@ public class UIController {
     }
 
     /**
-     * Returns the date, formatted as a string
-     * @return a string with the arrival date
+     * Returns the flight date, formatted as a string
+     * @return a string with the flight date
      */
     public String getFlightDate() {
         return acceptedDateFormats.get(0).format(savedInput.flightLocalDate());
     }
 
     /**
-     * Attempts to update the saved date according to user input
+     * Attempts to update the saved flight date according to user input
      * @param date a String with the formatted date
      */
     public void setFlightDate(String date) {
@@ -407,7 +407,7 @@ public class UIController {
     }
 
     /**
-     * Attempts to parse and validate an number of layovers from a String
+     * Attempts to parse and validate a number of layovers from a String
      * @param layovers a String containing the maximum number of layovers
      *
      * @return false if the String could not be parsed as an Integer or the number of layovers is outside the valid range, otherwise return true
@@ -432,7 +432,7 @@ public class UIController {
     }
 
     /**
-     * Attempts to parse and validate an number of passengers from a String
+     * Attempts to parse and validate a number of passengers from a String
      * @param passengers a String containing the maximum number of passengers
      *
      * @return false if the String could not be parsed as an Integer or the number of passengers is outside the valid range, otherwise return true

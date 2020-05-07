@@ -8,7 +8,7 @@
     <properties/>
     <border type="none"/>
     <children>
-      <tabbedpane id="90f92" binding="tabbedPane1" default-binding="true">
+      <tabbedpane id="90f92" binding="TableViewer">
         <constraints>
           <grid row="3" column="1" row-span="1" col-span="10" vsize-policy="3" hsize-policy="3" anchor="0" fill="3" indent="1" use-parent-layout="false">
             <preferred-size width="200" height="200"/>

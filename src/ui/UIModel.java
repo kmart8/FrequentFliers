@@ -51,7 +51,7 @@ public class UIModel {
     }
 
     /**
-     * Get the beginning of the time window for the arrival or departure of the flight
+     * Get the beginning of the time window for the arrival or departure of the flight as a DateTime
      *
      * @return  The beginning of the time window as a ZonedDateTime in the GMT time zone, or null if arrival airport is empty
      */
@@ -63,7 +63,7 @@ public class UIModel {
     }
 
     /**
-     * Get the end of the time window for the arrival or departure of the flight
+     * Get the end of the time window for the arrival or departure of the flight as a DateTime
      *
      * @return  The end of the time window as a ZonedDateTime in the GMT time zone, or null if arrival airport is empty
      */
@@ -211,7 +211,7 @@ public class UIModel {
     }
 
     /**
-     * Return the maximum number of layovers
+     * Get the maximum number of layovers
      *
      * @return The maximum number of layovers as an Integer
      */

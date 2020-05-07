@@ -104,6 +104,7 @@ public class LocalFlightDatabase {
      *
      * @param override if true, obtains a new list of airports from the server even if one already exists
      * @return [possibly empty] the list of airports
+     * @post Airports from the server are cached in the LocalFlightDatabase
      */
     public Airports getAirportList(boolean override){
         // If airports have not been built from the server or an override of the current airport list is requested,
@@ -117,6 +118,7 @@ public class LocalFlightDatabase {
      *
      * @param override if true, obtains a new list of planes from the server even if one already exists
      * @return [possibly empty] the list of planes
+     * @post Planes from the server are cached in the LocalFlightDatabase
      */
     public Planes getPlaneList(boolean override){
         // If planes have not been built from the server or an override of the current plane list is requested,
@@ -131,8 +133,8 @@ public class LocalFlightDatabase {
      * This will occur regardless if there is already a saved version of the leg cached.
      *
      * @param oldLeg The leg that needs to be updated with the latest database info
-     *
      * @return [possibly null] the updated version of the leg, or null if the server cannot find a match
+     * @post Updated legs with the same boarding date and airport are cached in the LocalFlightDatabase
      */
     public Leg getRefreshedLeg(Leg oldLeg){
         getBoardingLegList(oldLeg.getBoardingAirport(), oldLeg.getBoardingTime().toLocalDate(), true);
@@ -150,8 +152,8 @@ public class LocalFlightDatabase {
      * @param boardingAirport returned legs must have this boarding airport
      * @param boardingDate returned legs must have this boarding date
      * @param override if true, obtains a new list of legs from the server even if the same request has been previously made
-     *
      * @return [possibly empty] only legs that match the specified boarding airport and boarding date
+     * @post Legs from the server are cached in the LocalFlightDatabase and the request has been saved for future reference
      */
     public Legs getBoardingLegList(Airport boardingAirport, LocalDate boardingDate, boolean override){
         Legs requestedLegs = new Legs();
@@ -189,8 +191,8 @@ public class LocalFlightDatabase {
      * @param disembarkingAirport returned legs must have this disembarking airport
      * @param disembarkingDate returned legs must have this disembarking date
      * @param override if true, obtains a new list of legs from the server even if the same request has been previously made
-     *
      * @return [possibly empty] only legs that match the specified disembarking airport and disembarking date
+     * @post Legs from the server are cached in the LocalFlightDatabase and the request has been saved for future reference
      */
     public Legs getDisembarkingLegList(Airport disembarkingAirport, LocalDate disembarkingDate, boolean override){
         Legs requestedLegs = new Legs();
@@ -249,9 +251,10 @@ public class LocalFlightDatabase {
         return null;
     }
 
-    /** add new legs to the legList, while removing any duplicate old legs
+    /** add new legs to the boardingLegList, while removing any duplicate old legs
      *
      * @param potentialLegs [possibly empty] list of new legs to add to the leg list
+     * @post New Legs from the server are cached in the LocalFlightDatabase and old duplicates are removed
      */
     /// Can unique be implemented at the list side?
     private void addBoardingLegs(Legs potentialLegs){
@@ -263,9 +266,10 @@ public class LocalFlightDatabase {
         }
     }
 
-    /** add new legs to the legList, while removing any duplicate old legs
+    /** add new legs to the disembarkingLegList, while removing any duplicate old legs
      *
      * @param potentialLegs [possibly empty] list of new legs to add to the leg list
+     * @post Legs from the server are cached in the LocalFlightDatabase and old duplicates are removed
      */
     private void addDisembarkingLegs(Legs potentialLegs){
         for(Leg leg: potentialLegs){
