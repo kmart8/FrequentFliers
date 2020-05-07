@@ -1,6 +1,7 @@
 package flight;
 
 import airport.Airport;
+import dao.LocalFlightDatabase;
 import leg.Leg;
 import leg.Legs;
 import ui.UIModel;
@@ -254,6 +255,14 @@ public class Flight implements Cloneable {
 
         if (complete) filterReason = "complete";
 
+    }
+
+    public void refreshLegs(){
+        Legs updatedLegs = new Legs();
+        for(Leg thisLeg : legList){
+            updatedLegs.add(LocalFlightDatabase.getInstance().getRefreshedLeg(thisLeg));
+        }
+        legList = updatedLegs;
     }
 
     /**
