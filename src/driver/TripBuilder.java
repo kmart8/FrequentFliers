@@ -10,6 +10,7 @@ import ui.UIController;
 import utils.NotificationManager;
 
 import javax.swing.*;
+import java.util.ArrayList;
 
 /**
  * This class handles initialization of the UIModel, UIController, and ReservationApp viewer. It also serves as
@@ -81,24 +82,4 @@ public class TripBuilder {
         }
 
     }
-
-    /**
-     * Method for adding legs to the customers current trip
-     *
-     * @param displayList the list of flight objects currently displayed
-     * @param flightDisplayTable select attributes as strings from the flight objects displayed to the user
-     * @param legsInCart current legs in cart
-     * @return new legs in cart
-     */
-    public Legs addLegsToTrip(Flights displayList, JTable flightDisplayTable, Legs legsInCart) {
-
-        Trip.getInstance().addFlightToTrip(displayList.get(flightDisplayTable.getSelectedRow()));
-        legsInCart.clear();
-        for (Flight flight : Trip.getInstance().getTrip()) {
-            legsInCart.addAll(flight.legList());
-        }
-        return legsInCart;
-
-    }
-
 }
