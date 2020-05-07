@@ -385,12 +385,14 @@ public class ReservationApp {
             @Override
             public void actionPerformed(ActionEvent e){
                 Trip.getInstance().setTripType(tripTypeComboBox.getSelectedItem().toString());
+                System.out.println("User changed the trip type to " + Trip.getInstance().getTripType());
             }
         });
         sortTypeComboBox.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
                 sortType = sortTypeComboBox.getSelectedItem().toString();
+                System.out.println("User changed the sort type to " + sortType);
                 // Resort the flight table
                 buildFlightTable();
             }
@@ -399,6 +401,7 @@ public class ReservationApp {
             @Override
             public void actionPerformed(ActionEvent e) {
                 String sortDirection = sortDirectionComboBox.getSelectedItem().toString();
+                System.out.println("User changed the sort direction to " + sortDirection);
                 // Resort the flight table
                 isAscending = sortDirection.equals("Ascending");
                 buildFlightTable();
@@ -409,6 +412,8 @@ public class ReservationApp {
     /**
      * Creates the GUI JFrame and builds all of the JComponents.
      * All of the hidden source code is implemented during the 'setContentPane' function
+     *
+     * @post the application window is visible and located in the center of the screen
      */
     private void initializeWindow() {
         if (frameHandle != null)
@@ -423,8 +428,8 @@ public class ReservationApp {
 
 
     /**
-     * Creates a list of essential user interactions that should be disabled during long operations.
-     * Visually shows the user that the program is busy, and prevents confusing input
+     * Creates a list of essential user interactions that should be available while editing search options.
+     * Visually shows the user what they should be doing and prevents confusing input
      */
     private void buildMidSearchEnabledList() {
         midSearchEnabledList.add(seatingTypeComboBox);
@@ -440,8 +445,8 @@ public class ReservationApp {
     }
 
     /**
-     * Creates a list of essential user interactions that should be disabled during long operations.
-     * Visually shows the user that the program is busy, and prevents confusing input
+     * Creates a list of essential user interactions that should be available before and after searching for flights.
+     * Visually shows the user what they should be doing and prevents confusing input
      */
     private void buildPreSearchEnabledList() {
         preSearchEnabledList.add(newSearchButton);
@@ -450,7 +455,7 @@ public class ReservationApp {
     }
 
     /**
-     * Iterates over the lists of important JComponents to disable/enable them
+     * Iterates over the lists of important JComponents to disable/enable to transition states
      *
      * @param tf a boolean where true represents pre-search state and false represents mid-search state
      */
@@ -465,8 +470,11 @@ public class ReservationApp {
 
 
     /**
-     * Updates the table to display the current list of legs
+     * Updates the table to display the current list of legs.
      *
+     * @param legsInCart [possibly empty] list of legs that should be displayed for review by the user
+     * @pre Legs should be sorted in ascesnding chronological order
+     * @post Old values have been cleared from the table and any new values are now displayed.
      */
     private void buildLegTable(Legs legsInCart){
         // Get the current model of the table and remove all previous entries
@@ -505,10 +513,13 @@ public class ReservationApp {
     }
 
     /**
-     * Updates the table to display the list of flights
+     * Updates the table to display the current list [possibly empty] of flights.
      *
+     * Also sorts the flights by one of 4 user specified attributes in either ascending or descending order.
+     *
+     * @post Old values have been cleared from the table and any new values have been sorted and displayed.
      */
-private void buildFlightTable(){
+    private void buildFlightTable(){
         // Get the current model of the table and remove all previous entries
         DefaultTableModel table = (DefaultTableModel) flightDisplayTable.getModel();
         table.setRowCount(0);
@@ -554,5 +565,4 @@ private void buildFlightTable(){
         }
         System.out.println("Flights have been displayed");
     }
-
 }
