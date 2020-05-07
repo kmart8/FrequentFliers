@@ -23,7 +23,7 @@ public class Trip {
     private String tripType;
     private Flights trip = new Flights();
     private ArrayList<UIModel> flightsDetails = new ArrayList<>();
-    private boolean isBooked;
+    private boolean isBooked = false;
 
     // Singleton variable
     private static Trip single_instance = null;
@@ -55,6 +55,8 @@ public class Trip {
      * @return the tripType
      */
     public String getTripType() { return tripType; }
+
+    public boolean isBooked() { return isBooked; }
 
     /**
      * Method to add flight to the current trip
@@ -124,9 +126,10 @@ public class Trip {
      */
     public void resetTrip() {
         if (trip.size() > 0) { trip.clear();}
+        isBooked = false;
     }
 
-    public boolean bookTrip(int numberOfPassengers){
+    public void bookTrip(int numberOfPassengers){
         boolean obtainedLock = false;
         while (!obtainedLock) {
             obtainedLock = ServerInterface.INSTANCE.lock();
@@ -136,13 +139,12 @@ public class Trip {
         if (!isTripValid()) {
             NotificationManager.getInstance().popupError("One of the selected flights is no longer available, please create a new trip!");
             ServerInterface.INSTANCE.unlock();
-            return false;
         }
 
         // Attempt to reserve seats
         boolean isSuccess = ServerInterface.INSTANCE.postLegReservation(trip, numberOfPassengers);
         ServerInterface.INSTANCE.unlock();
-        return isSuccess;
+        isBooked = isSuccess;
     }
 
 }

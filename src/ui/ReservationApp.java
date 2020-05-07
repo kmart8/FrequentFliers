@@ -200,13 +200,13 @@ public class ReservationApp {
         confirmReservationButton.addActionListener(new ActionListener() {
             @Override
             public void actionPerformed(ActionEvent e) {
-                if (Trip.getInstance().isFull()) {
+                if (Trip.getInstance().isFull() && !Trip.getInstance().isBooked()) {
                     // Wait until the lock can be obtained
                     int timerID = NotificationManager.getInstance().startBusyTimer();
-                    boolean isSuccess = Trip.getInstance().bookTrip(controller.getAcceptedInput().numberOfPassengers());
+                    Trip.getInstance().bookTrip(controller.getAcceptedInput().numberOfPassengers());
 
                     // Notify the user of success or failure
-                    if (isSuccess) {
+                    if (Trip.getInstance().isBooked()) {
                         NotificationManager.getInstance().popupSuccess("Trip booking was successful!");
                         // Update the table to display the new number of remaining seats on the legs
                         Trip.getInstance().refreshTrip();
