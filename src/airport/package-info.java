@@ -1,10 +1,11 @@
 /**
- * Classes used for the management of Airport information.
- */
-/**
- * @author blake
- * @version 2.0
- * @since 2017-02-10
+ * Classes which handle Airports.
+ *
+ * Handles the Airport and Airports classes.
+ *
+ * @author Kevin Martin
+ * @version 1.0 2020-04-30
+ * @since 2020-04-30
  *
  */
 package airport;
