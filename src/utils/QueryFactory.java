@@ -6,7 +6,7 @@ import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 
 /**
- * Formats arguments into query strings that can be passed to HTTP URL to interact with the server
+ * Formats arguments into query strings that can be passed to HTTP URL to interact with the server.
  *
  * @author blake
  * @version 1.2
@@ -16,7 +16,7 @@ import java.time.format.DateTimeFormatter;
 public class QueryFactory {
 
 	/**
-	 * Return a query string that can be passed to HTTP URL to request list of airports
+	 * Return a query string that can be passed to HTTP URL to request list of airports.
 	 *
 	 * @return the query String which can be appended to URL to form HTTP GET request
 	 */
@@ -25,7 +25,7 @@ public class QueryFactory {
 	}
 
 	/**
-	 * Return a query string that can be passed to HTTP URL to request list of planes
+	 * Return a query string that can be passed to HTTP URL to request list of planes.
 	 *
 	 * @return the query String which can be appended to URL to form HTTP GET request
 	 */
@@ -34,7 +34,7 @@ public class QueryFactory {
 	}
 
 	/**
-	 * Return query string that can be passed to HTTP URL to request list of legs
+	 * Return query string that can be passed to HTTP URL to request list of legs boarding at a given airport and date.
 	 *
 	 * @param boardingAirport is the Airport each leg must start at
 	 * @param boardingDate    is the the date the legs board, of type ZonedDateTime
@@ -50,7 +50,7 @@ public class QueryFactory {
 	}
 
 	/**
-	 * Return query string that can be passed to HTTP URL to request list of legs
+	 * Return query string that can be passed to HTTP URL to request list of legs disembarking at a given airport and date.
 	 *
 	 * @param disembarkingAirport is the Airport each leg must start at
 	 * @param disembarkingDate    is the the date the legs disembark, of type ZonedDateTime
@@ -66,7 +66,7 @@ public class QueryFactory {
 	}
 
 	/**
-	 * Return query string that can be passed to HTTP URL to lock the server database so updates can be written
+	 * Return query string that can be passed to HTTP URL to lock the server database so updates can be written.
 	 *
 	 * @return the String written to HTTP POST to lock server database
 	 */
@@ -75,7 +75,7 @@ public class QueryFactory {
 	}
 
 	/**
-	 * Return query string that can be passed to HTTP URL to unlock the server database after updates are written
+	 * Return query string that can be passed to HTTP URL to unlock the server database after updates are written.
 	 *
 	 * @return the String written to the HTTP POST to unlock server database
 	 */
@@ -84,7 +84,7 @@ public class QueryFactory {
 	}
 
 	/**
-	 * Return query string that can be passed to HTTP URL to post reservations for flights to the database
+	 * Return query string that can be passed to HTTP URL to post reservations for flights to the database.
 	 *
 	 * @param xmlFlights XML formatted string of flight numbers and seating types
 	 * @return the String written to the HTTP POST to reserve seats on the server database
@@ -95,7 +95,7 @@ public class QueryFactory {
 
 	/**
 	 * Return query string that can be passed to HTTP URL to reset the server database to undo changes
-	 * during testing/development
+	 * during testing/development.
 	 *
 	 * @return the String written to the HTTP POST to reset the server database
 	 */

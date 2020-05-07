@@ -34,7 +34,7 @@ public class NotificationManager {
     /** Singleton variable */
     private static utils.NotificationManager single_instance = null;
 
-    /** Static method to provide single point of access to the Singleton
+    /** Static method to provide single point of access to the Singleton.
      *
      * @return the active NotificationManager, or a new one if one is not created
      * @post a single instance of this class exists
@@ -46,7 +46,7 @@ public class NotificationManager {
         return single_instance;
     }
 
-    /** Create an error popup window in the center of the screen with a custom message
+    /** Create an error popup window in the center of the screen with a custom message.
      *
      * @param m_errorMessage the custom error message String
      * @pre The main thread should be finished with all tasks
@@ -83,7 +83,7 @@ public class NotificationManager {
         });
     }
 
-    /** Create an success popup window in the center of the screen with a custom message
+    /** Create an success popup window in the center of the screen with a custom message.
      *
      * @param m_successMessage the custom success message String
      * @pre The main thread should be finished with all tasks
@@ -120,7 +120,7 @@ public class NotificationManager {
         });
     }
 
-    /** Create an busy notification popup window in the center of the screen
+    /** Create an busy notification popup window in the center of the screen.
      * TODO: Multithread the rest of the software so the GUI window doesn't stay blank until the calculations are done
      * @pre The main thread should be finished with all tasks
      * @post An busy message popup GUI will be displayed in the center of the screen
@@ -156,7 +156,7 @@ public class NotificationManager {
         }
     }
 
-    /** Adds a new timer to the hashtable that repeatedly alerts the user that the program is busy
+    /** Adds a new timer to the hashtable that repeatedly alerts the user that the program is busy.
      *
      * @return The ID number of the new timer as an Integer, which is needed to cancel it
      * @post A new timer is running a TimerTask to popup busy notifications
@@ -181,7 +181,7 @@ public class NotificationManager {
         return timerIDCounter;
     }
 
-    /** Cancels a timer that has been started to notify the user of busy status
+    /** Cancels a timer that has been started to notify the user of busy status.
      *
      * @param timerID The ID number of the timer to cancel as an Integer
      * @post The matching timer has been canceled and will not continue to popup windows
