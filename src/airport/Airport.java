@@ -178,18 +178,14 @@ public class Airport {
 	 * @return true if object passes above validation checks
 	 */
 	public boolean isValid() {
-
 		// If the name isn't valid, the object isn't valid
-		if ((mName == null) || (mName == ""))
-			return false;
+		if (!isValidName(mName)) return false;
 
 		// If we don't have a 3 character code, object isn't valid
-		if ((mCode == null) || (mCode.length() != 3))
-			return false;
+		if (!isValidCode(mCode)) return false;
 
 		// Verify latitude and longitude are within range
-        return (!(mLatitude > Saps.MAX_LATITUDE)) && (!(mLatitude < Saps.MIN_LATITUDE)) &&
-                (!(mLongitude > Saps.MAX_LONGITUDE)) && (!(mLongitude < Saps.MIN_LONGITUDE));
+        return (isValidLatitude(mLatitude)) && (isValidLongitude(mLongitude));
     }
 
 	/**
@@ -198,7 +194,7 @@ public class Airport {
 	 * @param code is the airport code to validate
 	 * @return false if null or not 3 characters in length, else assume valid and return true
 	 */
-	public boolean isValidCode (String code) {
+	public static boolean isValidCode(String code) {
 		// If we don't have a 3 character code it can't be valid valid
 		return (code != null) && (code.length() == 3);
 	}
@@ -209,7 +205,7 @@ public class Airport {
 	 * @param name is the name of the airport to validate
 	 * @return false if null or empty string, else assume valid and return true
 	 */
-	public boolean isValidName (String name) {
+	public static boolean isValidName(String name) {
 		// If the name is null or empty it can't be valid
 		return (name != null) && (name != "");
 	}
@@ -220,7 +216,7 @@ public class Airport {
 	 * @param latitude is the latitude to validate
 	 * @return true if within valid range for latitude
 	 */
-	public boolean isValidLatitude (double latitude) {
+	public static boolean isValidLatitude(double latitude) {
 		// Verify latitude is within valid range
 		return (!(latitude > Saps.MAX_LATITUDE)) && (!(latitude < Saps.MIN_LATITUDE));
 	}
@@ -247,7 +243,7 @@ public class Airport {
 	 * @param longitude is the longitude to validate
 	 * @return true if within valid range for longitude
 	 */
-	public boolean isValidLongitude (double longitude) {
+	public static boolean isValidLongitude(double longitude) {
 		// Verify longitude is within valid range
 		return (!(longitude > Saps.MAX_LONGITUDE)) && (!(longitude < Saps.MIN_LONGITUDE));
 	}
@@ -263,6 +259,8 @@ public class Airport {
 		// input a GMT ZonedDatetime
 		// outputs a local ZonedDateTime for the respective airport object
 		String zone = Saps.AIRPORT_TIMEZONES.get(mCode);
+		if (zone == null)
+				return GMTZonedDateTime;
 		return ZonedDateTime.ofInstant(GMTZonedDateTime.toInstant(), ZoneId.of(zone));
 	}
 
@@ -274,6 +272,8 @@ public class Airport {
 	 */
 	public ZonedDateTime convertLocalDateTimetoGMT(LocalDateTime dateTime) {
 		String zone = Saps.AIRPORT_TIMEZONES.get(mCode);
+		if (zone == null)
+			return ZonedDateTime.of(dateTime, ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0)));
 		ZonedDateTime localZonedDateTime = ZonedDateTime.of(dateTime, ZoneId.of(zone));
 		return ZonedDateTime.ofInstant(localZonedDateTime.toInstant(), ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0)));
 	}
