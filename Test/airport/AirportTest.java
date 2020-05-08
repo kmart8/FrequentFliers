@@ -101,11 +101,11 @@ class AirportTest {
     void convertLocalDateTimetoGMT() {
         LocalDate d1 = LocalDate.of(2020,5,18);
         LocalTime t1 = LocalTime.of(11,0);
-        ZonedDateTime testTime2 = ZonedDateTime.of(d1,t1, ZoneId.of("America/Anchorage"));
+        LocalDateTime testTime1 = LocalDateTime.of(d1, t1);
+        ZonedDateTime testTime2 = ZonedDateTime.of(d1,t1.plusHours(8), ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0)));
         Airport testAirport = new Airport();
         testAirport.code("ANC");
         // ANC is GMT - 8
-        ZonedDateTime testTime1 = ZonedDateTime.of(d1,t1.plusHours(8), ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0)));
-        assert testAirport.convertGMTtoLocalTime(testTime1).equals(testTime2);
+        assert testAirport.convertLocalDateTimetoGMT(testTime1).equals(testTime2);
     }
 }
