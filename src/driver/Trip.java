@@ -22,16 +22,16 @@ public class Trip {
     /** the trip type */
     private String tripType;
 
-    /** the trip attribute */
+    /** the list of flights on the trip */
     private Flights trip = new Flights();
 
-    /** the flight details */
+    /** the flight filter that each flight on the list must satisfy, stored in the same order */
     private ArrayList<UIModel> flightsDetails = new ArrayList<>();
 
     /** boolean see if flight is booked */
     private boolean isBooked = false;
 
-    // Singleton variable
+    /** the singleton variable */
     private static Trip single_instance = null;
 
     /**
