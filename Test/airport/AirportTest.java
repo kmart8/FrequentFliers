@@ -58,6 +58,8 @@ class AirportTest {
     @Test
     void isValidCode() {
         assert Airport.isValidCode("DEN");
+        assert !Airport.isValidCode("MEXICO");
+        assert !Airport.isValidCode("TX");
         assert !Airport.isValidCode("");
     }
 
