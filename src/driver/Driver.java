@@ -6,6 +6,8 @@ package driver;
 import java.text.ParseException;
 
 /**
+ * Entry point for the ReservationSystem
+ *
  * @author Kevin Martin
  * @since 2020-04-30
  * @version 1.0
@@ -15,12 +17,8 @@ public class Driver {
 
 
 	/**
-	 * Entry point for CS509 sample code driver
-	 * 
-	 * This driver will retrieve the list of airports from the CS509 server and print the list 
-	 * to the console sorted by 3 character airport code
-	 * 
-	 * @param args is the arguments passed to java vm in format of "CS509.sample teamName" where teamName is a valid team
+	 * Entry point for the ReservationSystem
+	 *
 	 */
 	public static void main(String[] args) throws ParseException {
 		/**if (args.length != 1) {

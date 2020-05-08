@@ -99,5 +99,5 @@ public class QueryFactory {
 	 *
 	 * @return the String written to the HTTP POST to reset the server database
 	 */
-	public static String reset() { return "?team="+ Saps.TEAM_NAME +" &action=resetDB";}
+	public static String reset() { return "?team="+ Saps.TEAM_NAME +"&action=resetDB";}
 }

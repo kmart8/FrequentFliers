@@ -68,7 +68,11 @@ public class UIController {
      * Returns the UIData object used to save valid input
      * @return valid input saved in a UIModel object
      */
-    public UIModel getAcceptedInput(){ return savedInput; }
+    public UIModel getAcceptedInput(){
+        UIModel copy = new UIModel();
+        try { copy = savedInput.clone(); } catch (Exception e) {};
+        return copy;
+    }
 
     /**
      * Returns the number of passengers as a string

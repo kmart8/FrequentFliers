@@ -257,6 +257,10 @@ public class Flight implements Cloneable {
 
     }
 
+    public boolean isAfterBy(Flight otherFlight, Duration timeGap){
+        return getDepartureTime().isAfter(otherFlight.getArrivalTime().plus(timeGap));
+    }
+
     public void refreshLegs(){
         Legs updatedLegs = new Legs();
         for(Leg thisLeg : legList){

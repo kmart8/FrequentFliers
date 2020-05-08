@@ -135,7 +135,7 @@ public class Plane {
      * @param manufacturer is the name of the manufacturer to validate
      * @return false if null or empty string, else assume valid and return true
      */
-    public boolean isValidManufacturer (String manufacturer) {
+    public static boolean isValidManufacturer (String manufacturer) {
         // If the name is null or empty it can't be valid
         return (manufacturer != null) && (manufacturer != "");
     }
@@ -146,7 +146,7 @@ public class Plane {
      * @param model is the model to validate
      * @return false if null or empty string, else assume valid and return true
      */
-    public boolean isValidModel (String model) {
+    public static boolean isValidModel(String model) {
         // If the name is null or empty it can't be valid
         return (model != null) && (model != "");
     }
@@ -157,7 +157,7 @@ public class Plane {
      * @param seats is the number of seats to validate
      * @return true if number of seats is positive
      */
-    public boolean isValidSeats (int seats) {
+    public static boolean isValidSeats(int seats) {
         // Verify seats is within valid range
         return seats >= 0;
     }

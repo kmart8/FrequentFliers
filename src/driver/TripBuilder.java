@@ -4,9 +4,13 @@ import flight.Flight;
 import flight.FlightManager;
 import flight.Flights;
 import leg.Legs;
+import ui.ReservationApp;
 import ui.UIModel;
 import ui.UIController;
 import utils.NotificationManager;
+
+import javax.swing.*;
+import java.util.ArrayList;
 
 /**
  * This class handles initialization of the UIModel, UIController, and ReservationApp viewer. It also serves as
@@ -24,7 +28,8 @@ public class TripBuilder {
     // Singleton variable
     private static TripBuilder single_instance = null;
 
-    /** static method to provide single point of access to the Singleton
+    /**
+     * static method to provide single point of access to the Singleton
      *
      * @return the active TripBuilder, or a new one if one is not created
      */
@@ -35,17 +40,19 @@ public class TripBuilder {
         return single_instance;
     }
 
-    /** displays the GUI to the user by activating the UIController
+    /**
+     * Displays the GUI to the user by activating the UIController
      */
-    public void generateGUI(){
+    public void generateGUI() {
         app = new UIController();
     }
 
-    /** searches for legs that match the departure date and airport specified by the user
-     *  (does not currently store any legs, just assignes them to display in the viewer)
-     *  (will eventually be moved, and this function will actually search for flights)
+    /**
+     * Searches for legs that match the departure date and airport specified by the user
+     * (does not currently store any legs, just assignes them to display in the viewer)
+     * (will eventually be moved, and this function will actually search for flights)
      */
-    public Flights searchForFlights(){
+    public Flights searchForFlights() {
         // Get the contents of the model
         UIModel userInput = app.getAcceptedInput();
 
@@ -75,8 +82,4 @@ public class TripBuilder {
         }
 
     }
-    public void bookFlight(Flight flight){
-
-    }
-
 }

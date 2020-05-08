@@ -1,6 +1,7 @@
 package ui;
 
 import airport.Airport;
+import flight.Flight;
 import utils.Saps;
 
 import java.time.*;
@@ -15,7 +16,7 @@ import java.time.*;
  * @since 2020-03-06
  *
  */
-public class UIModel {
+public class UIModel implements Cloneable{
     /** Type for specifying departure or arrival time window */
     private String timeType;
     /** Beginning of the time window for departure or arrival */
@@ -48,6 +49,7 @@ public class UIModel {
         endFlightLocalTime = LocalTime.MAX;
         numberOfPassengers = 1;
         numberOfLayovers = 2;
+        seatingType = Saps.SEATING_TYPES.get(0);
     }
 
     /**
@@ -226,5 +228,15 @@ public class UIModel {
      */
     public void numberOfLayovers(int numberOfLayovers) {
         this.numberOfLayovers = numberOfLayovers;
+    }
+
+    /**
+     * Required Clone Method
+     *
+     * @return Copy of UIModel
+     * @throws CloneNotSupportedException If clone is not supported
+     */
+    public UIModel clone() throws CloneNotSupportedException{
+        return  (UIModel) super.clone();
     }
 }
