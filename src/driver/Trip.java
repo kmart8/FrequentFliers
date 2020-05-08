@@ -7,6 +7,7 @@ import leg.Legs;
 import ui.UIModel;
 import utils.NotificationManager;
 
+import java.time.Duration;
 import java.util.ArrayList;
 
 /**
@@ -75,14 +76,17 @@ public class Trip {
      * @param flight the flight to be added to the trip
      */
     public boolean addFlightToTrip(Flight flight, UIModel filter) {
-        if (trip.size() > 0 && trip.get(trip.size()-1).getArrivalTime().plusHours(2).isAfter(flight.getDepartureTime())) {
-            NotificationManager.getInstance().popupError("Departure time of second flight must be after arrival time of first flight.");
+        if (!isFull()) {
+            if (trip.size() > 0 && !flight.isAfterBy(trip.get(trip.size() - 1), Duration.ofHours(2))) {
+                NotificationManager.getInstance().popupError("Departure time of second flight must be after arrival time of first flight.");
+                return false;
+            } else {
+                trip.add(flight);
+                flightsDetails.add(filter);
+                return true;
+            }
+        }else
             return false;
-        } else {
-            trip.add(flight);
-            flightsDetails.add(filter);
-            return true;
-        }
     }
 
     /**
@@ -142,6 +146,7 @@ public class Trip {
                 if (!thisFlight.getFilterReason().equals("complete"))
                     return false;
             }
+        else return false;
         return true;
     }
 
