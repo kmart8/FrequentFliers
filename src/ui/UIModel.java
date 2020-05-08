@@ -9,7 +9,6 @@ import java.time.*;
 /**
  * This class serves as a model for the ReservationApp viewer. It saves user input for future use.
  * Note that input must be validated before submission to this model.
- * TODO: Move the validation logic to this model
  *
  * @author Chris Collins
  * @version 2.0 2020-05-01
