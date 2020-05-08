@@ -19,7 +19,9 @@ class FlightTest {
     LocalDate testDate = LocalDate.of(2020,5,22);
     LocalTime testTime = LocalTime.of(18,1,14);
     ZonedDateTime testZDT1 = ZonedDateTime.of(testDate,testTime,ZoneId.ofOffset("GMT", ZoneOffset.ofHours(0)));
-    ZonedDateTime testZDT2 = testZDT1.plusHours(6).plusMinutes(49);
+    Duration travelTime = Duration.ofHours(6).plusMinutes(49);
+    ZonedDateTime testZDT2 = testZDT1.plus(travelTime);
+    ZonedDateTime testZDT3 = testZDT1.minus(travelTime);
     Airport testAirport1 = new Airport();
     Airport testAirport2 = new Airport();
 
@@ -38,6 +40,7 @@ class FlightTest {
         testLeg2.setDisembarkingAirport(testAirport2);
         testLeg3 = new Leg();
         testLeg3.setFlightNumber(18);
+        testLeg3.setDisembarkingTime(testZDT3);
         testLegs.add(testLeg1);
         testLegs.add(testLeg2);
         testFlight.legList(testLegs);
@@ -101,6 +104,17 @@ class FlightTest {
 
     @Test
     void getTotalTravelTime() {
-        assert testFlight.getTotalTravelTime().equals(Duration.ofHours(6).plusMinutes(49));
+        assert testFlight.getTotalTravelTime().equals(travelTime);
+    }
+
+    @Test
+    void isAfterBy() {
+        Flight testFlight2 = new Flight();
+        testFlight2.addLegToBeginning(testLeg2);
+        Flight testFlight3 = new Flight();
+        testFlight3.addLegToBeginning(testLeg3);
+        assert !testFlight.isAfterBy(testFlight2, Duration.ofHours(1));
+        assert testFlight.isAfterBy(testFlight3, Duration.ofHours(1));
+        assert !testFlight.isAfterBy(testFlight3, Duration.ofHours(7));
     }
 }
