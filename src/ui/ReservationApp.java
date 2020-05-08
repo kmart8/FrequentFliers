@@ -1,13 +1,11 @@
 package ui;
 
-import dao.ServerInterface;
 import driver.TripBuilder;
 import driver.Trip;
 import flight.Flight;
 import flight.Flights;
 import leg.Leg;
 import leg.Legs;
-import us.dustinj.timezonemap.TimeZoneMap;
 import utils.NotificationManager;
 import utils.Saps;
 
