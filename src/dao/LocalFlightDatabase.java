@@ -15,7 +15,7 @@ import java.util.List;
  * This class stores and retrieves objects built by the reservation app from server returned XML.
  * In order to reduce server load, this class will track previous requests to get objects
  * to prevent unnecessary calls. In the event that the request has not been made previously
- * (or is overriden) this class will get new and updated versions of the objects from the ServerInterface.
+ * (or is overridden) this class will get new and updated versions of the objects from the ServerInterface.
  *
  * @author Chris Collins
  * @version 1.0 2020-03-26
