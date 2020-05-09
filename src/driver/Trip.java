@@ -71,9 +71,15 @@ public class Trip {
     public boolean isBooked() { return isBooked; }
 
     /**
-     * Method to add flight to the current trip
+     * Method to add flight to the current trip.
+     *
+     * Checks to make sure the trip is not already full, and that the new flight is after
+     * the previous flight on the trip by at least 2 hours. Saves the UIModel that was used
+     * to create the flight in order to validate the trip before booking.
      *
      * @param flight the flight to be added to the trip
+     * @param filter the UIModel that was used to create the trip
+     * @return true if the flight is added successfully, false otherwise
      */
     public boolean addFlightToTrip(Flight flight, UIModel filter) {
         if (!isFull()) {

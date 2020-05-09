@@ -14,6 +14,7 @@ public class Driver {
 	/**
 	 * Entry point for the ReservationSystem
 	 *
+	 * @param args main thread initialization arguments
 	 */
 	public static void main(String[] args) {
 		TripBuilder.getInstance().generateGUI();

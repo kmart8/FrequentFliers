@@ -51,6 +51,8 @@ public class TripBuilder {
      * Searches for legs that match the departure date and airport specified by the user
      * (does not currently store any legs, just assigns them to display in the viewer)
      * (will eventually be moved, and this function will actually search for flights)
+     *
+     * @return All flights that match user input
      */
     public Flights searchForFlights() {
         // Get the contents of the model
