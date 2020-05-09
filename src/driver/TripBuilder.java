@@ -49,7 +49,7 @@ public class TripBuilder {
 
     /**
      * Searches for legs that match the departure date and airport specified by the user
-     * (does not currently store any legs, just assignes them to display in the viewer)
+     * (does not currently store any legs, just assigns them to display in the viewer)
      * (will eventually be moved, and this function will actually search for flights)
      */
     public Flights searchForFlights() {
