@@ -173,6 +173,7 @@ public class FlightManager {
      * LocalFlightDatabase. Also determines the time window for boarding and returns only legs inside this window.
      *
      * @param oldFlight A flight which has not yet connected to its destination
+     * @return All legs that are potential candidates for addition to the given flight
      * @pre the flight filter is not empty
      */
      private Legs getValidBoardingLegs(Flight oldFlight){
@@ -214,6 +215,7 @@ public class FlightManager {
      * this window.
      *
      * @param oldFlight A flight which has not yet connected to its origin
+     * @return All legs that are potential candidates for addition to the given flight
      * @pre the flight filter is not empty
      */
     private Legs getValidArrivingLegs(Flight oldFlight) {
