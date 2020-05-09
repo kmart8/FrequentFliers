@@ -1,7 +1,5 @@
 package plane;
 
-import airport.Airport;
-
 /**
  * This class holds values pertaining to a single Plane.
  *

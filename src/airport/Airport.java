@@ -9,8 +9,8 @@ import java.time.ZonedDateTime;
 /**
  * This class holds values pertaining to a single Airport. Class member attributes
  * are the same as defined by the CS509 server API and store values after conversion from
- * XML received from the server to Java primitives. Attributes are accessed via getter and 
- * setter methods.
+ * XML received from the server to Java primitives. Attributes are accessed via getter and
+ * setter methods. Handles local and GMT time conversions.
  * 
  * @author Kevin Martin
  * @version 1.0 2020-05-06
@@ -219,22 +219,6 @@ public class Airport {
 	public static boolean isValidLatitude(double latitude) {
 		// Verify latitude is within valid range
 		return (!(latitude > Saps.MAX_LATITUDE)) && (!(latitude < Saps.MIN_LATITUDE));
-	}
-	
-	/**
-	 * Check if latitude is valid. 
-	 * 
-	 * @param latitude is the latitude to validate represented as a String
-	 * @return true if within valid range for latitude
-	 */
-	public boolean isValidLatitude (String latitude) {
-		double lat;
-		try {
-			lat = Double.parseDouble(latitude);
-		} catch (NullPointerException | NumberFormatException ex) {
-			return false;
-		}
-		return isValidLatitude (lat);
 	}
 
 	/**
