@@ -220,22 +220,6 @@ public class Airport {
 		// Verify latitude is within valid range
 		return (!(latitude > Saps.MAX_LATITUDE)) && (!(latitude < Saps.MIN_LATITUDE));
 	}
-	
-	/**
-	 * Check if latitude is valid. 
-	 * 
-	 * @param latitude is the latitude to validate represented as a String
-	 * @return true if within valid range for latitude
-	 */
-	public boolean isValidLatitude (String latitude) {
-		double lat;
-		try {
-			lat = Double.parseDouble(latitude);
-		} catch (NullPointerException | NumberFormatException ex) {
-			return false;
-		}
-		return isValidLatitude (lat);
-	}
 
 	/**
 	 * Check if longitude is valid
