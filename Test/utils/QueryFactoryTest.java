@@ -61,8 +61,8 @@ class QueryFactoryTest {
     @Test
     void postLegReservation() {
         // Copied from server API documentation
-        String validPostLegsQuery = "team=FrequentFliers&action=buyTickets&flightData=<Flights><Flight number=“1” seating=“Coach”/><Flight number=“2” seating=“FirstClass”/></Flights>";
-        String testXML = "<Flights><Flight number=“1” seating=“Coach”/><Flight number=“2” seating=“FirstClass”/></Flights>";
+        String validPostLegsQuery = "team=FrequentFliers&action=buyTickets&flightData=<Flights><Flight number=\"1\" seating=\"Coach\"/><Flight number=\"2\" seating=\"FirstClass\"/></Flights>";
+        String testXML = "<Flights><Flight number=\"1\" seating=\"Coach\"/><Flight number=\"2\" seating=\"FirstClass\"/></Flights>";
         assert validPostLegsQuery.equals(QueryFactory.postLegReservation(testXML));
     }
 
